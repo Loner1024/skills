@@ -17,10 +17,10 @@ version: 0.1.0
 # Technical diagrams
 
 Turn a technical claim into a figure a reader understands faster than prose, at the quality bar
-of the Linear / Cursor / Vercel / Anthropic / OpenAI engineering blogs. The evidence behind these
-rules lives in the `research/` folder of the repo this skill was authored in
-(`research/FINDINGS.md` per company, `research/TAXONOMY.md` for the type taxonomy), two levels up
-when the skill still sits inside that repo. The rules below stand on their own if it is not there.
+of the Linear / Cursor / Vercel / Anthropic / OpenAI engineering blogs. These rules are the
+distilled result of a close reading of those five; this skill is self-contained and needs nothing
+outside its own folder. The per-company evidence behind a rule, if you want to check one against
+its source, is published at `https://github.com/Loner1024/skills` (`research/FINDINGS.md`).
 
 ## What you deliver
 

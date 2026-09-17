@@ -1,5 +1,7 @@
 # skills
 
+[English](README.md) · [简体中文](README.zh-CN.md)
+
 Agent skills by [@Loner1024](https://github.com/Loner1024). Each skill is a self-contained folder
 following the [Agent Skills specification](https://agentskills.io): a `SKILL.md` with YAML
 frontmatter plus the references, assets, and scripts it needs.
@@ -44,7 +46,8 @@ Update later with `npx skills update -g`, and remove with `npx skills remove <sk
 Most agent-made diagrams are Mermaid block layouts: every box the same size, arrows that start in
 empty space, labels the boxes paint over. This skill encodes the opposite approach, derived from a
 close reading of how Linear, Cursor, Vercel, Anthropic, and OpenAI actually present figures in
-their technical writing (the evidence is in [`research/`](research)).
+their technical writing. The per-company evidence lives in [`research/`](research); the skill does
+not read it.
 
 It delivers two artifacts per figure:
 
@@ -108,9 +111,9 @@ so and hands you the render for the final look.
 ## Repository layout
 
 ```
-research/                        how Linear, Cursor, Vercel, Anthropic, and OpenAI present figures
-  FINDINGS.md                    per company, with evidence and links
-  TAXONOMY.md                    when a diagram is warranted, and which of the 14 types to reach for
+research/                        provenance, not part of any skill
+  FINDINGS.md                    how the five companies present figures, per company, with links
+  TAXONOMY.md                    the decision taxonomy and tooling survey behind the rules
 skills/
   tech-diagrams/
     SKILL.md                     entry point: workflow, routing table, hard rules
@@ -120,9 +123,14 @@ skills/
     examples/                    seven finished figures across the four type families
 ```
 
-`research/` sits two levels up from the skill, which is where `SKILL.md` looks for the evidence
-behind its rules when the skill is used from a clone of this repo. Installed copies work without
-it: the rules stand on their own.
+`skills/<name>/` is the install unit: that is the whole directory `npx skills` copies. Every skill
+here is self-contained and reads nothing outside its own folder, so a skill behaves identically
+from a clone of this repo and from an installed copy.
+
+`research/` is the exception by design: it is in the repo for a human deciding whether to trust a
+rule, and nothing under `skills/` reads it. Delete the folder and every skill still works. It is
+written in Chinese; the operational rules are the English files under
+`skills/tech-diagrams/references/`.
 
 ## Adding a skill
 

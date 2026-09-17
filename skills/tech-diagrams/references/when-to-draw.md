@@ -1,6 +1,6 @@
 # When to draw (and when not to)
 
-Source: `research/TAXONOMY.md`. This is gate 0 of the workflow.
+This is gate 0 of the workflow.
 
 ## The ladder
 

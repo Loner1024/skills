@@ -1,3 +1,6 @@
+> 调研记录（中文）。本文件是决策依据与工具路线的原始稿，含一部分 skill 里**没有**编码的内容（如 §4 SVG / Mermaid / Excalidraw 的路线对比）。
+> 运行规则以 `skills/tech-diagrams/references/` 的英文版为准；两者冲突时以 references 为准。skill **不依赖本目录**。
+
 # 分类：何时画图、画哪种、怎么画
 
 本文件是 `tech-diagrams` skill 的决策依据，也是给人看的速查表。规则来源见 `FINDINGS.md`。

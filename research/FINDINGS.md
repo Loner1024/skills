@@ -1,3 +1,6 @@
+> 调研记录（中文）。这份笔记不做规范，只作出处：它记录的是这五家**实际怎么画**，以及每条结论的来源与实测数据。
+> `tech-diagrams` skill 的运行规则在 `skills/tech-diagrams/references/`，skill 本身**不依赖本目录**——本目录删掉不影响 skill 任何行为。
+
 # 优质技术图表调研：Linear / Cursor / Vercel / Anthropic / OpenAI
 
 调研日期：2026-09-15。目标是提炼"技术博客级"图表的**房屋规则（house rules）**，作为 `tech-diagrams` skill 的设计依据。
