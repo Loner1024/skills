@@ -1,0 +1,43 @@
+<svg role="img" aria-labelledby="sharded-title sharded-desc" viewBox="0 0 1100 320" width="1100" height="320"
+     xmlns="http://www.w3.org/2000/svg"
+     font-family="Inter, PingFang SC, Hiragino Sans, Heiti SC, Noto Sans CJK SC, sans-serif">
+  <title id="sharded-title">Sharded metadata lookup</title>
+  <desc id="sharded-desc">A request checks the edge cache, misses, and fetches one bounded 200 KB shard whose index is binary-searched for the path.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#9BA1A6"/>
+    </marker>
+    <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#5E6AD2"/>
+    </marker>
+  </defs>
+
+  <rect width="1100" height="320" fill="#0A0A0B"/>
+
+  <rect class="zone" x="88" y="88" width="456" height="152" rx="8" fill="#16181C" opacity=".55"/>
+  <text x="104" y="110" fill="#7C8389" font-size="11" font-family="Menlo, SF Mono, monospace"
+        letter-spacing="0.8">EDGE</text>
+
+  <path d="M 304 164 H 448" fill="none" stroke="#9BA1A6" stroke-width="1" marker-end="url(#arrow)"/>
+  <path d="M 632 164 H 776" fill="none" stroke="#5E6AD2" stroke-width="1" marker-end="url(#arrow-accent)"/>
+  <g class="edge-label">
+    <rect class="mask" x="328" y="144" width="96" height="16" rx="3" fill="#111214"/>
+    <text x="376" y="160" fill="#9BA1A6" font-size="11" text-anchor="middle">cache miss</text>
+  </g>
+
+  <g class="node">
+    <rect x="120" y="132" width="184" height="64" rx="8" fill="#111214" stroke="rgba(255,255,255,.08)"/>
+    <text x="136" y="158" fill="#EDEDF0" font-size="13" font-weight="500">Edge cache</text>
+    <text x="136" y="178" fill="#9BA1A6" font-size="11" font-family="Menlo, SF Mono, monospace">cache-hit</text>
+  </g>
+  <g class="node is-focal">
+    <rect x="448" y="132" width="184" height="64" rx="8" fill="#171A2B" stroke="#5E6AD2"/>
+    <text x="464" y="158" fill="#EDEDF0" font-size="13" font-weight="500">Shard lookup</text>
+    <text x="464" y="178" fill="#A7AEF8" font-size="11" font-family="Menlo, SF Mono, monospace">200 KB · O(log n)</text>
+  </g>
+  <g class="node">
+    <rect x="776" y="132" width="184" height="64" rx="8" fill="#111214" stroke="rgba(255,255,255,.08)"/>
+    <text x="792" y="158" fill="#EDEDF0" font-size="13" font-weight="500">Origin</text>
+    <text x="792" y="178" fill="#9BA1A6" font-size="11" font-family="Menlo, SF Mono, monospace">on cold miss</text>
+  </g>
+</svg>

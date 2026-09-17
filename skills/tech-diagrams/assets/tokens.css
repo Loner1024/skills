@@ -1,0 +1,118 @@
+/* tech-diagrams tokens. Inline this into the figure's <style> block.
+   Standalone SVG: copy the resolved values into attributes or a <style> block; never link.
+   Contrast-checked: every text token meets 4.5:1 on the canvas and on the node surface in both
+   registers (the light register carries two text steps - see the note next to --td-text-3). */
+
+:root,
+[data-register="dark"] {
+  --td-canvas: #0A0A0B;
+  --td-surface: #111214;
+  --td-surface-2: #16181C;
+  --td-hairline: rgba(255, 255, 255, 0.08);
+  --td-hairline-strong: rgba(255, 255, 255, 0.16);
+  --td-text: #EDEDF0;
+  --td-text-2: #9BA1A6;   /* 7.6:1 on canvas */
+  --td-text-3: #7C8389;   /* 5.2:1 on canvas, 4.9:1 on surface - axis ticks, metadata */
+  --td-accent: #5E6AD2;
+  --td-accent-soft: #171A2B;
+  --td-accent-text: #A7AEF8;  /* 8.3:1 on accent-soft */
+  --td-ok: #3FB950;
+  --td-warn: #D29922;
+  --td-err: #F85149;
+  --td-radius: 8px;
+}
+
+[data-register="light"] {
+  /* Vercel / Geist, measured from the Geist colour system (vercel.com/geist/colors).
+     No pure black or pure white: the canvas is Background 2, ink stops at gray-1000 (#171717).
+     Colour belongs to components - the focal node, a state dot, one accent connector - never to
+     the field, so the structure stays grey and the reader's eye lands where the argument is. */
+  --td-canvas: #FAFAFA;           /* Geist background-200 */
+  --td-surface: #F2F2F2;          /* Geist gray-100  - Color 1, component default background */
+  --td-surface-2: #EBEBEB;        /* Geist gray-200  - Color 2; at .55 over the canvas this
+                                     composites to #F2F2F2, the node tone, so a band reads as an
+                                     area of tone rather than as a box */
+  --td-hairline: #C9C9C9;         /* Geist gray-500  - Color 5. gray-400 (#EBEBEB), the UI default
+                                     border, is 1.06:1 on this canvas: without a shadow to imply
+                                     elevation a shadowless figure needs the visible step */
+  --td-hairline-strong: #A8A8A8;  /* Geist gray-600  - Color 6, axis and emphasised borders */
+  --td-text: #171717;             /* Geist gray-1000 - Color 10, primary. 17.2:1 on canvas */
+  --td-text-2: #4C4C4C;           /* Geist gray-900  - Color 9, secondary. 8.2:1 on canvas */
+  --td-text-3: #4C4C4C;           /* Geist gray-800 is 3.9:1, under AA at our 11px floor, so the
+                                     light register carries two text steps; the third tier is
+                                     carried by size, weight and case instead of tone */
+  --td-accent: #0072F5;           /* Geist blue-700  - the value Geist itself uses as focus-color.
+                                     4.3:1 on canvas: a mark and border colour, not small text */
+  --td-accent-soft: #F0F7FF;      /* Geist blue-100  - a coloured component's default background */
+  --td-accent-text: #0062D1;      /* Geist blue-800. 5.5:1 on canvas, 5.3:1 on accent-soft */
+  --td-ok: #297A3A;               /* Geist green-900; pair it with the green-100 fill #EFFBEF */
+  --td-warn: #A35200;             /* Geist amber-900; pair it with the amber-100 fill #FFF6E5 */
+  --td-err: #CB2A2F;              /* Geist red-900;   pair it with the red-100 fill #FFF0F0 */
+  --td-radius: 6px;               /* Geist's component radius */
+}
+
+:root {
+  --td-font-sans: Inter, "Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --td-font-mono: Menlo, "SF Mono", SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  --td-font-cjk: "PingFang SC", "Hiragino Sans", "Heiti SC", "Noto Sans CJK SC", sans-serif;
+  --td-grid: 4px;
+}
+
+/* ---- page scaffolding (HTML preview only) ---- */
+
+body.td-page {
+  margin: 0;
+  padding: 40px 24px;
+  background: var(--td-canvas);
+  color: var(--td-text);
+  font-family: var(--td-font-sans);
+}
+
+.td-figure { max-width: 1120px; margin: 0 auto; }
+
+.td-title {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.td-deck {
+  margin: 0 0 24px;
+  font-size: 13px;
+  color: var(--td-text-2);
+  max-width: 68ch;
+}
+
+.td-svg { display: block; width: 100%; height: auto; border-radius: var(--td-radius); }
+
+.td-caption {
+  margin: 16px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--td-text-2);
+  max-width: 78ch;
+}
+
+.td-caption code { font-family: var(--td-font-mono); font-size: 11px; }
+
+/* ---- svg-side helpers, usable when the SVG is inline ---- */
+
+.td-node rect { fill: var(--td-surface); stroke: var(--td-hairline); }
+.td-node.is-focal rect { fill: var(--td-accent-soft); stroke: var(--td-accent); }
+.td-node.is-external rect { stroke-dasharray: 4 3; }
+.td-zone { fill: var(--td-surface-2); opacity: 0.55; }
+.td-zone-label { fill: var(--td-text-3); font-family: var(--td-font-mono); font-size: 11px; letter-spacing: 0.08em; }
+.td-edge-label text { fill: var(--td-text-2); font-size: 11px; }
+/* A mask over bare canvas. Over a zone band the mask must take the band's composited tone instead
+   (dark #111214, light #F2F2F2), or it paints a visible patch - see references/primitives.md. */
+.td-edge-label .mask { fill: var(--td-canvas); }
+
+/* No `@media print` override: forcing a white page behind the register's own ink is what made a
+   dark-register title print invisible, and it put a pure white into a light palette that has none.
+   The canvas token is already the right page colour in either register. */
+
+@media (prefers-reduced-motion: reduce) {
+  .td-svg * { animation: none !important; transition: none !important; }
+}

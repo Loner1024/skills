@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en" data-register="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Indexed shards cut p99 lookup latency by 91% — figure preview</title>
+<style>
+  :root {
+    --td-canvas:#0A0A0B; --td-text:#EDEDF0; --td-text-2:#9BA1A6; --td-text-3:#7C8389;
+    --td-font-sans: Inter, "Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    --td-font-mono: Menlo, "SF Mono", SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  }
+  body { margin:0; padding:40px 24px; background:var(--td-canvas); color:var(--td-text); font-family:var(--td-font-sans); }
+  .td-figure { max-width:760px; margin:0 auto; --td-figure-inset:2.8%; }
+  .td-title { margin:0 0 4px; font-size:20px; font-weight:600; letter-spacing:-.01em; }
+  .td-deck { margin:0 0 24px; font-size:13px; color:var(--td-text-2); max-width:68ch; }
+  .td-svg { display:block; width:100%; height:auto; border-radius:8px; }
+  .td-caption { margin:16px 0 0; font-size:12px; line-height:1.5; color:var(--td-text-2); max-width:68ch; }
+  /* Align the page text with the chart's tick labels (3% of 760 = ~23px), the figure's visible
+     left edge, rather than with the invisible canvas box. */
+  .td-title, .td-deck, .td-caption { margin-left: var(--td-figure-inset); }
+  @media print { body { background:#fff; } }
+</style>
+</head>
+<body>
+<!-- EXAMPLE (data family). The chart title is the claim; the footnote carries the measurement window. -->
+<figure class="td-figure">
+  <h1 class="td-title">Indexed shards cut p99 lookup latency by 91%</h1>
+  <p class="td-deck">Same production traffic, same 24 h window; only the metadata format changed.</p>
+
+  <svg class="td-svg" role="img" aria-labelledby="bars-title bars-desc" viewBox="0 0 720 360"
+       width="720" height="360" xmlns="http://www.w3.org/2000/svg"
+       font-family="Inter, PingFang SC, Hiragino Sans, Heiti SC, Noto Sans CJK SC, sans-serif">
+    <title id="bars-title">Indexed shards cut p99 lookup latency by 91%</title>
+    <desc id="bars-desc">Two bars compare p99 metadata lookup latency: 215.8 milliseconds before, and 19.1 milliseconds after routing began fetching indexed shards.</desc>
+
+    <rect width="720" height="360" fill="#0A0A0B"/>
+
+    <text x="48" y="44" fill="#EDEDF0" font-size="14" font-weight="500">p99 metadata lookup latency, before vs after</text>
+
+    <line x1="48" y1="96" x2="688" y2="96" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+    <line x1="48" y1="196" x2="688" y2="196" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+    <line x1="48" y1="296" x2="688" y2="296" stroke="#7C8389" stroke-width="1"/>
+
+    <text x="40" y="100" fill="#7C8389" font-size="11" text-anchor="end">200</text>
+    <text x="40" y="200" fill="#7C8389" font-size="11" text-anchor="end">100</text>
+    <text x="40" y="300" fill="#7C8389" font-size="11" text-anchor="end">0</text>
+    <text x="40" y="64" fill="#7C8389" font-size="11" text-anchor="end">ms</text>
+
+    <rect x="240" y="80" width="88" height="216" rx="4" fill="#2A2D34"/>
+    <text x="284" y="68" fill="#9BA1A6" font-size="11" text-anchor="middle">215.8 ms</text>
+    <text x="284" y="320" fill="#9BA1A6" font-size="11" text-anchor="middle">per-path metadata</text>
+
+    <rect x="408" y="276" width="88" height="20" rx="4" fill="#5E6AD2"/>
+    <text x="452" y="264" fill="#A7AEF8" font-size="11" text-anchor="middle">19.1 ms</text>
+    <text x="452" y="320" fill="#9BA1A6" font-size="11" text-anchor="middle">indexed shards</text>
+
+    <text x="48" y="340" fill="#7C8389" font-size="11">Measured on production traffic over the same 24 h window.</text>
+  </svg>
+
+  <figcaption class="td-caption">
+    p99 metadata lookup latency fell from 215.8 ms to 19.1 ms once routing fetched indexed shards
+    instead of one object per path; both series are measured over the same 24-hour window. The
+    chart does not show the shard-size trade-off that set the 200 KB bound.
+  </figcaption>
+</figure>
+</body>
+</html>

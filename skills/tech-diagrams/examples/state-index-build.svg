@@ -1,0 +1,69 @@
+<svg role="img" aria-labelledby="state-title state-desc" viewBox="0 0 880 304" width="880" height="304"
+     xmlns="http://www.w3.org/2000/svg"
+     font-family="Inter, PingFang SC, Hiragino Sans, Heiti SC, Noto Sans CJK SC, sans-serif">
+  <title id="state-title">Index build states and their transitions</title>
+  <desc id="state-desc">An index moves from cold to building, then to serving; a new commit sends it back to building, and a parse failure ends it in a terminal failed state.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#9BA1A6"/>
+    </marker>
+    <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#5E6AD2"/>
+    </marker>
+  </defs>
+
+  <rect width="880" height="304" fill="#0A0A0B"/>
+
+  <!-- initial state marker -->
+  <circle cx="48" cy="64" r="8" fill="#9BA1A6"/>
+  <line x1="56" y1="64" x2="88" y2="64" stroke="#9BA1A6" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <!-- transitions, drawn before the states -->
+  <line x1="240" y1="64" x2="328" y2="64" stroke="#9BA1A6" stroke-width="1" marker-end="url(#arrow)"/>
+  <text x="280" y="56" fill="#9BA1A6" font-size="11" font-family="Menlo, SF Mono, monospace"
+        text-anchor="middle">reindex</text>
+
+  <line x1="504" y1="64" x2="600" y2="64" stroke="#5E6AD2" stroke-width="1"
+        marker-end="url(#arrow-accent)"/>
+  <text x="548" y="56" fill="#9BA1A6" font-size="11" font-family="Menlo, SF Mono, monospace"
+        text-anchor="middle">index ready</text>
+
+  <line x1="400" y1="96" x2="400" y2="192" stroke="#9BA1A6" stroke-width="1" marker-end="url(#arrow)"/>
+  <text x="416" y="144" fill="#9BA1A6" font-size="11">parse error</text>
+
+  <path d="M 704 96 V 128 Q 704 136 696 136 H 480 Q 472 136 472 128 V 96" fill="none"
+        stroke="#9BA1A6" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+  <g class="edge-label">
+    <rect class="mask" x="536" y="124" width="104" height="24" rx="3" fill="#0A0A0B"/>
+    <text x="588" y="140" fill="#9BA1A6" font-size="11" font-family="Menlo, SF Mono, monospace"
+          text-anchor="middle">new commit</text>
+  </g>
+
+  <!-- states -->
+  <g class="node">
+    <rect x="88" y="32" width="152" height="64" rx="8" fill="#111214" stroke="rgba(255,255,255,.08)"/>
+    <text x="104" y="58" fill="#EDEDF0" font-size="13" font-weight="500">Cold</text>
+    <text x="104" y="78" fill="#9BA1A6" font-size="11" font-family="Menlo, SF Mono, monospace">no index</text>
+  </g>
+
+  <g class="node is-focal">
+    <rect x="328" y="32" width="176" height="64" rx="8" fill="#171A2B" stroke="#5E6AD2"/>
+    <text x="344" y="58" fill="#EDEDF0" font-size="13" font-weight="500">Building</text>
+    <text x="344" y="78" fill="#A7AEF8" font-size="11" font-family="Menlo, SF Mono, monospace">streaming shards</text>
+  </g>
+
+  <g class="node">
+    <rect x="600" y="32" width="176" height="64" rx="8" fill="#111214" stroke="rgba(255,255,255,.08)"/>
+    <text x="616" y="58" fill="#EDEDF0" font-size="13" font-weight="500">Serving</text>
+    <text x="616" y="78" fill="#9BA1A6" font-size="11" font-family="Menlo, SF Mono, monospace">index resident</text>
+  </g>
+
+  <g class="node">
+    <rect x="328" y="192" width="176" height="56" rx="8" fill="#111214" stroke="rgba(255,255,255,.16)"/>
+    <rect x="332" y="196" width="168" height="48" rx="6" fill="none" stroke="rgba(255,255,255,.08)"/>
+    <text x="344" y="214" fill="#EDEDF0" font-size="13" font-weight="500">Failed</text>
+    <text x="344" y="234" fill="#9BA1A6" font-size="11" font-family="Menlo, SF Mono, monospace">parse error</text>
+  </g>
+
+  <text x="32" y="276" fill="#7C8389" font-size="11">Double border = terminal state; a rebuild after a new commit re-enters building.</text>
+</svg>

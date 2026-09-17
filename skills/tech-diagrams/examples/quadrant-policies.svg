@@ -1,0 +1,35 @@
+<svg role="img" aria-labelledby="quad-title quad-desc" viewBox="0 0 720 420" width="720" height="420"
+     xmlns="http://www.w3.org/2000/svg"
+     font-family="Inter, PingFang SC, Hiragino Sans, Heiti SC, Noto Sans CJK SC, sans-serif">
+  <title id="quad-title">Routing policies: answer quality against serving cost</title>
+  <desc id="quad-desc">Four routing policies plotted on quality and cost; the shipped hybrid router sits in the higher-quality, lower-cost quadrant relative to the frontier baseline.</desc>
+  <rect width="720" height="420" fill="#0A0A0B"/>
+
+  <!-- preferred quadrant takes a soft accent wash, never a loud fill -->
+  <rect x="360" y="72" width="240" height="140" fill="#5E6AD2" opacity=".08"/>
+
+  <line x1="120" y1="72" x2="120" y2="352" stroke="#7C8389" stroke-width="1"/>
+  <line x1="120" y1="352" x2="600" y2="352" stroke="#7C8389" stroke-width="1"/>
+  <line x1="360" y1="72" x2="360" y2="352" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+  <line x1="120" y1="212" x2="600" y2="212" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+
+  <text x="120" y="376" fill="#7C8389" font-size="11">lower cost</text>
+  <text x="600" y="376" fill="#7C8389" font-size="11" text-anchor="end">higher cost</text>
+  <text x="112" y="80" fill="#7C8389" font-size="11" text-anchor="end">better</text>
+  <text x="112" y="348" fill="#7C8389" font-size="11" text-anchor="end">worse</text>
+  <text x="376" y="96" fill="#7C8389" font-size="11">higher quality, lower cost</text>
+
+  <circle cx="204" cy="240" r="4" fill="#9BA1A6"/>
+  <text x="216" y="244" fill="#9BA1A6" font-size="11">cached rules</text>
+
+  <circle cx="276" cy="284" r="4" fill="#9BA1A6"/>
+  <text x="288" y="288" fill="#9BA1A6" font-size="11">small model</text>
+
+  <circle cx="540" cy="180" r="4" fill="#9BA1A6"/>
+  <text x="552" y="184" fill="#9BA1A6" font-size="11">frontier model</text>
+
+  <circle cx="456" cy="132" r="6" fill="#5E6AD2"/>
+  <text x="470" y="136" fill="#EDEDF0" font-size="11">hybrid router</text>
+
+  <text x="120" y="400" fill="#7C8389" font-size="11">Relative to the frontier baseline; both axes are illustrative, not measured.</text>
+</svg>

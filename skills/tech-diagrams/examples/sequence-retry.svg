@@ -1,0 +1,72 @@
+<svg role="img" aria-labelledby="seq-title seq-desc" viewBox="0 0 640 400" width="640" height="400"
+     xmlns="http://www.w3.org/2000/svg"
+     font-family="Inter, PingFang SC, Hiragino Sans, Heiti SC, Noto Sans CJK SC, sans-serif">
+  <title id="seq-title">Cache miss exchange between client, edge and origin</title>
+  <desc id="seq-desc">A client sends GET /meta to the edge, which misses, fetches one shard from the origin, returns 200 in 19.1 ms, and retries its own index lookup while the attempt count stays under three.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#9BA1A6"/>
+    </marker>
+    <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#5E6AD2"/>
+    </marker>
+  </defs>
+
+  <rect width="640" height="400" fill="#0A0A0B"/>
+
+  <!-- lifelines -->
+  <line x1="120" y1="80" x2="120" y2="344" stroke="#7C8389" stroke-width="1" stroke-dasharray="4 4"/>
+  <line x1="320" y1="80" x2="320" y2="344" stroke="#7C8389" stroke-width="1" stroke-dasharray="4 4"/>
+  <line x1="520" y1="80" x2="520" y2="344" stroke="#7C8389" stroke-width="1" stroke-dasharray="4 4"/>
+
+  <!-- messages, drawn before the headers so nothing overlaps a box -->
+  <line x1="120" y1="128" x2="312" y2="128" stroke="#9BA1A6" stroke-width="1" marker-end="url(#arrow)"/>
+  <text x="216" y="120" fill="#9BA1A6" font-size="11" font-family="Menlo, SF Mono, monospace"
+        text-anchor="middle">GET /meta</text>
+
+  <line x1="320" y1="168" x2="512" y2="168" stroke="#5E6AD2" stroke-width="1"
+        marker-end="url(#arrow-accent)"/>
+  <text x="416" y="160" fill="#9BA1A6" font-size="11" font-family="Menlo, SF Mono, monospace"
+        text-anchor="middle">GET /shard/7</text>
+
+  <line x1="520" y1="208" x2="328" y2="208" stroke="#7C8389" stroke-width="1"
+        stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+  <text x="424" y="200" fill="#9BA1A6" font-size="11" font-family="Menlo, SF Mono, monospace"
+        text-anchor="middle">200 · 12 KB</text>
+
+  <line x1="320" y1="248" x2="128" y2="248" stroke="#7C8389" stroke-width="1"
+        stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+  <text x="224" y="240" fill="#9BA1A6" font-size="11" font-family="Menlo, SF Mono, monospace"
+        text-anchor="middle">200 · 19.1 ms</text>
+
+  <!-- self-call: the edge retries its own lookup -->
+  <path d="M 320 288 H 408 V 336 H 328" fill="none" stroke="#9BA1A6" stroke-width="1"
+        stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+  <g class="edge-label">
+    <rect class="mask" x="328" y="304" width="72" height="24" rx="3" fill="#0A0A0B"/>
+    <text x="364" y="320" fill="#9BA1A6" font-size="11" font-family="Menlo, SF Mono, monospace"
+          text-anchor="middle">retry &lt; 3</text>
+  </g>
+
+  <!-- actor headers -->
+  <g class="node">
+    <rect x="48" y="32" width="144" height="48" rx="8" fill="#111214" stroke="rgba(255,255,255,.08)"/>
+    <text x="120" y="52" fill="#EDEDF0" font-size="13" font-weight="500" text-anchor="middle">Client</text>
+    <text x="120" y="68" fill="#9BA1A6" font-size="11" font-family="Menlo, SF Mono, monospace"
+          text-anchor="middle">browser</text>
+  </g>
+  <g class="node is-focal">
+    <rect x="248" y="32" width="144" height="48" rx="8" fill="#171A2B" stroke="#5E6AD2"/>
+    <text x="320" y="52" fill="#EDEDF0" font-size="13" font-weight="500" text-anchor="middle">Edge</text>
+    <text x="320" y="68" fill="#A7AEF8" font-size="11" font-family="Menlo, SF Mono, monospace"
+          text-anchor="middle">edge-runtime</text>
+  </g>
+  <g class="node">
+    <rect x="448" y="32" width="144" height="48" rx="8" fill="#111214" stroke="rgba(255,255,255,.08)"/>
+    <text x="520" y="52" fill="#EDEDF0" font-size="13" font-weight="500" text-anchor="middle">Origin</text>
+    <text x="520" y="68" fill="#9BA1A6" font-size="11" font-family="Menlo, SF Mono, monospace"
+          text-anchor="middle">object store</text>
+  </g>
+
+  <text x="32" y="380" fill="#7C8389" font-size="11">Dashed = return or control. The origin is contacted only on a miss.</text>
+</svg>

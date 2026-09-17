@@ -1,0 +1,28 @@
+<svg role="img" aria-labelledby="term-title term-desc" viewBox="0 0 720 276" width="720" height="276"
+     xmlns="http://www.w3.org/2000/svg"
+     font-family="Inter, PingFang SC, Hiragino Sans, Heiti SC, Noto Sans CJK SC, sans-serif">
+  <title id="term-title">Rendering and linting a figure from the command line</title>
+  <desc id="term-desc">A terminal session runs the render script, which reports a 2200x640 PNG over a near-black background with 4.01% content coverage, then runs the linter, which reports three nodes, two edges, one focal element, eight labels and no warnings.</desc>
+  <rect width="720" height="276" fill="#0A0A0B"/>
+
+  <g class="frame">
+    <rect x="24" y="24" width="672" height="228" rx="8" fill="#111214" stroke="rgba(255,255,255,.08)"/>
+    <line x1="24" y1="56" x2="696" y2="56" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+    <circle cx="44" cy="40" r="5" fill="#F85149" opacity=".5"/>
+    <circle cx="60" cy="40" r="5" fill="#D29922" opacity=".5"/>
+    <circle cx="76" cy="40" r="5" fill="#3FB950" opacity=".5"/>
+    <text x="360" y="44" fill="#9BA1A6" font-size="11" text-anchor="middle"
+          font-family="Menlo, SF Mono, monospace">index-build - zsh</text>
+  </g>
+
+  <g font-family="Menlo, SF Mono, monospace" font-size="12">
+    <text x="44" y="84" fill="#7C8389">$ <tspan fill="#EDEDF0">./scripts/render.sh examples/sharded-lookup.svg --scale 2</tspan></text>
+    <text x="44" y="106" fill="#9BA1A6">sharded-lookup.png 2200x640</text>
+    <text x="44" y="128" fill="#9BA1A6">background=#0A0A0B content=4.01%</text>
+    <text x="44" y="150" fill="#9BA1A6">wrote examples/sharded-lookup.png</text>
+    <text x="44" y="178" fill="#7C8389">$ <tspan fill="#EDEDF0">python3 scripts/self_check.py examples/sharded-lookup.svg</tspan></text>
+    <text x="44" y="200" fill="#3FB950">OK<tspan fill="#9BA1A6">  examples/sharded-lookup.svg: 3 nodes · 2 edges · 1 focal · 8 labels · 0 warnings</tspan></text>
+    <text x="44" y="228" fill="#7C8389">$</text>
+    <rect x="56" y="220" width="8" height="16" fill="#EDEDF0" opacity=".8"/>
+  </g>
+</svg>
