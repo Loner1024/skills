@@ -20,7 +20,8 @@ Turn a technical claim into a figure a reader understands faster than prose, at 
 of the Linear / Cursor / Vercel / Anthropic / OpenAI engineering blogs. These rules are the
 distilled result of a close reading of those five; this skill is self-contained and needs nothing
 outside its own folder. The per-company evidence behind a rule, if you want to check one against
-its source, is published at `https://github.com/Loner1024/skills` (`research/FINDINGS.md`).
+its source, is published separately from this skill at
+`https://github.com/Loner1024/skills/tree/main/research`.
 
 ## What you deliver
 
