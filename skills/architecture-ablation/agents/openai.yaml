@@ -1,0 +1,23 @@
+interface:
+  display_name: "Architecture Ablation"
+  short_description: "Strip over-engineering by removing or replacing architecture mechanisms and verifying each change against a baseline"
+  triggers:
+    - "architecture design"
+    - "architecture choice"
+    - "simplify the system"
+    - "over-engineered"
+    - "do we need to introduce this"
+    - "is this service/cache/queue necessary"
+    - "架构设计"
+    - "架构选型"
+    - "系统简化"
+    - "过度设计"
+    - "要不要引入"
+    - "这个服务/缓存/队列有必要吗"
+  not_triggers:
+    - "code refactoring"
+    - "function extraction"
+    - "ML ablation"
+    - "代码重构"
+    - "函数提取"
+    - "ML 消融"

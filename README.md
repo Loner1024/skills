@@ -40,6 +40,7 @@ Update later with `npx skills update -g`, and remove with `npx skills remove <sk
 | Skill | What it does | Requirements |
 | --- | --- | --- |
 | [`tech-diagrams`](skills/tech-diagrams) | Draws publication-quality technical figures as hand-authored SVG plus a self-contained HTML preview, and lints them before delivering. 14 figure types, from architecture topology to sequence, state machine, benchmark bars, and terminal window frames. Also decides **when not to draw**. | `python3`, `rsvg-convert`, Chrome/Chromium (for HTML previews) |
+| [`architecture-ablation`](skills/architecture-ablation) | Tests whether a component, layer, or mechanism earns its place by removing or replacing it and comparing the result against a baseline. Turns "is this abstraction doing anything?" into a decision backed by evidence you can recheck. | none |
 
 ## tech-diagrams
 
@@ -108,6 +109,37 @@ The linter checks what can be checked. Visual taste, line weight, and whether th
 persuades still need a human eye on the PNG. If the agent cannot view images in a session, it says
 so and hands you the render for the final look.
 
+## architecture-ablation
+
+Ask an agent "do we need this queue?" and you usually get an opinion. This skill makes it produce a
+comparison instead: fix the constraints that must survive, remove or replace one mechanism at a
+time, and attribute the result to evidence with a label.
+
+It forces a few things that arguments usually skip:
+
+- **A baseline before any removal.** The constraints, the critical call paths, and the state
+  ownership of the original design get written down first. If the baseline already fails in the
+  scenario at issue, that is recorded as a failure — "both variants fail" is not a passing
+  simplification.
+- **Assumptions in a fixed shape**, so they can be tracked: `[assumption] <statement> → if false, it
+  affects <which conclusion>`.
+- **Evidence labels instead of confident prose.** Every claim is `measured`, `design walkthrough`,
+  or `unverified`, and an expected result is never written as though it had already passed.
+- **Four decisions, not two**: remove or replace, keep, defer, or unverified. A "keep" has to name
+  the scenario that fails without the mechanism; a "defer" has to name the observable condition that
+  brings it back.
+- **Individually passing removals are not a jointly passing removal.** Mechanisms with overlapping
+  responsibility get re-verified as a combination.
+- **Complexity that moved is not complexity that left.** The final check is whether it landed in
+  callers, the operations process, or another copy of state.
+
+The user's goal is a constraint, not a variable: the skill may name what a fixed stack or boundary
+costs, but it cannot reach a simpler design by changing what the user asked for. Local refactoring
+and ML model ablation are explicitly out of scope.
+
+It delivers the recommendation plus the evidence to recheck it, and folds a single decision into an
+existing design doc or ADR rather than generating a duplicate report.
+
 ## Repository layout
 
 ```
@@ -121,6 +153,9 @@ skills/
     assets/                      tokens.css + dark and light starting templates
     scripts/                     render.sh · self_check.py · lint_docs.py
     examples/                    seven finished figures across the four type families
+  architecture-ablation/
+    SKILL.md                     entry point: baseline, ablation loop, decision table
+    agents/openai.yaml           interface metadata: display name, triggers, not-triggers
 ```
 
 `skills/<name>/` is the install unit: that is the whole directory `npx skills` copies. Every skill
