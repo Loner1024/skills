@@ -41,6 +41,7 @@ Update later with `npx skills update -g`, and remove with `npx skills remove <sk
 | --- | --- | --- |
 | [`tech-diagrams`](skills/tech-diagrams) | Draws publication-quality technical figures as hand-authored SVG plus a self-contained HTML preview, and lints them before delivering. 14 figure types, from architecture topology to sequence, state machine, benchmark bars, and terminal window frames. Also decides **when not to draw**. | `python3`, `rsvg-convert`, Chrome/Chromium (for HTML previews) |
 | [`architecture-ablation`](skills/architecture-ablation) | Tests whether a component, layer, or mechanism earns its place by removing or replacing it and comparing the result against a baseline. Turns "is this abstraction doing anything?" into a decision backed by evidence you can recheck. | none |
+| [`external-agent-handoff`](skills/external-agent-handoff) | Packs a task into a handoff document and a copy-ready prompt for an external agent the user forwards, then checks the returned work against the acceptance criteria. The current agent does not call the external agent. | none |
 
 ## tech-diagrams
 
@@ -140,6 +141,24 @@ and ML model ablation are explicitly out of scope.
 It delivers the recommendation plus the evidence to recheck it, and folds a single decision into an
 existing design doc or ADR rather than generating a duplicate report.
 
+## external-agent-handoff
+
+When the work should run on another agent, this skill keeps the current one from doing that job
+itself or calling the other agent. It writes the plan and the checks first, then a document and a
+prompt the user can forward unchanged.
+
+It forces a few things that a loose "here, send this" usually skips:
+
+- **A document the other agent can execute without this conversation.** Goal, start state, write
+  scope, deliverables, and one observable check per acceptance item.
+- **A prompt with nothing left to fill in.** If the other agent can open the document, the prompt
+  points at it. Otherwise the prompt carries the instructions.
+- **A stop after the handoff.** Status stays "waiting for external execution and return" until the
+  user brings a result.
+- **Acceptance against artifacts.** A missing file is unfinished. Each criterion gets a verdict
+  from a check the current agent runs. A failure is fixed and rechecked, or sent back as a
+  revision prompt.
+
 ## Repository layout
 
 ```
@@ -155,6 +174,9 @@ skills/
     examples/                    seven finished figures across the four type families
   architecture-ablation/
     SKILL.md                     entry point: baseline, ablation loop, decision table
+    agents/openai.yaml           interface metadata: display name, triggers, not-triggers
+  external-agent-handoff/
+    SKILL.md                     entry point: handoff document, forward prompt, acceptance
     agents/openai.yaml           interface metadata: display name, triggers, not-triggers
 ```
 

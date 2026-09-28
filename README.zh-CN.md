@@ -41,6 +41,7 @@ npx skills use Loner1024/skills@tech-diagrams | claude
 | --- | --- | --- |
 | [`tech-diagrams`](skills/tech-diagrams) | 产出可发布级技术图表：手写 SVG 加自包含 HTML 预览，交付前自动 lint。覆盖 14 类图，从架构拓扑到序列图、状态机、基准条形、终端窗口框架。同时决定**什么时候不该画图**。 | `python3`、`rsvg-convert`、Chrome/Chromium（渲染 HTML 预览用） |
 | [`architecture-ablation`](skills/architecture-ablation) | 通过移除或替换某个组件、层次或机制，并和基线对照，检验它到底贡献了什么。把"这层抽象是不是多余的"变成一个可以复核的证据结论。 | 无 |
+| [`external-agent-handoff`](skills/external-agent-handoff) | 把任务收成交接文档和一份可直接转发的 prompt，交给外部 agent 执行；用户带回结果后，再按验收标准逐项检查。当前 agent 不调用外部 agent。 | 无 |
 
 ## tech-diagrams
 
@@ -122,6 +123,18 @@ linter 只查能查的部分。视觉手感、线宽、这张图到底有没有�
 
 交付的是推荐方案加可复核的证据；单项决策建议直接融进现有设计文档或 ADR，不另生成重复报告。
 
+## external-agent-handoff
+
+工作该交给另一个 agent 时，这个 skill 让当前 agent 停在打包和验收上，自己既不把活做完，也不去调用那个
+agent。它先写好方案和检查项，再给出一份文档和一段用户可以原样转发的 prompt。
+
+它强制了几件随口说「你转发一下」时通常会漏掉的动作：
+
+- **文档必须让对方脱离这段对话也能开工。** 目标、起始状态、可写范围、交付物，以及每条验收项对应的可观察检查。
+- **prompt 里不留待填空。** 对方能打开文档时，prompt 只指向文档路径；否则把执行内容写进 prompt。
+- **交出后停下。** 状态保持为等待外部执行和回传，直到用户带回结果。
+- **对照产物验收。** 缺文件的项记为未完成。每条标准都要有当前 agent 自己跑过的结论。失败项要么修好再验，要么写成修订 prompt 送回去。
+
 ## 仓库结构
 
 ```
@@ -137,6 +150,9 @@ skills/
     examples/                    七张成品图，覆盖四个内容族
   architecture-ablation/
     SKILL.md                     入口：基线、消融循环、决策表
+    agents/openai.yaml           界面元数据：显示名、触发词、不触发词
+  external-agent-handoff/
+    SKILL.md                     入口：交接文档、转发 prompt、验收
     agents/openai.yaml           界面元数据：显示名、触发词、不触发词
 ```
 

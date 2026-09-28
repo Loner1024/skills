@@ -1,0 +1,14 @@
+interface:
+  display_name: "External Agent Handoff"
+  short_description: "Pack a task for an external agent the user forwards, then accept the result against stated criteria"
+  triggers:
+    - "external agent"
+    - "handoff"
+    - "forward this prompt"
+    - "外部 agent"
+    - "交接"
+    - "转发 prompt"
+  not_triggers:
+    - "call a subagent"
+    - "run it yourself"
+    - "直接做"
