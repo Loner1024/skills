@@ -83,10 +83,21 @@ images in this session, say so and hand the rendered PNG to the user for the fin
 
 ## Hard rules (non-negotiable)
 
-- One accent colour, at most two focal elements. Everything else is hairline + neutral text.
-- A comparison between two to four parallel items (paths, lanes, options, series) may give each item
-  its own hue instead: 100-step fill, stroke at the lightest step clearing 3:1, grey for what they
-  share. The accent then drops to the point they all land on, or leaves.
+- Colour has three jobs and nothing else carries it: the **accent** (attention - the focal element
+  and its path; at most two focal elements), **identity tints** (which of two or three parallel
+  items a thing belongs to: a zone, a lane, an actor, a series, an option), and **state**
+  (ok / warn / err, always paired with a mark or a word). Fills stay pale; saturation belongs to
+  the accent, to tint lines, and to state marks.
+- An identity tint is a hue family with four steps - fill, hairline, line, text - and each step has
+  one place to go: the tinted area takes the fill, a component on that area keeps the surface fill
+  and takes the hairline, a wire or bar that carries the tint takes the line, and a label inside it
+  takes the text. Assign hues in reading order (1 teal, 2 violet, 3 amber), except that the scope
+  holding the focal element takes teal - violet is the tint nearest the accent's hue and would
+  compete with it. A tint is a second carrier, never the only one: the band and its label still say
+  the scope. Anything shared or unassigned stays neutral, and so does everything else - text,
+  hairlines, wires, ungrouped components.
+- When the tints are the argument (parallel options, chart series) rather than the scope, the
+  accent narrows to the point they share, or leaves.
 - No decorative gradients, glows, blobs, glass, drop shadows, or textured backgrounds.
 - Orthogonal connectors only, 8px corner radius; no diagonals, no shared or overlapping paths.
 - Both ends of an arrow land on something visible: the tail on its source's edge, the head on its
@@ -118,8 +129,9 @@ images in this session, say so and hand the rendered PNG to the user for the fin
 - `scripts/self_check.py` - lint one figure (structure, budget, geometry, connector ports, labels,
   contrast); add `--png <render>` to also check the raster.
 - `scripts/lint_docs.py` - lint the SVG snippets inside these reference files.
-- `examples/` - seven finished figures spanning the four type families and the window frame, each
-  passing the checks.
+- `examples/` - eight finished figures spanning the four type families and the window frame, each
+  passing the checks. `tikv-architecture` is the light-register reference: three hue-coded zones,
+  white components on tinted bands, one accent path.
 
 ## What not to do
 

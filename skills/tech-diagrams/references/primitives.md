@@ -46,10 +46,15 @@ optional, asynchronous, or return.
 </g>
 ```
 
-Focal node: `fill="#171A2B" stroke="#5E6AD2"` and the sublabel in `#A7AEF8`. Only 1-2 per figure.
-Store node: add a 3px accent bar on the left edge, or two hairlines near the top to hint at a
-cylinder - do not draw a full 3D cylinder. External node: dashed hairline border. Optional /
-async node: `stroke-dasharray="4 3"`.
+Focal node: `fill="#171A2B" stroke="#5E6AD2"` and the sublabel in `#A7AEF8`; in the light register
+`fill="#EFF6FF" stroke="#155DFC"` with the sublabel in `#193CB8`. Only 1-2 per figure.
+A component that belongs to a tinted zone keeps the surface fill and takes the tint's hairline
+instead of the neutral one: light `stroke="#46ECD5"` (teal) / `#C4B4FF` (violet) / `#FFD230`
+(amber) on `#FFFFFF`; dark keeps the neutral hairline, because its components separate from a
+tinted band by fill.
+Store node: add a 4px accent bar on the left edge (on the grid), or two hairlines near the top to
+hint at a cylinder - do not draw a full 3D cylinder. External node: dashed hairline border.
+Optional / async node: `stroke-dasharray="4 3"`.
 
 ## Orthogonal connector with an 8px fillet
 
@@ -114,11 +119,12 @@ that stroke: leave the ink alone, or swallow it whole. Anything in between is a 
   the middle reads as damage: the wire looks broken, not labelled.
 - **Take the tone of what is behind you.** A mask is an opaque rect: it is invisible over a bare
   canvas, and a visible patch over anything tinted (a zone band, a node fill). Measure the backdrop
-  and give the mask that value - the canvas, or the band composited over it: `#111214` for the dark
-  zone, `#F2F2F2` for the light one (`gray-200` at .55 over the `#FAFAFA` canvas). The light
-  register exposes this first, because its whole scale sits between 90% and 98% lightness: a mask
-  that keeps the canvas colour while sitting on a band is off by 8 levels, and 8 levels read as a
-  grey box around the words. The linter warns as `mask-tone`.
+  and give the mask that value - the canvas, or the band's own fill: `#111214` for the dark zone,
+  `#F1F5F9` for a light neutral band, and the band's tint fill (`#CBFBF1` / `#EDE9FE` / `#FEF3C6`)
+  when the band is hue-coded. The light register exposes this first, because its whole scale sits
+  between 90% and 98% lightness: a mask that keeps the canvas colour while sitting on a band is off
+  by a few levels, and a few levels read as a grey box around the words. The linter warns as
+  `mask-tone`.
 - A mask edge *inside* the ink band shaves the stroke to half thickness under the glyphs. The
   linter reports all three of these as `label-cut`.
 - Cutting a dashed stroke restarts its dash cadence on both sides, so the run has to be long enough
@@ -139,7 +145,10 @@ that stroke: leave the ink alone, or swallow it whole. Anything in between is a 
 ```
 
 Zone tags are uppercase 11px mono. Use a zone instead of nested cards; never nest cards inside
-cards.
+cards. In the light register a band is **opaque**: `#F1F5F9` when it is neutral, or the tint's fill
+when it is hue-coded - `#CBFBF1` / `#EDE9FE` / `#FEF3C6` with the label in that tint's text step
+(`#0B4F4A` / `#4D179A` / `#7B3306`). Components on a hue-coded band keep the white surface fill and
+take the tint's hairline; that is what makes the band read as scope rather than as decoration.
 
 ## Decision node
 
@@ -166,8 +175,10 @@ Draw the return path as a curved arc above or below the row, label the condition
   within 8px of the edge reads as a mistake even when nothing is clipped, and the `--png` render
   check reports it (`edge`).
 - Gridlines: horizontal only, `rgba(255,255,255,.06)`, never bolder than the baseline.
-- Series: series 1 = `#5E6AD2` (accent), series 2 = `#9BA1A6`, series 3 = `#7C8389`; more than
-  three series means the chart wants a different form (small multiples or a table).
+- Series: the series the caption is about takes the accent and the others stay neutral; when no
+  series is focal they take identity tints in reading order (light `#00786F` teal, `#7008E7`
+  violet; dark `#53CFBC`, `#C9A4F2`), each with a direct end label. More than three series means the
+  chart wants a different form (small multiples or a table).
 - Direct labels at the end of each line/beside each bar; a legend only when direct labels are
   impossible, and then it is centred under the plot.
 - Value labels: 11px tabular numerals, `#9BA1A6`; the decisive value may take the accent colour.

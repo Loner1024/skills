@@ -22,7 +22,8 @@ content types in those four families plus this one overlay, 14 rows in all.
   separated by a hairline (no heavy titlebar, no gradient).
 - Traffic lights (macOS register): three 10px circles at 8px pitch, in `#F85149`-tinted,
   `#D29922`-tinted, `#3FB950`-tinted colours **at 40-60% opacity** so they never become the
-  loudest thing in the figure. Skip them entirely if the register is `blueprint`.
+  loudest thing in the figure (light register: `#C10007` / `#BB4D00` / `#008236` at the same
+  opacity). Skip them entirely if the register is `blueprint`.
 - Title: 11px mono, `text-2`, centred or left after the lights (`droid — zsh`).
 - Terminal body: 12px mono, line height 18px, padding 16px. Prompt lines start with `$` in
   `text-3`; the command itself in `text`; output in `text-2`.

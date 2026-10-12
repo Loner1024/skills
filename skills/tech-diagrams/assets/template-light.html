@@ -5,15 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sharded metadata lookup — figure preview (light register)</title>
 <style>
-  /* Light register: Vercel / Geist. Same geometry rules as the dark register; only tokens change.
-     No pure black or white; colour sits on components (focal node, accent connector), not on the
-     field. Values measured from vercel.com/geist/colors. */
+  /* Light register: Tailwind v4 ramps. The field is slate-50, components are white, and colour
+     has three jobs - accent (attention), identity tints (which zone a component is in), state
+     (ok/warn/err). This figure codes one zone: EDGE takes tint 1 (teal). Values measured; see
+     references/registers.md. */
   [data-register="light"] {
-    --td-canvas:#FAFAFA; --td-surface:#F2F2F2; --td-surface-2:#EBEBEB;
-    --td-hairline:#C9C9C9; --td-hairline-strong:#A8A8A8;
-    --td-text:#171717; --td-text-2:#4C4C4C; --td-text-3:#4C4C4C;
-    --td-accent:#0072F5; --td-accent-soft:#F0F7FF; --td-accent-text:#0062D1;
-    --td-ok:#297A3A; --td-warn:#A35200; --td-err:#CB2A2F; --td-radius:6px;
+    --td-canvas:#F8FAFC; --td-surface:#FFFFFF; --td-surface-2:#F1F5F9;
+    --td-hairline:#CAD5E2; --td-hairline-strong:#90A1B9;
+    --td-text:#0F172B; --td-text-2:#45556C; --td-text-3:#62748E;
+    --td-accent:#155DFC; --td-accent-soft:#EFF6FF; --td-accent-text:#193CB8;
+    --td-ok:#008236; --td-warn:#BB4D00; --td-err:#C10007; --td-radius:6px;
+    --td-tint-1-fill:#CBFBF1; --td-tint-1-hairline:#46ECD5; --td-tint-1-line:#00786F; --td-tint-1-text:#0B4F4A;
   }
   :root {
     --td-font-sans: Inter, "Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
@@ -21,7 +23,7 @@
     --td-font-cjk: "PingFang SC", "Hiragino Sans", "Heiti SC", "Noto Sans CJK SC", sans-serif;
   }
   body { margin:0; padding:40px 24px; background:var(--td-canvas); color:var(--td-text); font-family:var(--td-font-sans); }
-  .td-figure { max-width:1120px; margin:0 auto; --td-figure-inset:9.5%; }
+  .td-figure { max-width:1120px; margin:0 auto; --td-figure-inset:8%; }
   .td-title { margin:0 0 4px; font-size:20px; font-weight:600; letter-spacing:-.01em; }
   .td-deck { margin:0 0 24px; font-size:13px; color:var(--td-text-2); max-width:68ch; }
   .td-svg { display:block; width:100%; height:auto; border-radius:var(--td-radius); }
@@ -29,8 +31,6 @@
   /* Align the page text with the figure's content edge (8% of 1100 = this figure's 88px inset),
      not with the invisible canvas box. Set 0 when a figure's content runs edge to edge. */
   .td-title, .td-deck, .td-caption { margin-left: var(--td-figure-inset); }
-  /* No print override: the light canvas is already paper-toned, and a forced white page colour
-     would be the one pure white left in a register that has none. */
   @media (prefers-reduced-motion: reduce) { .td-svg * { animation:none !important; transition:none !important; } }
 </style>
 </head>
@@ -47,40 +47,42 @@
     <desc id="lookup-desc">A request checks the edge cache, misses, and fetches one bounded 200 KB shard whose index is binary-searched for the path.</desc>
     <defs>
       <marker id="arrow-light" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-        <polygon points="0 0, 8 3, 0 6" fill="#4C4C4C"/>
+        <polygon points="0 0, 8 3, 0 6" fill="#62748E"/>
       </marker>
       <marker id="arrow-accent-light" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-        <polygon points="0 0, 8 3, 0 6" fill="#0072F5"/>
+        <polygon points="0 0, 8 3, 0 6" fill="#155DFC"/>
       </marker>
     </defs>
 
-    <rect width="1100" height="320" fill="#FAFAFA"/>
+    <rect width="1100" height="320" fill="#F8FAFC"/>
 
-    <rect x="88" y="88" width="456" height="152" rx="6" fill="#EBEBEB" opacity=".55"/>
-    <text x="104" y="110" fill="#4C4C4C" font-size="11"
+    <!-- EDGE is tint 1 (teal): the band is the tinted area, the components on it are white, and
+         the label mask takes the band's own fill so it cannot show as a patch. -->
+    <rect class="td-zone" x="88" y="88" width="456" height="152" rx="6" fill="#CBFBF1"/>
+    <text class="td-zone-label" x="104" y="110" fill="#0B4F4A" font-size="11"
           font-family="Menlo, SF Mono, monospace" letter-spacing="0.8">EDGE</text>
 
-    <path d="M 304 164 H 448" fill="none" stroke="#4C4C4C" stroke-width="1" marker-end="url(#arrow-light)"/>
-    <path d="M 632 164 H 776" fill="none" stroke="#0072F5" stroke-width="1" marker-end="url(#arrow-accent-light)"/>
+    <path d="M 304 164 H 448" fill="none" stroke="#62748E" stroke-width="1" marker-end="url(#arrow-light)"/>
+    <path d="M 632 164 H 776" fill="none" stroke="#155DFC" stroke-width="1.5" marker-end="url(#arrow-accent-light)"/>
     <g class="edge-label">
-      <rect class="mask" x="328" y="144" width="96" height="16" rx="3" fill="#F2F2F2"/>
-      <text x="376" y="160" fill="#4C4C4C" font-size="11" text-anchor="middle">cache miss</text>
+      <rect class="mask" x="328" y="144" width="96" height="16" rx="3" fill="#CBFBF1"/>
+      <text x="376" y="160" fill="#45556C" font-size="11" text-anchor="middle">cache miss</text>
     </g>
 
     <g class="node">
-      <rect x="120" y="132" width="184" height="64" rx="6" fill="#F2F2F2" stroke="#C9C9C9"/>
-      <text x="136" y="158" fill="#171717" font-size="13" font-weight="500">Edge cache</text>
-      <text x="136" y="178" fill="#4C4C4C" font-size="11" font-family="Menlo, SF Mono, monospace">cache-hit</text>
+      <rect x="120" y="132" width="184" height="64" rx="6" fill="#FFFFFF" stroke="#46ECD5"/>
+      <text x="136" y="158" fill="#0F172B" font-size="13" font-weight="500">Edge cache</text>
+      <text x="136" y="178" fill="#45556C" font-size="11" font-family="Menlo, SF Mono, monospace">cache-hit</text>
     </g>
     <g class="node is-focal">
-      <rect x="448" y="132" width="184" height="64" rx="6" fill="#F0F7FF" stroke="#0072F5"/>
-      <text x="464" y="158" fill="#171717" font-size="13" font-weight="500">Shard lookup</text>
-      <text x="464" y="178" fill="#0062D1" font-size="11" font-family="Menlo, SF Mono, monospace">200 KB · O(log n)</text>
+      <rect x="448" y="132" width="184" height="64" rx="6" fill="#EFF6FF" stroke="#155DFC"/>
+      <text x="464" y="158" fill="#0F172B" font-size="13" font-weight="500">Shard lookup</text>
+      <text x="464" y="178" fill="#193CB8" font-size="11" font-family="Menlo, SF Mono, monospace">200 KB · O(log n)</text>
     </g>
     <g class="node">
-      <rect x="776" y="132" width="184" height="64" rx="6" fill="#F2F2F2" stroke="#C9C9C9"/>
-      <text x="792" y="158" fill="#171717" font-size="13" font-weight="500">Origin</text>
-      <text x="792" y="178" fill="#4C4C4C" font-size="11" font-family="Menlo, SF Mono, monospace">on cold miss</text>
+      <rect x="776" y="132" width="184" height="64" rx="6" fill="#FFFFFF" stroke="#CAD5E2"/>
+      <text x="792" y="158" fill="#0F172B" font-size="13" font-weight="500">Origin</text>
+      <text x="792" y="178" fill="#45556C" font-size="11" font-family="Menlo, SF Mono, monospace">on cold miss</text>
     </g>
   </svg>
 

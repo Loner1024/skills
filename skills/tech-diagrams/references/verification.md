@@ -58,10 +58,11 @@ Run it in this order and fix the first failure before moving on.
    whole of this list as `port` / `hidden` / `label-cut` / `mask` / `label`.
 5. **Text** - labelled nodes fit their box (estimated width/height); no text outside the canvas
    padding; no text below 11px; CJK text has a CJK font in the stack.
-6. **Colour** - one accent in use, `<= 2` focal elements, or `<= 4` categorical tints when the
-   figure's argument is a comparison between parallel items (the two layers do not stack - see
-   `registers.md`); contrast >= 4.5:1 for body text, >= 3:1 for large text and non-text marks; no
-   gradients, filters, or drop shadows.
+6. **Colour** - one accent (<= 2 focal elements), up to three identity tints when the figure
+   distinguishes parallel items or scopes (each tint used through its own fill / hairline / line /
+   text steps), state colours only on state; text >= 4.5:1 on whatever it actually sits on (a
+   tinted band, a card, the canvas), the accent and tint lines >= 3:1 on the canvas; no gradients,
+   filters, or drop shadows.
 7. **Content** - caption written and equal to the intended `alt`; caption states a takeaway;
    figure introduced in prose; deliberate omissions stated.
 8. **Render** - PNG produced at the expected dimensions; `render.sh` reports a sensible

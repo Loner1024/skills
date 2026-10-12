@@ -71,12 +71,14 @@ deliberately leaves out.
 - **A figure only when prose cannot carry the structure**: comparisons of more than three things,
   multi-step causality, state that changes over time, or measurements where rank matters.
   Otherwise it says "use a table" and stops.
-- **A geometry budget**: at most 9 nodes, one focal element, a 4px grid, radii ≤ 8px, 1px strokes,
+- **A geometry budget**: at most 9 nodes, at most two focal elements, a 4px grid, radii ≤ 8px, 1px strokes,
   orthogonal connectors only, 11px minimum type.
 - **Connector hygiene**: both ends of every arrow land on something visible (a box border, a
   lifeline, a start dot), arrowheads never aim at a corner, no line crosses a box that is not its
   endpoint, and short arrows carry a label.
-- **One accent colour per figure.** No gradients, glows, drop shadows, or decorative chrome.
+- **Colour with a job.** One accent for attention (at most two focal elements), up to three
+  identity tints for parallel items and scopes (a zone band, a lane, a series, an option), and
+  ok/warn/err for state only. No gradients, glows, drop shadows, or decorative chrome.
 - **Contrast and CJK font stacks checked mechanically**, so the rasteriser cannot silently tofu.
 
 ### Workflow

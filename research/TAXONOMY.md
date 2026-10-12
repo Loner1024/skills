@@ -51,7 +51,7 @@
 | register | 画布 | 强调色 | 字体 | 适用 |
 |---|---|---|---|---|
 | **technical-dark（默认）** | `#0A0A0B`，面板 `#111214`，发丝线 `rgba(255,255,255,.08)` | `#5E6AD2`（焦点 ≤2 元素） | 标签 Inter，标识符 SF Mono/Menlo | 工程文档、README、技术博客（Linear/Vercel 语汇） |
-| **light（Vercel/Geist）** | `#FAFAFA`（Geist background-200），卡片 `#F2F2F2`，发丝线 `#C9C9C9`，墨 `#171717` | `#0072F5`（Geist blue-700，焦点 ≤2 元素） | 标题/标签 Inter 或 Geist Sans，标识符 mono（无衬线） | 产品文档、技术博客、浅色站点（Vercel/Geist 语汇，无纯黑纯白，色彩落在组件上） |
+| **light（Tailwind v4 OKLCH）** | `#F8FAFC`（slate-50），组件 `#FFFFFF`，发丝线 `#CAD5E2`，墨 `#0F172B` | `#155DFC`（blue-600，焦点 ≤2 元素）+ 身份色 teal/violet/amber 各四步（fill/hairline/line/text） | 标题/标签 Inter，标识符 mono（无衬线） | 产品文档、技术博客、浅色站点（Tailwind v4 语汇；色彩分工：强调=注意力、身份色=作用域、ok/warn/err=状态） |
 | blueprint | `#ffffff` + 引导线（非装饰，须有用途） | 黑墨 + 单色数据色 | 等宽为主 | 基础设施/网络/部署图（Vercel 语汇） |
 | product-frame | 随 register，套窗口框架 | 同上 | 内容等宽 | 终端/IDE/浏览器界面示意 |
 

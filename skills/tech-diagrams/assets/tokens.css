@@ -1,7 +1,7 @@
 /* tech-diagrams tokens. Inline this into the figure's <style> block.
    Standalone SVG: copy the resolved values into attributes or a <style> block; never link.
    Contrast-checked: every text token meets 4.5:1 on the canvas and on the node surface in both
-   registers (the light register carries two text steps - see the note next to --td-text-3). */
+   registers (the light register carries three text steps - see the note next to --td-text-3). */
 
 :root,
 [data-register="dark"] {
@@ -20,35 +20,64 @@
   --td-warn: #D29922;
   --td-err: #F85149;
   --td-radius: 8px;
+  /* Identity tints: the same three hues as the light register, resolved for the dark field.
+     fill = a tinted area (zone band, lane, or a component that owns the tint); line = a wire,
+     bar or marker that carries it; text = a label on the tint (the vivid step clears 9.5:1 on the
+     canvas, so it carries text too). A dark component separates from its band by fill, so its
+     tint hairline is the register hairline, not the vivid step. Values unchanged from the
+     register's original categorical tints. */
+  --td-tint-1-fill: #0F2420;  --td-tint-1-hairline: rgba(255, 255, 255, 0.08);
+  --td-tint-1-line: #53CFBC;  --td-tint-1-text: #53CFBC;
+  --td-tint-2-fill: #221C2A;  --td-tint-2-hairline: rgba(255, 255, 255, 0.08);
+  --td-tint-2-line: #C9A4F2;  --td-tint-2-text: #C9A4F2;
+  --td-tint-3-fill: #2A1C12;  --td-tint-3-hairline: rgba(255, 255, 255, 0.08);
+  --td-tint-3-line: #F3A26A;  --td-tint-3-text: #F3A26A;
 }
 
 [data-register="light"] {
-  /* Vercel / Geist, measured from the Geist colour system (vercel.com/geist/colors).
-     No pure black or pure white: the canvas is Background 2, ink stops at gray-1000 (#171717).
-     Colour belongs to components - the focal node, a state dot, one accent connector - never to
-     the field, so the structure stays grey and the reader's eye lands where the argument is. */
-  --td-canvas: #FAFAFA;           /* Geist background-200 */
-  --td-surface: #F2F2F2;          /* Geist gray-100  - Color 1, component default background */
-  --td-surface-2: #EBEBEB;        /* Geist gray-200  - Color 2; at .55 over the canvas this
-                                     composites to #F2F2F2, the node tone, so a band reads as an
-                                     area of tone rather than as a box */
-  --td-hairline: #C9C9C9;         /* Geist gray-500  - Color 5. gray-400 (#EBEBEB), the UI default
-                                     border, is 1.06:1 on this canvas: without a shadow to imply
-                                     elevation a shadowless figure needs the visible step */
-  --td-hairline-strong: #A8A8A8;  /* Geist gray-600  - Color 6, axis and emphasised borders */
-  --td-text: #171717;             /* Geist gray-1000 - Color 10, primary. 17.2:1 on canvas */
-  --td-text-2: #4C4C4C;           /* Geist gray-900  - Color 9, secondary. 8.2:1 on canvas */
-  --td-text-3: #4C4C4C;           /* Geist gray-800 is 3.9:1, under AA at our 11px floor, so the
-                                     light register carries two text steps; the third tier is
-                                     carried by size, weight and case instead of tone */
-  --td-accent: #0072F5;           /* Geist blue-700  - the value Geist itself uses as focus-color.
-                                     4.3:1 on canvas: a mark and border colour, not small text */
-  --td-accent-soft: #F0F7FF;      /* Geist blue-100  - a coloured component's default background */
-  --td-accent-text: #0062D1;      /* Geist blue-800. 5.5:1 on canvas, 5.3:1 on accent-soft */
-  --td-ok: #297A3A;               /* Geist green-900; pair it with the green-100 fill #EFFBEF */
-  --td-warn: #A35200;             /* Geist amber-900; pair it with the amber-100 fill #FFF6E5 */
-  --td-err: #CB2A2F;              /* Geist red-900;   pair it with the red-100 fill #FFF0F0 */
-  --td-radius: 6px;               /* Geist's component radius */
+  /* Tailwind v4 ramps (its theme.css ships every scale as oklch(), hue held constant end to end
+     and stepped finer at the light end - the two properties a tint needs to sit under a label).
+     The field is no longer grey: it is slate-50, the accent's own hue family at chroma 0.003,
+     and the structure that used to be grey - bands, wires, axis - is slate too. Colour is
+     layered by job: accent = attention, tints = identity, ok/warn/err = state.
+     Measured on the canvas (#F8FAFC): text 17.0:1, text-2 7.25:1, text-3 4.55:1, accent 5.0:1,
+     accent-text 8.4:1 (8.1:1 on accent-soft). */
+  --td-canvas: #F8FAFC;           /* slate-50  - the page */
+  --td-surface: #FFFFFF;          /* white     - component fill */
+  --td-surface-2: #F1F5F9;        /* slate-100 - neutral band / secondary fill */
+  --td-hairline: #CAD5E2;         /* slate-300 - component borders, separators */
+  --td-hairline-strong: #90A1B9;  /* slate-400 - axis and emphasised borders */
+  --td-text: #0F172B;             /* slate-900 - 17.0:1 on canvas, 17.8:1 on surface */
+  --td-text-2: #45556C;           /* slate-600 - 7.3:1 on canvas, 7.6:1 on surface */
+  --td-text-3: #62748E;           /* slate-500 - 4.55:1 on canvas, 4.76:1 on surface. The Geist
+                                     register could only afford two text steps; this one carries
+                                     three, but slate-500 drops under AA on a slate-100 band, so
+                                     metadata on a band takes text-2. */
+  --td-accent: #155DFC;           /* blue-600  - 5.0:1 on canvas: a mark and border colour */
+  --td-accent-soft: #EFF6FF;      /* blue-50   - focal component fill */
+  --td-accent-text: #193CB8;      /* blue-800  - 8.4:1 on canvas, 8.1:1 on accent-soft */
+  --td-ok: #008236;               /* green-700; pair it with the green-100 fill #DCFCE7 */
+  --td-warn: #BB4D00;             /* amber-700; pair it with the amber-100 fill #FEF3C6 */
+  --td-err: #C10007;              /* red-700;   pair it with the red-100 fill #FFE2E2 */
+  --td-radius: 6px;
+  /* Identity tints - teal / violet / amber, assigned in reading order. fill = a zone band or
+     lane; hairline = the outline of a component sitting on that band (white on a tint is
+     1.1-1.2:1, so the outline is what separates it); line = a wire, bar or marker that carries the
+     tint; text = a label on the band. Tailwind steps 100 / 300 / 700 / 900.
+     Measured: line 5.1:1 / 7.0:1 / 4.8:1 on canvas (4.5-6.2:1 on its own band), text
+     8.3:1 / 9.3:1 / 8.1:1 on its own fill, hairline 1.31:1 / 1.56:1 / 1.30:1 on its band. */
+  --td-tint-1-fill: #CBFBF1;      /* teal-100   */
+  --td-tint-1-hairline: #46ECD5;  /* teal-300   */
+  --td-tint-1-line: #00786F;      /* teal-700   */
+  --td-tint-1-text: #0B4F4A;      /* teal-900   */
+  --td-tint-2-fill: #EDE9FE;      /* violet-100 */
+  --td-tint-2-hairline: #C4B4FF;  /* violet-300 */
+  --td-tint-2-line: #7008E7;      /* violet-700 */
+  --td-tint-2-text: #4D179A;      /* violet-900 */
+  --td-tint-3-fill: #FEF3C6;      /* amber-100  */
+  --td-tint-3-hairline: #FFD230;  /* amber-300  */
+  --td-tint-3-line: #BB4D00;      /* amber-700  */
+  --td-tint-3-text: #7B3306;      /* amber-900  */
 }
 
 :root {
@@ -99,15 +128,29 @@ body.td-page {
 
 /* ---- svg-side helpers, usable when the SVG is inline ---- */
 
-.td-node rect { fill: var(--td-surface); stroke: var(--td-hairline); }
-.td-node.is-focal rect { fill: var(--td-accent-soft); stroke: var(--td-accent); }
-.td-node.is-external rect { stroke-dasharray: 4 3; }
-.td-zone { fill: var(--td-surface-2); opacity: 0.55; }
-.td-zone-label { fill: var(--td-text-3); font-family: var(--td-font-mono); font-size: 11px; letter-spacing: 0.08em; }
-.td-edge-label text { fill: var(--td-text-2); font-size: 11px; }
-/* A mask over bare canvas. Over a zone band the mask must take the band's composited tone instead
-   (dark #111214, light #F2F2F2), or it paints a visible patch - see references/primitives.md. */
-.td-edge-label .mask { fill: var(--td-canvas); }
+/* The svg-side helpers below are defaults for inline SVG that uses these class names. A
+   stylesheet rule beats a presentation attribute, so each fill/stroke helper is guarded by
+   :not([fill]) / :not([stroke]): a figure that carries its own values as attributes keeps them,
+   and a class-only figure gets the register defaults. Figures that inline this file can also
+   drive a helper through its variable, e.g. style="--td-zone-fill: #CBFBF1". */
+.td-node rect:not([fill]) { fill: var(--td-surface); }
+.td-node rect:not([stroke]) { stroke: var(--td-hairline); }
+.td-node.is-focal rect:not([fill]) { fill: var(--td-accent-soft); }
+.td-node.is-focal rect:not([stroke]) { stroke: var(--td-accent); }
+.td-node.is-external rect:not([stroke-dasharray]) { stroke-dasharray: 4 3; }
+/* A zone band: neutral bands use surface-2, a hue-coded band sets --td-zone-fill to its tint's
+   fill. The light register's bands are opaque, so label masks stay exact; a dark neutral band
+   carries opacity=".55" on the element itself (as the dark template and snippets do). */
+.td-zone:not([fill]) { fill: var(--td-zone-fill, var(--td-surface-2)); }
+/* text-3 fails on a band (4.0-4.3:1), so the zone label defaults to text-2 and a hue-coded band
+   sets --td-zone-text to its tint's text step. */
+.td-zone-label:not([fill]) { fill: var(--td-zone-text, var(--td-text-2)); }
+.td-zone-label { font-family: var(--td-font-mono); font-size: 11px; letter-spacing: 0.08em; }
+.td-edge-label text:not([fill]) { fill: var(--td-text-2); }
+.td-edge-label text { font-size: 11px; }
+/* A mask over bare canvas. Over a zone band the mask must take the band's own tone instead
+   (light: the band's tint fill or #F1F5F9; dark: #111214) - see references/primitives.md. */
+.td-edge-label .mask:not([fill]) { fill: var(--td-canvas); }
 
 /* No `@media print` override: forcing a white page behind the register's own ink is what made a
    dark-register title print invisible, and it put a pure white into a light palette that has none.
