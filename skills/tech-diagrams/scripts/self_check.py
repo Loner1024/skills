@@ -659,6 +659,27 @@ def check(source: str, png: str | None, strict: bool, standalone: bool = True) -
             break
     canvas_bg = canvas_rect or (10, 10, 11, 1.0)
 
+    # Rects in document order, so each text run can be measured against what is actually painted
+    # behind it: a node fill, a label mask, or a zone band - not just the canvas. A band is the
+    # case that matters: slate-500 passes on the canvas (4.6:1) and fails on a teal-100 band (4.2:1).
+    def paintable(el) -> bool:
+        """False for a rect that never paints: one inside <defs>, <mask>, <clipPath> and friends."""
+        cur = parents.get(id(el))
+        while cur is not None:
+            if strip_ns(cur.tag).lower() in {"defs", "mask", "clippath", "pattern", "marker", "symbol"}:
+                return False
+            cur = parents.get(id(cur))
+        return True
+
+    doc_order = {id(el): i for i, el in enumerate(iter_children(root))}
+    filled_rects = []
+    for el in iter_children(root):
+        if strip_ns(el.tag) != "rect":
+            continue
+        r = rect_of(el)
+        if r and parse_color(el.get("fill")) and paintable(el):
+            filled_rects.append((el, r))
+
     for el in iter_children(root):
         if strip_ns(el.tag) != "text":
             continue
@@ -696,15 +717,14 @@ def check(source: str, png: str | None, strict: bool, standalone: bool = True) -
                                     f"(needs {est_w:.0f}px, has {bw - 2 * pad:.0f}px)")
                 if y > by + bh:
                     err("overflow", f"label '{content[:28]}' sits below node {elem_id(parent)}")
-                bg = parse_color(next((c.get("fill") for c in parent if strip_ns(c.tag) == "rect"), None))
-                if bg and bg[3] < 1.0:
-                    bg = composite(bg, canvas_bg)
-            else:
-                bg = canvas_bg
-        else:
-            bg = canvas_bg
+
+        # The tone behind the glyphs, composited in document order - the same rule the label masks
+        # are held to, applied to every text run.
+        idx = doc_order[id(el)]
+        bg = backdrop_tone(left + est_w / 2, y - est_h / 2, canvas_bg,
+                           [(r_el, r_box) for r_el, r_box in filled_rects if doc_order[id(r_el)] < idx])
         fg = parse_color(inherited(el, parents, "fill"))
-        if fg and bg:
+        if fg:
             if fg[3] < 1.0:
                 fg = composite(fg, bg)
             ratio = contrast(fg, bg)

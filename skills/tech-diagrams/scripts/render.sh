@@ -105,7 +105,7 @@ EOF
     # deterministic 40px margin instead of whatever slack the window estimate happened to leave.
     # Trim by the page's own corner colour with a tight fuzz and do not touch the pixels in between:
     # a wide fuzz (8%) made every fill within ~20/255 of the canvas "background", which silently
-    # erased a light register's card fills (#F2F2F2 on #FAFAFA) from the artifact.
+    # erased a light register's card fills (#FFFFFF on #F8FAFC) from the artifact.
     if [ -z "$NOPAD" ] && have magick; then
       PBG=$(magick "$OUT" -colorspace sRGB -depth 8 -format '%c' histogram:info:- \
             | awk '{c=$1+0; if (c>m) {m=c; line=$0}} END {match(line, /#[0-9A-Fa-f]{6}/); print substr(line, RSTART, RLENGTH)}')
@@ -124,9 +124,14 @@ esac
 if [ -n "$INSET" ]; then
   have magick || { echo "--inset needs ImageMagick" >&2; exit 3; }
   have rsvg-convert || { echo "rsvg-convert not found (brew install librsvg)" >&2; exit 3; }
+  # One temp dir, cleaned up on any exit path (set -e included). `mktemp -t name` only works
+  # where the template is completed by the tool (macOS); a full template path with the X's
+  # spelled out is portable across both mktemp flavours.
+  TMPD="$(mktemp -d "${TMPDIR:-/tmp}/td-inset.XXXXXX")"
+  trap 'rm -rf "$TMPD"' EXIT
   SRC="$INPUT"
   if [ "$EXT" = html ] || [ "$EXT" = htm ]; then
-    SRC="$(mktemp -t td-inset).svg"
+    SRC="$TMPD/figure.svg"
     python3 - "$INPUT" "$SRC" <<'PY'
 import re, sys
 html = open(sys.argv[1], encoding="utf-8").read()
@@ -136,7 +141,7 @@ if not m:
 open(sys.argv[2], "w", encoding="utf-8").write(m.group(0))
 PY
   fi
-  TMP="$(mktemp -t td-inset).png"
+  TMP="$TMPD/inset.png"
   rsvg-convert -z 1 -o "$TMP" "$SRC"
   read -r FW FH <<EOF
 $(python3 - "$SRC" <<'PY'
@@ -167,8 +172,6 @@ for side, gap, total in (("left", x, fw), ("right", fw - x - w, fw), ("top", y, 
     print(f"{side:6s} {gap:6.1f}px  {gap / total * 100:5.2f}%")
 print(f"preview CSS: --td-figure-inset: {x / fw * 100:.1f}%;")
 PY
-  rm -f "$TMP"
-  [ "$SRC" != "$INPUT" ] && rm -f "$SRC"
   exit 0
 fi
 

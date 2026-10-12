@@ -62,13 +62,15 @@ WRAPPER = (
 # report readable. When both fit (or neither does) the snippet's own fills pick the label.
 REGISTERS = {
     "dark": {"canvas": "#0A0A0B", "arrow": "#9BA1A6", "arrow_strong": "#EDEDF0", "arrow_accent": "#5E6AD2"},
-    "light": {"canvas": "#FAFAFA", "arrow": "#4C4C4C", "arrow_strong": "#171717", "arrow_accent": "#0072F5"},
+    "light": {"canvas": "#F8FAFC", "arrow": "#62748E", "arrow_strong": "#0F172B", "arrow_accent": "#155DFC"},
 }
-# Only ever used to label a snippet, never to judge it: the shipped light register (Vercel/Geist),
-# the neutral white some documents need, and the warm editorial palette this register replaced.
-LIGHT_MARKERS = ("#fafafa", "#f2f2f2", "#ebebeb", "#e6e6e6", "#c9c9c9", "#a8a8a8", "#171717",
-                 "#4c4c4c", "#7d7d7d", "#0072f5", "#0062d1", "#f0f7ff", "#297a3a", "#a35200",
-                 "#cb2a2f", "#ffffff", "#f4f4f5", "#eef0fe", "#111113", "#4f46e5", "#dcdce0",
+# Only ever used to label a snippet, never to judge it: the shipped light register (Tailwind v4
+# ramps), the neutral white some documents need, and the warm editorial palette this register
+# replaced.
+LIGHT_MARKERS = ("#f8fafc", "#ffffff", "#f1f5f9", "#cad5e2", "#90a1b9", "#0f172b", "#45556c",
+                 "#62748e", "#155dfc", "#eff6ff", "#193cb8", "#008236", "#bb4d00", "#c10007",
+                 "#cbfbf1", "#46ecd5", "#00786f", "#0b4f4a", "#ede9fe", "#c4b4ff", "#7008e7",
+                 "#4d179a", "#fef3c6", "#ffd230", "#7b3306", "#dcfce7", "#ffe2e2",
                  "#faf9f5", "#f0eee6", "#f7ece6", "#141413", "#5e5d59", "#6f6e68", "#c96442",
                  "#9f4a26", "#d1cfc5", "#b0aea5")
 
@@ -89,8 +91,12 @@ def prefer_register(snippet: str) -> str:
         bg = max(rects)[1]                       # the biggest rect is the band or the canvas
     else:
         fills = re.findall(r'fill\s*=\s*"(#[0-9a-fA-F]{6})"', snippet)
-        if fills and "<text" in snippet:
-            bg = max(fills, key=lambda c: luminance(parse_color(c)[:3]))   # no rects: the lightest fill is the page
+        # A fill on a <text> is ink, never the page: a fragment whose only light value is its own
+        # label (a filled diamond with light text on it) is not a light-palette snippet.
+        ink = set(re.findall(r'<text\b[^>]*fill\s*=\s*"(#[0-9a-fA-F]{6})"', snippet, re.S))
+        page_fills = [c for c in fills if c not in ink] or fills
+        if page_fills and "<text" in snippet:
+            bg = max(page_fills, key=lambda c: luminance(parse_color(c)[:3]))   # no rects: the lightest fill is the page
         else:
             low = snippet.lower()
             return "light" if any(m in low for m in LIGHT_MARKERS) else "dark"
