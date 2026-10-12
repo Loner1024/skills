@@ -1,0 +1,126 @@
+#!/usr/bin/env bash
+# Amp orb setup for Loner1024/skills.
+#
+# This repository is content: SKILL.md files, reference markdown, SVG/HTML examples, and
+# standard-library-only Python. There is nothing to compile and no lockfile to install, so what a
+# fresh orb needs is the renderer toolchain that skills/tech-diagrams/scripts/* shell out to:
+#
+#   python3         scripts/self_check.py and lint_docs.py (stdlib only, no virtualenv)
+#   rsvg-convert    SVG -> PNG                                  (scripts/render.sh)
+#   Chrome/Chromium HTML preview -> PNG                         (scripts/render.sh)
+#   magick (IM7)    crop/pad renders, --inset measurement       (scripts/render.sh)
+#   a CJK sans font so CJK figures rasterise instead of tofu    (references/registers.md)
+#
+# Every step checks before it acts, so a warm run (stale snapshot) only prints status, and the
+# smoke test at the end proves both render paths work.
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+start_ts=$(date +%s)
+step() { printf '[orb-setup] %-46s t+%ss\n' "$*" "$(( $(date +%s) - start_ts ))"; }
+
+as_root() {
+  if [ "$(id -u)" -eq 0 ]; then "$@"; else sudo -n "$@"; fi
+}
+
+apt_lists_updated=0
+apt_install() {
+  if [ "$apt_lists_updated" -eq 0 ]; then
+    step "apt-get update"
+    as_root apt-get update -qq
+    apt_lists_updated=1
+  fi
+  step "apt-get install $*"
+  as_root env DEBIAN_FRONTEND=noninteractive apt-get install -y -qq "$@"
+}
+
+# --- python3: runs the linters ---------------------------------------------------------------
+if command -v python3 >/dev/null 2>&1; then
+  step "python3 present: $(python3 --version 2>&1)"
+else
+  apt_install python3
+fi
+
+# --- rsvg-convert: the SVG rasteriser the export path requires --------------------------------
+if command -v rsvg-convert >/dev/null 2>&1; then
+  step "rsvg-convert present: $(rsvg-convert --version 2>&1)"
+else
+  apt_install librsvg2-bin
+fi
+
+# --- Chrome/Chromium: the HTML preview rasteriser ---------------------------------------------
+# The orb image already ships a Chrome for Testing build under ~/.agent-browser, and render.sh
+# looks for google-chrome / chromium / chromium-browser on PATH. Expose the build that is already
+# here instead of downloading a second browser; relinking also repairs a symlink left dangling by
+# a replaced Chrome build. readlink -f keeps that relink idempotent: when chromium is already this
+# symlink, the real binary is what gets relinked, not the link itself.
+chrome_bin=""
+for candidate in google-chrome chromium chromium-browser; do
+  if resolved="$(command -v "$candidate" 2>/dev/null)" && [ -n "$resolved" ]; then
+    chrome_bin="$(readlink -f "$resolved")"
+    break
+  fi
+done
+if [ -z "$chrome_bin" ]; then
+  chrome_bin="$(ls -1 "$HOME"/.agent-browser/browsers/chrome-*/chrome 2>/dev/null | sort -V | tail -n 1 || true)"
+fi
+if [ -n "$chrome_bin" ]; then
+  step "chromium -> $chrome_bin"
+  ln -sfn "$chrome_bin" /usr/local/bin/chromium 2>/dev/null ||
+    as_root ln -sfn "$chrome_bin" /usr/local/bin/chromium
+else
+  apt_install chromium
+fi
+
+# --- magick: ImageMagick 7 ships in the image; render.sh degrades without it -------------------
+if command -v magick >/dev/null 2>&1; then
+  magick_version="$(magick --version 2>/dev/null | sed -n 1p || true)"
+  step "magick present: ${magick_version:-unknown}"
+else
+  step "note: magick missing; render.sh will skip crop/pad and --inset"
+fi
+
+# --- CJK font: the registers.md stack resolves through fontconfig at raster time --------------
+if command -v fc-match >/dev/null 2>&1 &&
+  fc-match -f '%{family}\n' 'Noto Sans CJK SC' 2>/dev/null | grep -qi 'noto sans cjk'; then
+  step "CJK sans font present"
+else
+  apt_install fonts-noto-cjk
+fi
+
+# --- Smoke test: both render paths plus the linter, on the shipped examples --------------------
+step "smoke test: rendering examples"
+smoke_dir="$(mktemp -d)"
+trap 'rm -rf "$smoke_dir"' EXIT
+render="$REPO_ROOT/skills/tech-diagrams/scripts/render.sh"
+examples="$REPO_ROOT/skills/tech-diagrams/examples"
+
+"$render" "$examples/sharded-lookup.svg" --scale 1 --out "$smoke_dir/svg.png"
+"$render" "$examples/cjk-pipeline.html" --scale 1 --out "$smoke_dir/html.png"
+
+# Findings here mean the example content drifted, not that the toolchain is broken; the renders
+# above are the environment check and are fatal on their own.
+if ! python3 "$REPO_ROOT/skills/tech-diagrams/scripts/self_check.py" \
+  "$examples/sharded-lookup.svg" --png "$smoke_dir/svg.png"; then
+  step "note: self_check flagged the shipped example; toolchain is still usable"
+fi
+
+step "renderer OK: svg $(magick identify -format '%wx%h' "$smoke_dir/svg.png" 2>/dev/null || echo '?') html $(magick identify -format '%wx%h' "$smoke_dir/html.png" 2>/dev/null || echo '?')"
+
+# --- Orb guidance: the toolchain is already here; do not reinstall it --------------------------
+guidance="$HOME/.config/amp/AGENTS.md"
+marker="# Loner1024/skills orb notes"
+mkdir -p "$(dirname "$guidance")"
+if ! grep -Fqx "$marker" "$guidance" 2>/dev/null; then
+  cat >>"$guidance" <<'EOF'
+
+# Loner1024/skills orb notes
+- The tech-diagrams renderer toolchain is preinstalled by .agents/setup: `rsvg-convert`, `chromium`
+  (Chrome for Testing), `magick` (ImageMagick 7), `python3`, Noto Sans CJK. Do not apt-install or
+  download another browser; just run `skills/tech-diagrams/scripts/render.sh`.
+- This repository is content only: no package manager, no build step, no test runner. Verify a
+  figure with `python3 skills/tech-diagrams/scripts/self_check.py <source> --png <render>`.
+EOF
+fi
+
+step "setup complete"

@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Amp orb resume for Loner1024/skills: fast, idempotent repair only.
+#
+# There is nothing to authenticate or reconnect in this repository, so the only wake-time repair
+# is the renderer: render.sh finds Chrome through PATH, and the symlink points into the Chrome for
+# Testing build shipped with the orb image. If that build was replaced, relink to the newest local
+# one. This never downloads anything and never installs; a missing tool is reported, not fetched.
+set -euo pipefail
+
+log() { printf '[orb-resume] %s\n' "$*"; }
+
+if ! command -v chromium >/dev/null 2>&1; then
+  chrome_bin="$(ls -1 "$HOME"/.agent-browser/browsers/chrome-*/chrome 2>/dev/null | sort -V | tail -n 1 || true)"
+  if [ -n "$chrome_bin" ]; then
+    ln -sfn "$chrome_bin" /usr/local/bin/chromium 2>/dev/null ||
+      sudo -n ln -sfn "$chrome_bin" /usr/local/bin/chromium
+    log "relinked chromium -> $chrome_bin"
+  else
+    log "warning: no Chrome/Chromium on PATH; run .agents/setup"
+  fi
+fi
+
+for tool in rsvg-convert python3 magick; do
+  command -v "$tool" >/dev/null 2>&1 || log "warning: $tool missing; run .agents/setup"
+done
