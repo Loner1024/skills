@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en" data-register="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TiKV: one Region's Raft group — figure preview (light register)</title>
+<style>
+  /* Light register: Tailwind v4 ramps. Three identity tints carry the layers - SQL violet,
+     storage teal, control plane amber - and the accent (blue) carries the one path the figure
+     argues about: every read and write lands on the Region's Raft leader. */
+  [data-register="light"] {
+    --td-canvas:#F8FAFC; --td-surface:#FFFFFF; --td-surface-2:#F1F5F9;
+    --td-hairline:#CAD5E2; --td-hairline-strong:#90A1B9;
+    --td-text:#0F172B; --td-text-2:#45556C; --td-text-3:#62748E;
+    --td-accent:#155DFC; --td-accent-soft:#EFF6FF; --td-accent-text:#193CB8;
+    --td-ok:#008236; --td-warn:#BB4D00; --td-err:#C10007; --td-radius:6px;
+    --td-tint-1-fill:#CBFBF1; --td-tint-1-hairline:#46ECD5; --td-tint-1-line:#00786F; --td-tint-1-text:#0B4F4A;
+    --td-tint-2-fill:#EDE9FE; --td-tint-2-hairline:#C4B4FF; --td-tint-2-line:#7008E7; --td-tint-2-text:#4D179A;
+    --td-tint-3-fill:#FEF3C6; --td-tint-3-hairline:#FFD230; --td-tint-3-line:#BB4D00; --td-tint-3-text:#7B3306;
+  }
+  :root {
+    --td-font-sans: Inter, "Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    --td-font-mono: Menlo, "SF Mono", SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    --td-font-cjk: "PingFang SC", "Hiragino Sans", "Heiti SC", "Noto Sans CJK SC", sans-serif;
+  }
+  body { margin:0; padding:40px 24px; background:var(--td-canvas); color:var(--td-text); font-family:var(--td-font-sans); }
+  .td-figure { max-width:1120px; margin:0 auto; --td-figure-inset:8%; }
+  .td-title { margin:0 0 4px; font-size:20px; font-weight:600; letter-spacing:-.01em; }
+  .td-deck { margin:0 0 24px; font-size:13px; color:var(--td-text-2); max-width:68ch; }
+  .td-svg { display:block; width:100%; height:auto; border-radius:var(--td-radius); }
+  .td-caption { margin:16px 0 0; font-size:12px; line-height:1.5; color:var(--td-text-2); max-width:68ch; }
+  .td-title, .td-deck, .td-caption { margin-left: var(--td-figure-inset); }
+  @media (prefers-reduced-motion: reduce) { .td-svg * { animation:none !important; transition:none !important; } }
+</style>
+</head>
+<body>
+<figure class="td-figure">
+  <h1 class="td-title">One Region, three stores: the Raft leader serves reads and writes by default</h1>
+  <p class="td-deck">TiKV replicates each Region as a Raft group. By default TiDB sends reads and writes to the leader, not to a follower; PD owns placement and can move leadership.</p>
+
+  <svg class="td-svg" role="img" aria-labelledby="tikv-title tikv-desc" viewBox="0 0 1100 528"
+       width="1100" height="528" xmlns="http://www.w3.org/2000/svg"
+       font-family="Inter, PingFang SC, Hiragino Sans, Heiti SC, Noto Sans CJK SC, sans-serif">
+    <title id="tikv-title">One TiKV Region lives as a Raft group on three stores</title>
+    <desc id="tikv-desc">By default TiDB sends every read and write for region 42 to the Raft leader on TiKV store 2, which appends the log to the two followers; PD holds the placement and can transfer leadership, over the dashed control plane.</desc>
+    <defs>
+      <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#62748E"/>
+      </marker>
+      <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#155DFC"/>
+      </marker>
+    </defs>
+
+    <rect width="1100" height="528" fill="#F8FAFC"/>
+
+    <!-- Zone bands: one identity tint each, opaque fills so label masks are exact. -->
+    <rect class="td-zone" x="88" y="40" width="924" height="112" rx="8" fill="#EDE9FE"/>
+    <text class="td-zone-label" x="104" y="62" fill="#4D179A" font-size="11" font-family="Menlo, SF Mono, monospace" letter-spacing="0.8">SQL LAYER</text>
+    <rect class="td-zone" x="88" y="200" width="924" height="128" rx="8" fill="#CBFBF1"/>
+    <text class="td-zone-label" x="104" y="222" fill="#0B4F4A" font-size="11" font-family="Menlo, SF Mono, monospace" letter-spacing="0.8">STORAGE LAYER</text>
+    <rect class="td-zone" x="88" y="376" width="924" height="112" rx="8" fill="#FEF3C6"/>
+    <text class="td-zone-label" x="104" y="398" fill="#7B3306" font-size="11" font-family="Menlo, SF Mono, monospace" letter-spacing="0.8">CONTROL PLANE</text>
+
+    <!-- connectors before nodes -->
+    <path d="M 548 128 V 232" fill="none" stroke="#155DFC" stroke-width="1.5" marker-end="url(#arrow-accent)"/>
+    <g class="edge-label">
+      <rect class="mask" x="496" y="172" width="104" height="16" rx="3" fill="#F8FAFC"/>
+      <text x="548" y="184" fill="#45556C" font-size="11" text-anchor="middle">read / write</text>
+    </g>
+    <path d="M 456 264 H 368" fill="none" stroke="#62748E" stroke-width="1" marker-end="url(#arrow)"/>
+    <g class="edge-label">
+      <rect class="mask" x="384" y="236" width="56" height="16" rx="3" fill="#CBFBF1"/>
+      <text x="412" y="248" fill="#45556C" font-size="11" text-anchor="middle">append</text>
+    </g>
+    <path d="M 640 264 H 728" fill="none" stroke="#62748E" stroke-width="1" marker-end="url(#arrow)"/>
+    <g class="edge-label">
+      <rect class="mask" x="656" y="236" width="56" height="16" rx="3" fill="#CBFBF1"/>
+      <text x="684" y="248" fill="#45556C" font-size="11" text-anchor="middle">append</text>
+    </g>
+    <!-- Dashed = control plane: PD schedules (transfer leader, add peer); the Raft group elects. -->
+    <path d="M 548 400 V 296" fill="none" stroke="#62748E" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+    <g class="edge-label">
+      <rect class="mask" x="512" y="344" width="72" height="16" rx="3" fill="#F8FAFC"/>
+      <text x="548" y="356" fill="#45556C" font-size="11" text-anchor="middle">schedule</text>
+    </g>
+
+    <!-- nodes: white cards, each outlined in its zone's tint hairline; the leader takes the accent -->
+    <g class="node">
+      <rect x="456" y="64" width="184" height="64" rx="6" fill="#FFFFFF" stroke="#C4B4FF"/>
+      <text x="472" y="90" fill="#0F172B" font-size="13" font-weight="500">TiDB</text>
+      <text x="472" y="110" fill="#45556C" font-size="11" font-family="Menlo, SF Mono, monospace">stateless SQL</text>
+    </g>
+    <g class="node">
+      <rect x="184" y="232" width="184" height="64" rx="6" fill="#FFFFFF" stroke="#46ECD5"/>
+      <text x="200" y="258" fill="#0F172B" font-size="13" font-weight="500">TiKV store 1</text>
+      <text x="200" y="278" fill="#45556C" font-size="11" font-family="Menlo, SF Mono, monospace">region 42 · follower</text>
+      <rect x="184" y="236" width="4" height="56" rx="2" fill="#00786F"/>
+    </g>
+    <g class="node is-focal">
+      <rect x="456" y="232" width="184" height="64" rx="6" fill="#EFF6FF" stroke="#155DFC"/>
+      <text x="472" y="258" fill="#0F172B" font-size="13" font-weight="500">TiKV store 2</text>
+      <text x="472" y="278" fill="#193CB8" font-size="11" font-family="Menlo, SF Mono, monospace">region 42 · leader</text>
+      <rect x="456" y="236" width="4" height="56" rx="2" fill="#155DFC"/>
+    </g>
+    <g class="node">
+      <rect x="728" y="232" width="184" height="64" rx="6" fill="#FFFFFF" stroke="#46ECD5"/>
+      <text x="744" y="258" fill="#0F172B" font-size="13" font-weight="500">TiKV store 3</text>
+      <text x="744" y="278" fill="#45556C" font-size="11" font-family="Menlo, SF Mono, monospace">region 42 · follower</text>
+      <rect x="728" y="236" width="4" height="56" rx="2" fill="#00786F"/>
+    </g>
+    <g class="node">
+      <rect x="456" y="400" width="184" height="64" rx="6" fill="#FFFFFF" stroke="#FFD230"/>
+      <text x="472" y="426" fill="#0F172B" font-size="13" font-weight="500">PD</text>
+      <text x="472" y="446" fill="#45556C" font-size="11" font-family="Menlo, SF Mono, monospace">placement · TSO</text>
+    </g>
+  </svg>
+
+  <figcaption class="td-caption">
+    By default TiDB sends every read and write for region 42 to the Raft leader on TiKV store 2;
+    the leader appends the log to the two followers, and PD holds the placement and can transfer
+    leadership (dashed = control plane). The figure follows one Region and omits the Raft log,
+    RocksDB, Region splitting, follower reads, and the heartbeat and TSO traffic around PD.
+  </figcaption>
+</figure>
+</body>
+</html>

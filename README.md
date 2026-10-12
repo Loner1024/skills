@@ -65,6 +65,8 @@ deliberately leaves out.
 
 ![A sequence diagram with a retry path](skills/tech-diagrams/examples/sequence-retry.png)
 
+![A TiKV architecture figure in the light register: three hue-coded zones, white components on tinted bands, one accent path to the Raft leader](skills/tech-diagrams/examples/tikv-architecture.png)
+
 ### What it enforces
 
 - **One claim per figure**, stated in the caption, which is also the `alt` text.
@@ -173,7 +175,7 @@ skills/
     references/                  when-to-draw · registers · primitives · type-* · verification · export
     assets/                      tokens.css + dark and light starting templates
     scripts/                     render.sh · self_check.py · lint_docs.py
-    examples/                    seven finished figures across the four type families
+    examples/                    eight finished figures across the four type families
   architecture-ablation/
     SKILL.md                     entry point: baseline, ablation loop, decision table
     agents/openai.yaml           interface metadata: display name, triggers, not-triggers

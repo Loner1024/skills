@@ -62,6 +62,8 @@ agent 画的图大多是 Mermaid 方块堆：所有盒子一样大，箭头从�
 
 ![带重试路径的序列图](skills/tech-diagrams/examples/sequence-retry.png)
 
+![浅色寄存器下的 TiKV 架构图：三段身份色带、带上的白色组件、一条通往 Raft leader 的强调色路径](skills/tech-diagrams/examples/tikv-architecture.png)
+
 ### 它强制什么
 
 - **一张图只讲一个结论**，结论写在 caption 里，caption 同时是 `alt`。
@@ -148,7 +150,7 @@ skills/
     references/                  when-to-draw · registers · primitives · type-* · verification · export
     assets/                      tokens.css 加深色/浅色起始模板
     scripts/                     render.sh · self_check.py · lint_docs.py
-    examples/                    七张成品图，覆盖四个内容族
+    examples/                    八张成品图，覆盖四个内容族
   architecture-ablation/
     SKILL.md                     入口：基线、消融循环、决策表
     agents/openai.yaml           界面元数据：显示名、触发词、不触发词
