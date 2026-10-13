@@ -11,7 +11,8 @@ description: |
   对比图 / 基准图 / 终端截图示意, or asks for a diagram, figure, or visual for docs, a README,
   a blog post, or a deck. NOT for photo or illustration generation (use imagegen), and NOT for
   full slide decks or documents (use the powerpoint or document skills).
-version: 0.1.0
+metadata:
+  version: "0.1.0"
 ---
 
 # Technical diagrams
