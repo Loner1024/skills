@@ -1,0 +1,20 @@
+interface:
+  display_name: "Unslop"
+  short_description: "Cut AI tells from any writing: 33 numbered rules for the patterns that make prose read as machine-written"
+  triggers:
+    - "unslop"
+    - "remove AI tells"
+    - "make this sound human"
+    - "review the tone"
+    - "tighten this up"
+    - "去 AI 味"
+    - "AI 腔"
+    - "改得像人写的"
+    - "润色文案"
+    - "过一遍文风"
+  not_triggers:
+    - "code cleanup"
+    - "code review"
+    - "refactor"
+    - "代码清理"
+    - "代码评审"

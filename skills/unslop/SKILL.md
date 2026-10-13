@@ -1,6 +1,9 @@
 ---
 name: unslop
-description: Cut AI tells from any writing. Must always apply.
+description: |
+  Cut AI tells from any writing. Must always apply.
+
+  Use when the user hands over prose to write, rewrite, review, or edit (blog posts, docs, READMEs, release notes, emails, changelogs, commit messages), or asks to 去 AI 味 / 去掉 AI 腔 / 改得像人写的 / 润色文案 / 过一遍文风 / make this sound human / review the tone / tighten this up. Not limited to named requests: any writing task is in scope.
 ---
 
 # Unslop

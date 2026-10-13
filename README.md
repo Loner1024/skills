@@ -256,8 +256,10 @@ skills/
     modules/                     14 modules, verbatim from emilkowalski/skills, plus its MIT LICENSE
   unslop/
     SKILL.md                     writing: 33 numbered rules that remove AI tells
+    agents/openai.yaml           interface metadata: display name, triggers, not-triggers
   deslop/
     SKILL.md                     code: remove AI-generated slop from a branch diff
+    agents/openai.yaml           interface metadata: display name, triggers, not-triggers
 ```
 
 `skills/<name>/` is the install unit: that is the whole directory `npx skills` copies. Every skill

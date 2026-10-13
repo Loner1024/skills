@@ -1,0 +1,19 @@
+interface:
+  display_name: "Deslop"
+  short_description: "Remove AI-generated code slop from a branch diff: restating comments, defensive checks on trusted paths, `any` casts, deep nesting"
+  triggers:
+    - "deslop"
+    - "remove AI slop"
+    - "clean up AI-generated code"
+    - "review the diff for slop"
+    - "清理 AI 生成的代码"
+    - "去掉多余注释"
+    - "代码去噪"
+    - "简化嵌套"
+    - "清理防御性检查"
+  not_triggers:
+    - "writing or prose"
+    - "architecture decisions"
+    - "large refactor"
+    - "文案润色"
+    - "架构设计"

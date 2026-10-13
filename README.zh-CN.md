@@ -218,8 +218,10 @@ skills/
     modules/                     14 个模块，原样来自 emilkowalski/skills，附其 MIT LICENSE
   unslop/
     SKILL.md                     写作：33 条编号规则，去掉 AI 痕迹
+    agents/openai.yaml           界面元数据：显示名、触发词、不触发词
   deslop/
     SKILL.md                     代码：从分支 diff 里删掉 AI 噪音
+    agents/openai.yaml           界面元数据：显示名、触发词、不触发词
 ```
 
 `skills/<name>/` 就是安装单元：`npx skills` 复制的正是这一整个目录。这里的每个 skill 都自洽，不读自己文件夹
