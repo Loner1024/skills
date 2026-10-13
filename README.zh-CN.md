@@ -42,6 +42,7 @@ npx skills use Loner1024/skills@tech-diagrams | claude
 | [`tech-diagrams`](skills/tech-diagrams) | 产出可发布级技术图表：手写 SVG 加自包含 HTML 预览，交付前自动 lint。覆盖 14 类图，从架构拓扑到序列图、状态机、基准条形、终端窗口框架。同时决定**什么时候不该画图**。 | `python3`、`rsvg-convert`、Chrome/Chromium（渲染 HTML 预览用） |
 | [`architecture-ablation`](skills/architecture-ablation) | 通过移除或替换某个组件、层次或机制，并和基线对照，检验它到底贡献了什么。把"这层抽象是不是多余的"变成一个可以复核的证据结论。 | 无 |
 | [`external-agent-handoff`](skills/external-agent-handoff) | 把任务收成交接文档和一份可直接转发的 prompt，交给外部 agent 执行；用户带回结果后，再按验收标准逐项检查。当前 agent 不调用外部 agent。 | 无 |
+| [`web-craft`](skills/web-craft) | 网页界面打磨的单一入口：先判断任务属于哪一类，再路由到十四个原样搬运的设计工程模块之一（UI 打磨、动效、评审、性能、原型、手机端手感），并原样执行该模块的规则。 | 无 |
 
 ## tech-diagrams
 
@@ -138,6 +139,39 @@ agent。它先写好方案和检查项，再给出一份文档和一段用户可
 - **交出后停下。** 状态保持为等待外部执行和回传，直到用户带回结果。
 - **对照产物验收。** 缺文件的项记为未完成。每条标准都要有当前 agent 自己跑过的结论。失败项要么修好再验，要么写成修订 prompt 送回去。
 
+## web-craft
+
+一个入口，替代十四个 skill 争抢 agent 的注意力。agent 只看到一个 skill；这个 skill 判断任务属于哪一类，
+路由到唯一拥有它的模块，然后原样执行模块的规则，不打折。动效评审不会变成设计重写，「这个不该做动效」就是
+最终答案。
+
+十四个模块是 [Emil Kowalski](https://github.com/emilkowalski/skills) 的设计工程 skill 集，原样放在
+[`modules/`](skills/web-craft/modules) 下，MIT 许可证一并保留。只有一处机械改动：模块文件名为
+`MODULE.md` 而不是 `SKILL.md`——agent 侧的 skill 发现会把任何嵌套的 `SKILL.md` 当成一个独立 skill，
+一个入口会变成十五个；模块内两处引用该文件名的文字已同步。除此之外与上游逐字节一致。本仓库新增的只有路由层：
+
+- **按任务分类，不按关键词。**「让这个 popover 手感对」是动效构建；「抽屉为什么卡」是性能；「看一下这个
+  diff 里的动效」是评审。
+- **仅显式调用的模块保持显式。** `review-animations`、`prototype`、`pick-ui-library` 只在用户明确要求这类
+  工作、点名该模块、或所路由的模块主动交接时才进入，绝不作为顺手附赠的一步。
+- **组合让位于模块自身。** 模块自己的调用变体与交接（`execute <plan>`、`keep <variant>`）优先于本仓库
+  建议的任何顺序；两个模块争同一件事时，更专门的那个赢。
+- **模块不因任务而改。** 如果模块不适合这件事，那是路由错了，不是模块错了。
+
+| 任务 | 路由到 |
+| --- | --- |
+| 构建或打磨 UI | `emil-design-eng` |
+| 加动效（网页 / Expo） | `animate` · `animate-expo` |
+| 评审 UI / 设计代码（非动效） | `emil-design-eng` |
+| 评审、审计、寻找动效 | `review-animations` · `improve-animations` · `find-animation-opportunities` |
+| 动效掉帧 | `animation-performance` |
+| 手势驱动的流式交互 | `apple-design` |
+| 网页在手机上像网站 | `mobile-native` |
+| 选 UI 库 · 原型对比 | `pick-ui-library` · `prototype` |
+| 边界数据压测 | `break-ui` |
+| 给动效命名 | `animation-vocabulary` |
+| Sonner toast | `ask-sonner` |
+
 ## 仓库结构
 
 ```
@@ -159,6 +193,10 @@ skills/
   external-agent-handoff/
     SKILL.md                     入口：交接文档、转发 prompt、验收
     agents/openai.yaml           界面元数据：显示名、触发词、不触发词
+  web-craft/
+    SKILL.md                     唯一入口：分发规则、路由表、模块组合
+    agents/openai.yaml           界面元数据：显示名、触发词、不触发词
+    modules/                     14 个模块，原样来自 emilkowalski/skills，附其 MIT LICENSE
 ```
 
 `skills/<name>/` 就是安装单元：`npx skills` 复制的正是这一整个目录。这里的每个 skill 都自洽，不读自己文件夹

@@ -42,6 +42,7 @@ Update later with `npx skills update -g`, and remove with `npx skills remove <sk
 | [`tech-diagrams`](skills/tech-diagrams) | Draws publication-quality technical figures as hand-authored SVG plus a self-contained HTML preview, and lints them before delivering. 14 figure types, from architecture topology to sequence, state machine, benchmark bars, and terminal window frames. Also decides **when not to draw**. | `python3`, `rsvg-convert`, Chrome/Chromium (for HTML previews) |
 | [`architecture-ablation`](skills/architecture-ablation) | Tests whether a component, layer, or mechanism earns its place by removing or replacing it and comparing the result against a baseline. Turns "is this abstraction doing anything?" into a decision backed by evidence you can recheck. | none |
 | [`external-agent-handoff`](skills/external-agent-handoff) | Packs a task into a handoff document and a copy-ready prompt for an external agent the user forwards, then checks the returned work against the acceptance criteria. The current agent does not call the external agent. | none |
+| [`web-craft`](skills/web-craft) | One entry point for web interface craft: classifies the job, routes to one of fourteen design-engineering modules carried verbatim (UI polish, motion, review, performance, prototyping, mobile feel), and follows that module's rules unchanged. | none |
 
 ## tech-diagrams
 
@@ -163,6 +164,45 @@ It forces a few things that a loose "here, send this" usually skips:
   from a check the current agent runs. A failure is fixed and rechecked, or sent back as a
   revision prompt.
 
+## web-craft
+
+One entry point instead of fourteen skills competing for the agent's attention. The agent sees a
+single skill; that skill reads the job, routes to the module that owns it, and follows the module's
+rules without softening them. A motion review does not turn into a design rewrite, and "don't
+animate this" stays the answer.
+
+The fourteen modules are [Emil Kowalski](https://github.com/emilkowalski/skills)'s
+design-engineering skill set, carried verbatim under
+[`modules/`](skills/web-craft/modules) with his MIT license kept alongside. One mechanical
+change: each module file is `MODULE.md` rather than `SKILL.md`, because agent-side discovery treats
+any nested `SKILL.md` as a skill of its own — one entry point would become fifteen. The text is
+otherwise byte-identical. What this repository adds is the router:
+
+- **Classification by job, not keywords.** "Make this popover feel right" is a motion build; "why
+  does my drawer stutter" is performance; "review the motion in this diff" is a critique.
+- **Explicit-only modules stay explicit.** `review-animations`, `prototype`, and `pick-ui-library`
+  are entered only when the user asks for that job, names the module, or the module already routed
+  to hands off to it — never as an unrequested bonus step.
+- **Combinations defer to the modules.** A module's own invocation variants and handoffs
+  (`execute <plan>`, `keep <variant>`) win over any sequence this repository suggests; when two
+  modules claim the same job, the specialist wins.
+- **The modules are never edited to fit a task.** If a module is wrong for the job, the route was
+  wrong, not the module.
+
+| Job | Routes to |
+| --- | --- |
+| Build or polish a UI | `emil-design-eng` |
+| Add motion (web / Expo) | `animate` · `animate-expo` |
+| Review UI or design code (not motion) | `emil-design-eng` |
+| Review, audit, or find motion | `review-animations` · `improve-animations` · `find-animation-opportunities` |
+| Motion drops frames | `animation-performance` |
+| Fluid, gesture-driven interaction | `apple-design` |
+| A web app on a phone | `mobile-native` |
+| UI library choice · variant prototyping | `pick-ui-library` · `prototype` |
+| Worst-case data | `break-ui` |
+| Name an effect | `animation-vocabulary` |
+| Sonner toasts | `ask-sonner` |
+
 ## Repository layout
 
 ```
@@ -184,6 +224,10 @@ skills/
   external-agent-handoff/
     SKILL.md                     entry point: handoff document, forward prompt, acceptance
     agents/openai.yaml           interface metadata: display name, triggers, not-triggers
+  web-craft/
+    SKILL.md                     the single entry point: dispatch rules, routing table, combinations
+    agents/openai.yaml           interface metadata: display name, triggers, not-triggers
+    modules/                     14 modules, verbatim from emilkowalski/skills, plus its MIT LICENSE
 ```
 
 `skills/<name>/` is the install unit: that is the whole directory `npx skills` copies. Every skill
