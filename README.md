@@ -43,6 +43,8 @@ Update later with `npx skills update -g`, and remove with `npx skills remove <sk
 | [`architecture-ablation`](skills/architecture-ablation) | Tests whether a component, layer, or mechanism earns its place by removing or replacing it and comparing the result against a baseline. Turns "is this abstraction doing anything?" into a decision backed by evidence you can recheck. | none |
 | [`external-agent-handoff`](skills/external-agent-handoff) | Packs a task into a handoff document and a copy-ready prompt for an external agent the user forwards, then checks the returned work against the acceptance criteria. The current agent does not call the external agent. | none |
 | [`web-craft`](skills/web-craft) | One entry point for web interface craft: classifies the job, routes to one of fourteen design-engineering modules carried verbatim (UI polish, motion, review, performance, prototyping, mobile feel), and follows that module's rules unchanged. | none |
+| [`unslop`](skills/unslop) | Removes AI tells from writing: 33 numbered rules in 8 groups, each naming a pattern and its fix, run as scan → rewrite → self-audit. | none |
+| [`deslop`](skills/deslop) | Removes AI-generated code slop from a branch diff: comments that restate the line, defensive checks on trusted paths, `any` casts, deep nesting, and patterns that disagree with the surrounding file. | none |
 
 ## tech-diagrams
 
@@ -206,6 +208,27 @@ otherwise byte-identical. What this repository adds is the router:
 | Name an effect | `animation-vocabulary` |
 | Sonner toasts | `ask-sonner` |
 
+## unslop
+
+Writing, not generating: point it at text and it removes the tells that make it read as
+AI-generated. Thirty-three numbered rules in eight groups, from superficial -ing phrases and vague
+attributions to em dash overuse, chatbot phrases, and abstract metaphor nouns. Each rule names the
+pattern and the fix rather than asking for a vibe, and the process is scan → rewrite (preserve
+meaning, match tone) → self-audit.
+
+The rule numbers are stable ids that other skills cite, so a removed rule leaves a gap on purpose.
+Keep the numbering when editing the file.
+
+## deslop
+
+The code half of the same idea. It reads the diff against main and removes what a model added
+without being asked: comments that restate the line, defensive checks and try/catch blocks that are
+abnormal for trusted paths, `any` casts that only bypass a type error, nesting that wants an early
+return, and patterns that disagree with the surrounding file.
+
+Its guardrails are the point: behavior stays unchanged unless it is fixing a clear bug, minimal
+edits beat broad rewrites, and the summary is 1-3 sentences.
+
 ## Repository layout
 
 ```
@@ -231,6 +254,10 @@ skills/
     SKILL.md                     the single entry point: dispatch rules, routing table, combinations
     agents/openai.yaml           interface metadata: display name, triggers, not-triggers
     modules/                     14 modules, verbatim from emilkowalski/skills, plus its MIT LICENSE
+  unslop/
+    SKILL.md                     writing: 33 numbered rules that remove AI tells
+  deslop/
+    SKILL.md                     code: remove AI-generated slop from a branch diff
 ```
 
 `skills/<name>/` is the install unit: that is the whole directory `npx skills` copies. Every skill

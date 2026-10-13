@@ -43,6 +43,8 @@ npx skills use Loner1024/skills@tech-diagrams | claude
 | [`architecture-ablation`](skills/architecture-ablation) | 通过移除或替换某个组件、层次或机制，并和基线对照，检验它到底贡献了什么。把"这层抽象是不是多余的"变成一个可以复核的证据结论。 | 无 |
 | [`external-agent-handoff`](skills/external-agent-handoff) | 把任务收成交接文档和一份可直接转发的 prompt，交给外部 agent 执行；用户带回结果后，再按验收标准逐项检查。当前 agent 不调用外部 agent。 | 无 |
 | [`web-craft`](skills/web-craft) | 网页界面打磨的单一入口：先判断任务属于哪一类，再路由到十四个原样搬运的设计工程模块之一（UI 打磨、动效、评审、性能、原型、手机端手感），并原样执行该模块的规则。 | 无 |
+| [`unslop`](skills/unslop) | 去掉写作里的 AI 痕迹：8 组共 33 条编号规则，每条都指出模式和解法，按"扫描 → 改写 → 自查"执行。 | 无 |
+| [`deslop`](skills/deslop) | 去掉分支 diff 里 AI 生成的代码噪音：复述代码行的注释、可信路径上的防御性检查、只为绕过类型的 `any` 断言、深层嵌套、与周边代码不一致的写法。 | 无 |
 
 ## tech-diagrams
 
@@ -174,6 +176,21 @@ agent。它先写好方案和检查项，再给出一份文档和一段用户可
 | 给动效命名 | `animation-vocabulary` |
 | Sonner toast | `ask-sonner` |
 
+## unslop
+
+只管改写、不管生成：把文本交给它，它去掉那些让它读起来像 AI 写的痕迹。8 组共 33 条编号规则，从空泛的
+-ing 短语、模糊归因，到破折号滥用、聊天机器人套话、抽象隐喻名词。每条规则都指出模式和解法，而不是给一个
+"感觉"；流程是扫描 → 改写（保义合调）→ 自查。
+
+规则编号是稳定 id，会被其他 skill 引用，所以删掉一条规则会故意留下空号。改这个文件时请保留编号。
+
+## deslop
+
+同一个思路的代码版。它读相对 main 的 diff，删掉模型自作主张加的东西：复述代码行的注释、可信路径上的
+防御性检查和 try/catch、只为绕过类型报错的 `any` 断言、该用提前返回拆掉的嵌套，以及与周围文件不一致的写法。
+
+它的护栏才是重点：除非在修明确的 bug，否则行为不变；小改优先于大重写；总结压到 1-3 句。
+
 ## 仓库结构
 
 ```
@@ -199,6 +216,10 @@ skills/
     SKILL.md                     唯一入口：分发规则、路由表、模块组合
     agents/openai.yaml           界面元数据：显示名、触发词、不触发词
     modules/                     14 个模块，原样来自 emilkowalski/skills，附其 MIT LICENSE
+  unslop/
+    SKILL.md                     写作：33 条编号规则，去掉 AI 痕迹
+  deslop/
+    SKILL.md                     代码：从分支 diff 里删掉 AI 噪音
 ```
 
 `skills/<name>/` 就是安装单元：`npx skills` 复制的正是这一整个目录。这里的每个 skill 都自洽，不读自己文件夹
