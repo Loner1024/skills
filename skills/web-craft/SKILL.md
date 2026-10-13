@@ -124,10 +124,13 @@ When two modules claim the same job, the specialist wins: `animation-performance
 ## Attribution
 
 Everything under `modules/` is [Emil Kowalski](https://github.com/emilkowalski/skills)'s work,
-carried verbatim under the MIT license kept at [`modules/LICENSE`](modules/LICENSE). Route to the
-modules; never edit one to fit a task — if a module is wrong for the job, the route was wrong.
+carried verbatim under the MIT license kept at
+[`modules/LICENSE.txt`](modules/LICENSE.txt). Route to the modules; never edit one to fit a task —
+if a module is wrong for the job, the route was wrong.
 
-Two mechanical changes keep the single entry point single: each module's `SKILL.md` is renamed
-`MODULE.md` (agents discover any file named `SKILL.md` as a skill of its own, which would turn one
-entry point into fifteen), and the two module-internal references to that filename were updated to
-match. Module text is otherwise byte-identical to upstream.
+Three mechanical changes keep the single entry point single and the skill loadable where Amp
+serves it: each module's `SKILL.md` is renamed `MODULE.md` (agents discover any file named
+`SKILL.md` as a skill of its own, which would turn one entry point into fifteen), the two
+module-internal references to that filename were updated to match, and the upstream `LICENSE`
+becomes `LICENSE.txt`, because a hosted skill is served only when every file in it is text and an
+extensionless file is not recognisable as one. Module text is otherwise byte-identical to upstream.
