@@ -146,9 +146,11 @@ agent。它先写好方案和检查项，再给出一份文档和一段用户可
 最终答案。
 
 十四个模块是 [Emil Kowalski](https://github.com/emilkowalski/skills) 的设计工程 skill 集，原样放在
-[`modules/`](skills/web-craft/modules) 下，MIT 许可证一并保留。只有一处机械改动：模块文件名为
-`MODULE.md` 而不是 `SKILL.md`——agent 侧的 skill 发现会把任何嵌套的 `SKILL.md` 当成一个独立 skill，
-一个入口会变成十五个；模块内两处引用该文件名的文字已同步。除此之外与上游逐字节一致。本仓库新增的只有路由层：
+[`modules/`](skills/web-craft/modules) 下，MIT 许可证一并保留。四处机械改动让单一入口成立、并保证托管侧
+能加载：模块文件名为 `MODULE.md` 而不是 `SKILL.md`（agent 侧的 skill 发现会把任何嵌套的 `SKILL.md`
+当成独立 skill，一个入口会变成十五个）；模块内两处引用该文件名的文字已同步；许可证加上 `.txt` 扩展名；
+`break-ui` 里两个字面 U+FFFD 字符改写为转义 `\uFFFD`——托管侧遇到含该字符的文件会整个 skill 不加载。
+除此之外与上游逐字节一致。本仓库新增的只有路由层：
 
 - **按任务分类，不按关键词。**「让这个 popover 手感对」是动效构建；「抽屉为什么卡」是性能；「看一下这个
   diff 里的动效」是评审。

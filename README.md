@@ -173,9 +173,12 @@ animate this" stays the answer.
 
 The fourteen modules are [Emil Kowalski](https://github.com/emilkowalski/skills)'s
 design-engineering skill set, carried verbatim under
-[`modules/`](skills/web-craft/modules) with his MIT license kept alongside. One mechanical
-change: each module file is `MODULE.md` rather than `SKILL.md`, because agent-side discovery treats
-any nested `SKILL.md` as a skill of its own — one entry point would become fifteen. The text is
+[`modules/`](skills/web-craft/modules) with his MIT license kept alongside. Four mechanical changes
+make the single entry point hold and keep the skill loadable where Amp serves it: module files are
+`MODULE.md` rather than `SKILL.md` (agent-side discovery treats any nested `SKILL.md` as a skill of
+its own), the two module-internal references to that filename were updated, the bundled license
+carries a `.txt` extension, and the two literal U+FFFD characters in `break-ui` are written as the
+escape `\uFFFD` — a hosted skill whose files contain one is not served at all. The text is
 otherwise byte-identical. What this repository adds is the router:
 
 - **Classification by job, not keywords.** "Make this popover feel right" is a motion build; "why

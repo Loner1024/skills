@@ -128,9 +128,15 @@ carried verbatim under the MIT license kept at
 [`modules/LICENSE.txt`](modules/LICENSE.txt). Route to the modules; never edit one to fit a task —
 if a module is wrong for the job, the route was wrong.
 
-Three mechanical changes keep the single entry point single and the skill loadable where Amp
-serves it: each module's `SKILL.md` is renamed `MODULE.md` (agents discover any file named
-`SKILL.md` as a skill of its own, which would turn one entry point into fifteen), the two
-module-internal references to that filename were updated to match, and the upstream `LICENSE`
-becomes `LICENSE.txt`, because a hosted skill is served only when every file in it is text and an
-extensionless file is not recognisable as one. Module text is otherwise byte-identical to upstream.
+Four mechanical changes keep the single entry point single and the skill loadable where Amp serves
+it:
+
+- each module's `SKILL.md` is renamed `MODULE.md` — agents discover any file named `SKILL.md` as a
+  skill of its own, which would turn one entry point into fifteen;
+- the two module-internal references to that filename were updated to match;
+- the upstream `LICENSE` gains a `.txt` extension, so every file in the skill has one;
+- the two literal U+FFFD characters in `break-ui` are written as the escape `\uFFFD`. Upstream uses
+  the replacement character to illustrate a broken surrogate pair, and hosted serving refuses a
+  skill whose files contain one — this alone kept the whole skill out of the index.
+
+Module text is otherwise byte-identical to upstream.
