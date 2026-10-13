@@ -169,6 +169,8 @@ It forces a few things that a loose "here, send this" usually skips:
 research/                        provenance, not part of any skill
   FINDINGS.md                    how the five companies present figures, per company, with links
   TAXONOMY.md                    the decision taxonomy and tooling survey behind the rules
+scripts/
+  sync-to-amp-skills.sh          copy skills/ into the maintainer's Amp personal skills repository
 skills/
   tech-diagrams/
     SKILL.md                     entry point: workflow, routing table, hard rules

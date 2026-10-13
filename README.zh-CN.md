@@ -144,6 +144,8 @@ agent。它先写好方案和检查项，再给出一份文档和一段用户可
 research/                        出处材料，不属于任何 skill
   FINDINGS.md                    五家怎么做图，逐家记录，带原始链接
   TAXONOMY.md                    规则背后的决策分类与工具路线调研
+scripts/
+  sync-to-amp-skills.sh          把 skills/ 同步到维护者的 Amp 个人 skills 仓库
 skills/
   tech-diagrams/
     SKILL.md                     入口：流程、类型路由表、硬规则
