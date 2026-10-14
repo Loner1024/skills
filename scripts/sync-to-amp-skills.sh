@@ -9,6 +9,8 @@
 #   scripts/sync-to-amp-skills.sh --dry-run    report what would change, commit nothing
 #
 # Behaviour:
+#   - the source is origin/main, never this checkout: a checkout can be behind (another orb
+#     pushed), and copying a stale tree would revert newer content in the personal repository;
 #   - text files only: Amp serves no binaries, so *.png and friends stay here (the example renders);
 #   - add and update only: a skill that exists only in the personal repository is reported, never
 #     deleted, so a skill created in Amp by hand survives a sync;
@@ -19,12 +21,22 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SKILLS_DIR="$REPO_ROOT/skills"
 CACHE_DIR="${AMP_SKILLS_REPO_DIR:-$HOME/.cache/amp/repositories/ampcode.com-user-skills}"
 DRY_RUN=""
 [ "${1:-}" = "--dry-run" ] && DRY_RUN=1
 
 command -v amp >/dev/null 2>&1 || { echo "amp CLI not found; see https://ampcode.com/docs/cli" >&2; exit 3; }
+
+# Read the published revision, not the working tree.
+git -C "$REPO_ROOT" fetch --quiet origin main
+SOURCE_REV_FULL="$(git -C "$REPO_ROOT" rev-parse origin/main)" || {
+  echo "cannot resolve origin/main in $REPO_ROOT" >&2; exit 3; }
+SOURCE_REV="$(git -C "$REPO_ROOT" rev-parse --short origin/main)"
+WORK="$(mktemp -d "${TMPDIR:-/tmp}/amp-skills-sync.XXXXXX")"
+trap 'rm -rf "$WORK"' EXIT
+git -C "$REPO_ROOT" archive "$SOURCE_REV_FULL" skills | tar -xf - -C "$WORK"
+SKILLS_DIR="$WORK/skills"
+[ -d "$SKILLS_DIR" ] || { echo "origin/main carries no skills/ directory" >&2; exit 3; }
 
 # Reuse the canonical clone when it exists (amp clone also installs the credential helper the later
 # push needs), otherwise clone it.
@@ -64,7 +76,7 @@ done
 
 cd "$CACHE_DIR"
 if [ -z "$(git status --porcelain)" ]; then
-  echo "up to date: skills/ and the personal skills repository agree"
+  echo "up to date: origin/main and the personal skills repository agree"
   exit 0
 fi
 

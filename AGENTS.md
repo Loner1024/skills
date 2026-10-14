@@ -14,8 +14,10 @@ scripts/sync-to-amp-skills.sh
 ```
 
 It copies every skill (text files only - Amp serves no binaries), commits, and pushes to the
-maintainer's personal skills repository. It adds and updates; it never deletes, so a skill created
-in Amp by hand survives a sync. The same script is what the daily schedule on the maintainer's
-thread runs, so this step is a convenience for the common case, not the only path.
+maintainer's personal skills repository. It reads `origin/main`, not the checkout it runs from, so
+it is safe to run from an orb that is behind. It adds and updates; it never deletes, so a skill
+created in Amp by hand survives a sync - and a skill deleted here has to be deleted there by hand.
+The same script is what the daily schedule on the maintainer's thread runs, so this step is a
+convenience for the common case, not the only path.
 
 Run `scripts/sync-to-amp-skills.sh --dry-run` to see what would change without committing.
