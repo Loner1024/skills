@@ -45,6 +45,7 @@ npx skills use Loner1024/skills@tech-diagrams | claude
 | [`web-craft`](skills/web-craft) | 网页界面打磨的单一入口：先判断任务属于哪一类，再路由到十四个原样搬运的设计工程模块之一（UI 打磨、动效、评审、性能、原型、手机端手感），并原样执行该模块的规则。 | 无 |
 | [`unslop`](skills/unslop) | 去掉写作里的 AI 痕迹：8 组共 33 条编号规则，每条都指出模式和解法，按"扫描 → 改写 → 自查"执行。 | 无 |
 | [`deslop`](skills/deslop) | 去掉分支 diff 里 AI 生成的代码噪音：复述代码行的注释、可信路径上的防御性检查、只为绕过类型的 `any` 断言、深层嵌套、与周边代码不一致的写法。 | 无 |
+| [`create-verification-skill`](skills/create-verification-skill) | 给目标仓库生成项目本地的验证 skill：像用户一样驱动真实应用（启动、体检、驱动、取证、清理），播种按功能拆分的验证地图，交付前端到端实跑一遍证明生成物可用。 | 无 |
 
 ## tech-diagrams
 
@@ -191,6 +192,12 @@ agent。它先写好方案和检查项，再给出一份文档和一段用户可
 
 它的护栏才是重点：除非在修明确的 bug，否则行为不变；小改优先于大重写；总结压到 1-3 句。
 
+## create-verification-skill
+
+给目标仓库生成它自己的验证 skill（`<skills>/verify-<app>/`）。先只访谈代码库、不问用户：用户实际碰到什么界面、应用怎么启动、怎么程序化驱动、能取什么证据、能不能并行跑两个实例。再写出带 Launch、Doctor、Drive、Evidence、Cleanup、Helpers 六段的 SKILL.md，每一段都以访谈发现为准、不留占位符。
+
+然后播种功能地图：`features/README.md` 索引加每个用户可见功能一个文件，固定四个 H2（Sub-features、How to get to it (user POV)、Driving it with <harness>、Gotchas），样例在 `references/feature-map-example/`。最后必须按生成的 skill 端到端实跑一遍（launch → doctor → 驱动一个功能 → 取证 → 清理，清理后证据必须还在），没跑过的生成物只是草稿。应用变化后，功能地图靠手动更新 `features/` 下的文件来保持诚实。
+
 ## 仓库结构
 
 ```
@@ -221,6 +228,10 @@ skills/
     agents/openai.yaml           界面元数据：显示名、触发词、不触发词
   deslop/
     SKILL.md                     代码：从分支 diff 里删掉 AI 噪音
+    agents/openai.yaml           界面元数据：显示名、触发词、不触发词
+  create-verification-skill/
+    SKILL.md                     入口：访谈仓库、生成 verify-<app>、播种功能地图、端到端验证
+    references/                  功能地图样例 feature-map-example：索引加每个功能一个文件
     agents/openai.yaml           界面元数据：显示名、触发词、不触发词
 ```
 
