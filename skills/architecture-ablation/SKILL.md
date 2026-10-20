@@ -76,6 +76,10 @@ the cost the new design avoids introducing.
 The first candidate is deletion: remove dead code, redundant validators, and stub references
 before adding a replacement. Cut before polishing.
 
+The deletion test (defined in `codebase-design`) is the module-level version of this question: delete
+the module and see whether complexity vanishes or reappears across callers. Here the same question
+becomes an experiment against the baseline.
+
 ## Run the comparison
 
 Starting from the current design, remove or replace one mechanism at a time. An inseparable
@@ -95,13 +99,12 @@ Pick the validation method the available evidence supports:
   test environment, and keep the commands, scenarios, and results. Support performance claims with
   comparable measurements, and report ranges and limitations when the numbers are noisy. If the
   repo has a `verify-<app>` skill, use its feature journeys as the scenario and keep the evidence
-  path.
+  path; it is explicit-only, so point at it rather than assuming you can invoke it.
 - **Still in design**: walk both designs through the same business scenario step by step — data,
   state, side effects, failure recovery. Label the result a design walkthrough. If one state model
-  is the uncertainty a walkthrough cannot settle, build a throwaway prototype: one self-contained
-  HTML file, the logic in a pure liftable module, free-play buttons, and one guided scenario per
-  tab. Render the full state after every action. No persistence, no tests, no abstraction. Once the
-  question is answered, lift the validated module into the real code and keep the HTML out of main.
+  is the uncertainty a walkthrough cannot settle, build a throwaway prototype: the logic in a pure,
+  liftable module, no persistence, no tests. Once the question is answered, lift the validated
+  module into the real code.
 - **Cannot be verified**: label it unverified, name the missing evidence, and name the smallest
   action that would produce it.
 
@@ -117,9 +120,9 @@ as though it had already passed.
 | Defer | The mechanism only serves a need that has not happened and has not been committed to, and a simpler design meets today's requirements. State the observable condition that would bring it back. |
 | Unverified | Evidence is not enough to decide. Leave the existing mechanism in place; state the open items for the new design, and treat the unknown as proving neither that it can be removed nor that it is required. |
 
-Spend rigor where the decision is hard to reverse or has a wide blast radius; a reversible, local
-choice does not need the full comparison. An inconclusive comparison is not a passing
-simplification: leave the mechanism in place and name the evidence that would settle it.
+Spend rigor where the decision is one-way; a two-way door does not need the full comparison. An
+inconclusive comparison is not a passing simplification: leave the mechanism in place and name the
+evidence that would settle it.
 
 For guarantees such as security, correctness, and reliability, verify the mechanism or invariant
 that carries the responsibility. A normal-path run that never triggers a protection only shows
@@ -157,12 +160,12 @@ paragraph; fold it into the existing design doc, or an ADR that already covers t
 than generating a duplicate report. Record deferrals with their re-entry trigger, in the existing
 design doc, ADR, or the reply, so they can be found later.
 
-For each decision, record the door and the blast radius: `Door: one-way / two-way`,
-`Blast radius: <one word>`. A one-way door needs stronger evidence than a two-way door.
+For each decision, record `Door: one-way / two-way`. A one-way door needs stronger evidence than a
+two-way door.
 
-Write an ADR only when all three conditions hold: the decision is hard to reverse, surprising
-without context, and the result of a real trade-off. Otherwise fold it into the existing design
-doc or the reply. Skip the ADR when one condition is missing.
+Write an ADR only when all three conditions hold: the decision is one-way (hard to reverse),
+surprising without context, and the result of a real trade-off. Otherwise fold it into the existing
+design doc or the reply. Skip the ADR when one condition is missing.
 
 ## Handoff
 

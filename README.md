@@ -248,6 +248,21 @@ return, and patterns that disagree with the surrounding file.
 Its guardrails are the point: behavior stays unchanged unless it is fixing a clear bug, minimal
 edits beat broad rewrites, and the summary is 1-3 sentences.
 
+## create-verification-skill
+
+Generates a project-local verification skill (`<skills>/verify-<app>/`) for the target repo. It
+interviews the codebase first, not the user: what surface a user touches, how the app starts, how an
+agent can drive it, what evidence can be captured, and whether two instances can run side by side.
+The generated `SKILL.md` has six sections, Launch, Doctor, Drive, Evidence, Cleanup, and Helpers,
+each grounded in what the interview found, with no placeholders.
+
+It then seeds a feature map: a `features/README.md` index plus one file per user-facing feature, with
+the four H2s `Sub-features`, `How to get to it (user POV)`, `Driving it with <harness>`, and
+`Gotchas`; the example is in `references/feature-map-example/`. The generated skill must be run end
+to end once (launch, doctor, drive one feature, evidence, cleanup, with the evidence still present
+after cleanup); an unrun generated skill is a draft. As the app changes, the feature map is kept
+honest by updating the files under `features/`.
+
 ## Repository layout
 
 ```
@@ -283,6 +298,9 @@ skills/
   deslop/
     SKILL.md                     code: remove AI-generated slop from a branch diff
     agents/openai.yaml           interface metadata: display name, triggers, not-triggers
+  create-verification-skill/
+    SKILL.md                     entry point: interview, generate, seed map, prove, maintain
+    references/feature-map-example/  README + three feature files
 ```
 
 `skills/<name>/` is the install unit: that is the whole directory `npx skills` copies. Every skill

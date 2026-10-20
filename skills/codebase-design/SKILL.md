@@ -3,7 +3,7 @@ name: codebase-design
 description: |
   Design and review deep modules: choose the interface, place the seam, and shape what sits behind it. Use when the user asks 模块设计 / 接口设计 / 接缝 / 深模块 / 代码库架构 / 这个模块该怎么拆 / 这个接口是不是太宽, or asks to design a module, review module boundaries, place a seam, or decide where validation and state belong. Also use when another skill needs the deep-module vocabulary.
 
-  Not for system-level mechanism decisions (service, cache, queue, deployment boundary, state ownership). That is architecture-ablation. Not for UI design (web-craft) or figures (tech-diagrams).
+  Not for system-level mechanism decisions (service, cache, queue, deployment boundary, state ownership). That is architecture-ablation.
 ---
 
 # Codebase design
@@ -70,8 +70,9 @@ Your first interface is unlikely to be the best. Write three briefs for the same
 - Minimise the interface: one to three entry points, maximum leverage per entry point.
 - Maximise flexibility: support many use cases and extension.
 - Optimise for the most common caller: make the default case trivial.
+- Design around ports and adapters for cross-seam dependencies.
 
-If the harness can run parallel subagents, give each brief to one. If it cannot, solve them sequentially, or have one agent wear the three hats in turn. Compare on depth, locality, and seam placement. Recommend one design; do not present a menu.
+If the harness can run parallel subagents, give each brief to one. If it cannot, solve them sequentially, or have one agent wear the four hats in turn. Compare on depth, locality, and seam placement. Recommend one design; do not present a menu.
 
 ### 5. Screen the red flags
 
@@ -117,8 +118,8 @@ Cover these lenses:
 
 - **Deletion test.** If the module vanished, where would its complexity go? A pass-through is a removal candidate.
 - **Depth.** Is the interface nearly as complex as the implementation? Do callers coordinate several methods to complete one operation? Do public options expose internal stages?
-- **Reader load.** How many layers must a reader trace to answer "where does X come from?" and "what can change X?" How much hidden or mutable state must they hold? Collapse one-caller wrappers and adapters with no second implementation; shrink state scope.
-- **Boundary.** Is validation at the system edge, or scattered through the core? Does the public surface expose transport, storage, framework, or wire types?
+- **Reader load.** How many layers must a reader trace to answer "where does X come from?" and "what can change X?" How much hidden or mutable state must they hold? See the reader-load section in [references/red-flags.md](references/red-flags.md).
+- **Validation placement.** Is validation at the system edge, or scattered through the core? Does the public surface expose transport, storage, framework, or wire types?
 - **Test surface.** Can a test exercise the behaviour through the interface? If it must mock an internal helper or assert call order, the shape is wrong.
 
 Do not list every possible refactor. Keep the findings that would change a decision, and say what you checked and cleared.
@@ -126,8 +127,8 @@ Do not list every possible refactor. Keep the findings that would change a decis
 ## Handoff
 
 - The question is "should this service, cache, queue, layer, or state boundary exist?" → `architecture-ablation`. This skill judges shape, not existence.
-- The module change needs proof through the real app → `create-verification-skill` if the repo has a `verify-<app>` skill; otherwise use the existing test environment.
-- A figure would help → `tech-diagrams`; a comparison of three or fewer options is usually a table, not a figure.
+- The module change needs proof through the real app → use the repo's `verify-<app>` skill if it has one; otherwise `create-verification-skill` can generate it, or use the existing test environment.
+- A figure would help → `tech-diagrams`.
 
 ## Done when
 
