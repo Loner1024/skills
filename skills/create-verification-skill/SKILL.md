@@ -44,4 +44,4 @@ Run its own instructions end to end once: launch, doctor, drive ONE mapped featu
 
 ## 5. Offer the maintenance loop
 
-Keep the map honest as the app changes by updating the files under `features/` — by hand for now, or with a `maintain-verification-skill` companion skill if one is introduced later. Suggest a cadence only if they ask.
+Keep the map honest as the app changes by updating the files under `features/` — by hand for now, or with a `maintain-verification-skill` companion skill if one is introduced later. When an architecture decision removes or replaces a feature, update the map in the same change; a stale journey is worse than no journey. Suggest a cadence only if they ask.

@@ -40,6 +40,7 @@ Update later with `npx skills update -g`, and remove with `npx skills remove <sk
 | Skill | What it does | Requirements |
 | --- | --- | --- |
 | [`tech-diagrams`](skills/tech-diagrams) | Draws publication-quality technical figures as hand-authored SVG plus a self-contained HTML preview, and lints them before delivering. 14 figure types, from architecture topology to sequence, state machine, benchmark bars, and terminal window frames. Also decides **when not to draw**. | `python3`, `rsvg-convert`, Chrome/Chromium (for HTML previews) |
+| [`codebase-design`](skills/codebase-design) | Designs and reviews deep modules: exact vocabulary, seam placement, the shape behind the seam, eight design red flags, and a review checklist. | none |
 | [`architecture-ablation`](skills/architecture-ablation) | Tests whether a component, layer, or mechanism earns its place by removing or replacing it and comparing the result against a baseline. Turns "is this abstraction doing anything?" into a decision backed by evidence you can recheck. | none |
 | [`external-agent-handoff`](skills/external-agent-handoff) | Packs a task into a handoff document and a copy-ready prompt for an external agent the user forwards, then checks the returned work against the acceptance criteria. The current agent does not call the external agent. | none |
 | [`web-craft`](skills/web-craft) | One entry point for web interface craft: classifies the job, routes to one of fourteen design-engineering modules carried verbatim (UI polish, motion, review, performance, prototyping, mobile feel), and follows that module's rules unchanged. | none |
@@ -117,6 +118,23 @@ CJK stack is listed explicitly.
 The linter checks what can be checked. Visual taste, line weight, and whether the figure actually
 persuades still need a human eye on the PNG. If the agent cannot view images in a session, it says
 so and hands you the render for the final look.
+
+## codebase-design
+
+A vocabulary and workflow for designing deep modules: a lot of behaviour behind a small interface,
+at a clean seam, testable through that interface. It gives the agent exact terms (module, interface,
+implementation, depth, seam, adapter, leverage, locality) so "component", "service", and "API" stop
+standing in for different things.
+
+The design mode writes the caller's usage first, chooses the data shape behind the seam, classifies
+the dependency to place the seam, explores three alternative interfaces, and screens eight red flags
+that agents reliably introduce: shallow modules, information leakage, temporal decomposition,
+pass-through methods, split ownership, two ways to do one task, importable internals, and hand-synced
+lists.
+
+The review mode applies the deletion test, depth, reader load, boundary placement, and the test
+surface. It reports only findings that would change a decision, with evidence and a fix. It does not
+decide whether a service, cache, or queue should exist; that is `architecture-ablation`.
 
 ## architecture-ablation
 
@@ -245,6 +263,10 @@ skills/
     assets/                      tokens.css + dark and light starting templates
     scripts/                     render.sh · self_check.py · lint_docs.py
     examples/                    eight finished figures across the four type families
+  codebase-design/
+    SKILL.md                     entry point: vocabulary, design mode, review mode, handoff
+    references/                  red-flags.md · shape.md
+    agents/openai.yaml           interface metadata: display name, triggers, not-triggers
   architecture-ablation/
     SKILL.md                     entry point: baseline, ablation loop, decision table
     agents/openai.yaml           interface metadata: display name, triggers, not-triggers
