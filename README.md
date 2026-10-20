@@ -300,7 +300,8 @@ skills/
     agents/openai.yaml           interface metadata: display name, triggers, not-triggers
   create-verification-skill/
     SKILL.md                     entry point: interview, generate, seed map, prove, maintain
-    references/feature-map-example/  README + three feature files
+    references/feature-map-example/  README + two feature files
+    agents/openai.yaml           interface metadata: display name, triggers, not-triggers
 ```
 
 `skills/<name>/` is the install unit: that is the whole directory `npx skills` copies. Every skill

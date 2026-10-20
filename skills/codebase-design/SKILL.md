@@ -65,7 +65,7 @@ Prefer an existing seam over a new one. Use the highest seam that can test the b
 
 ### 4. Explore alternatives
 
-Your first interface is unlikely to be the best. Write three briefs for the same module, each with a different constraint:
+Your first interface is unlikely to be the best. Write four briefs for the same module, each with a different constraint:
 
 - Minimise the interface: one to three entry points, maximum leverage per entry point.
 - Maximise flexibility: support many use cases and extension.

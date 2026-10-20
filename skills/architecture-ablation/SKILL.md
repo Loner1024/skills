@@ -99,7 +99,8 @@ Pick the validation method the available evidence supports:
   test environment, and keep the commands, scenarios, and results. Support performance claims with
   comparable measurements, and report ranges and limitations when the numbers are noisy. If the
   repo has a `verify-<app>` skill, use its feature journeys as the scenario and keep the evidence
-  path; it is explicit-only, so point at it rather than assuming you can invoke it.
+  path. The generator (`create-verification-skill`) is explicit-only, so point at it rather than
+  assuming you can invoke it.
 - **Still in design**: walk both designs through the same business scenario step by step — data,
   state, side effects, failure recovery. Label the result a design walkthrough. If one state model
   is the uncertainty a walkthrough cannot settle, build a throwaway prototype: the logic in a pure,
