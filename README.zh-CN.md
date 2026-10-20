@@ -40,11 +40,13 @@ npx skills use Loner1024/skills@tech-diagrams | claude
 | Skill | 做什么 | 依赖 |
 | --- | --- | --- |
 | [`tech-diagrams`](skills/tech-diagrams) | 产出可发布级技术图表：手写 SVG 加自包含 HTML 预览，交付前自动 lint。覆盖 14 类图，从架构拓扑到序列图、状态机、基准条形、终端窗口框架。同时决定**什么时候不该画图**。 | `python3`、`rsvg-convert`、Chrome/Chromium（渲染 HTML 预览用） |
+| [`codebase-design`](skills/codebase-design) | 设计和评审深模块：精确词汇、接缝位置、接缝后面的数据形状、八条设计红牌、一张评审清单。 | 无 |
 | [`architecture-ablation`](skills/architecture-ablation) | 通过移除或替换某个组件、层次或机制，并和基线对照，检验它到底贡献了什么。把"这层抽象是不是多余的"变成一个可以复核的证据结论。 | 无 |
 | [`external-agent-handoff`](skills/external-agent-handoff) | 把任务收成交接文档和一份可直接转发的 prompt，交给外部 agent 执行；用户带回结果后，再按验收标准逐项检查。当前 agent 不调用外部 agent。 | 无 |
 | [`web-craft`](skills/web-craft) | 网页界面打磨的单一入口：先判断任务属于哪一类，再路由到十四个原样搬运的设计工程模块之一（UI 打磨、动效、评审、性能、原型、手机端手感），并原样执行该模块的规则。 | 无 |
 | [`unslop`](skills/unslop) | 去掉写作里的 AI 痕迹：8 组共 33 条编号规则，每条都指出模式和解法，按"扫描 → 改写 → 自查"执行。 | 无 |
 | [`deslop`](skills/deslop) | 去掉分支 diff 里 AI 生成的代码噪音：复述代码行的注释、可信路径上的防御性检查、只为绕过类型的 `any` 断言、深层嵌套、与周边代码不一致的写法。 | 无 |
+| [`create-verification-skill`](skills/create-verification-skill) | 给目标仓库生成项目本地的验证 skill：像用户一样驱动真实应用（启动、体检、驱动、取证、清理），播种按功能拆分的验证地图，交付前端到端实跑一遍证明生成物可用。 | 无 |
 
 ## tech-diagrams
 
@@ -107,6 +109,19 @@ Chrome 的字体解析行为不同，所以中文字体栈是显式列出的。
 
 linter 只查能查的部分。视觉手感、线宽、这张图到底有没有说服力，仍然需要人眼看一眼 PNG。如果 agent 在某次
 会话里无法读图，它会直说，并把渲染结果交给你做最终确认。
+
+## codebase-design
+
+一套设计深模块的词汇和工作流：大量行为藏在小接口后面，接缝干净，测试穿过同一个接口。它给 agent
+精确的词（module、interface、implementation、depth、seam、adapter、leverage、locality），让"组件"
+"服务""API"不再混用。
+
+设计模式先写调用方用法，再选接缝后面的数据形状，按依赖类型放接缝，探索三个不同约束的接口，最后过
+八条 agent 常犯的设计红牌：shallow module、information leakage、temporal decomposition、
+pass-through、split ownership、two ways、importable internals、hand-synced list。
+
+评审模式用 deletion test、depth、reader load、boundary、test surface 五个镜头，只报会改变决定的
+发现，每条带证据和修法。它不判断服务、缓存、队列该不该存在；那是 `architecture-ablation` 的 job。
 
 ## architecture-ablation
 
@@ -191,6 +206,12 @@ agent。它先写好方案和检查项，再给出一份文档和一段用户可
 
 它的护栏才是重点：除非在修明确的 bug，否则行为不变；小改优先于大重写；总结压到 1-3 句。
 
+## create-verification-skill
+
+给目标仓库生成它自己的验证 skill（`<skills>/verify-<app>/`）。先只访谈代码库、不问用户：用户实际碰到什么界面、应用怎么启动、怎么程序化驱动、能取什么证据、能不能并行跑两个实例。再写出带 Launch、Doctor、Drive、Evidence、Cleanup、Helpers 六段的 SKILL.md，每一段都以访谈发现为准、不留占位符。
+
+然后播种功能地图：`features/README.md` 索引加每个用户可见功能一个文件，固定四个 H2（Sub-features、How to get to it (user POV)、Driving it with <harness>、Gotchas），样例在 `references/feature-map-example/`。最后必须按生成的 skill 端到端实跑一遍（launch → doctor → 驱动一个功能 → 取证 → 清理，清理后证据必须还在），没跑过的生成物只是草稿。应用变化后，功能地图靠手动更新 `features/` 下的文件来保持诚实。
+
 ## 仓库结构
 
 ```
@@ -206,6 +227,10 @@ skills/
     assets/                      tokens.css 加深色/浅色起始模板
     scripts/                     render.sh · self_check.py · lint_docs.py
     examples/                    八张成品图，覆盖四个内容族
+  codebase-design/
+    SKILL.md                     入口：词汇、设计模式、评审模式、交接
+    references/                  red-flags.md · shape.md
+    agents/openai.yaml           界面元数据：显示名、触发词、不触发词
   architecture-ablation/
     SKILL.md                     入口：基线、消融循环、决策表
     agents/openai.yaml           界面元数据：显示名、触发词、不触发词
@@ -221,6 +246,10 @@ skills/
     agents/openai.yaml           界面元数据：显示名、触发词、不触发词
   deslop/
     SKILL.md                     代码：从分支 diff 里删掉 AI 噪音
+    agents/openai.yaml           界面元数据：显示名、触发词、不触发词
+  create-verification-skill/
+    SKILL.md                     入口：访谈仓库、生成 verify-<app>、播种功能地图、端到端验证
+    references/                  功能地图样例 feature-map-example：索引加每个功能一个文件
     agents/openai.yaml           界面元数据：显示名、触发词、不触发词
 ```
 

@@ -49,7 +49,9 @@ Mark gaps that would change the conclusion as unverified. Do not invent numbers 
 Record the original design's critical call paths, state ownership, and dependencies as the
 baseline for later comparison. When an implementation already exists, check how that baseline
 behaves in the scenarios at issue. If the baseline itself fails there, record that failure —
-"both variants fail" is not evidence that a simplification passed.
+"both variants fail" is not evidence that a simplification passed. If a new requirement
+invalidates the baseline, rebuild it as if the requirement had been a day-one assumption; do not
+ablate against a baseline that no longer holds.
 
 ## Choose what to ablate
 
@@ -71,6 +73,13 @@ comprehension cost, operations, migration cost. Shorter code with harder manual 
 failure handling may not be a win. Score the removal cost in an existing system separately from
 the cost the new design avoids introducing.
 
+The first candidate is deletion: remove dead code, redundant validators, and stub references
+before adding a replacement. Cut before polishing.
+
+The deletion test (defined in `codebase-design`) is the module-level version of this question: delete
+the module and see whether complexity vanishes or reappears across callers. Here the same question
+becomes an experiment against the baseline.
+
 ## Run the comparison
 
 Starting from the current design, remove or replace one mechanism at a time. An inseparable
@@ -88,11 +97,15 @@ Pick the validation method the available evidence supports:
 
 - **With an implementation**: run the relevant checks in an isolated local variant or an existing
   test environment, and keep the commands, scenarios, and results. Support performance claims with
-  comparable measurements, and report ranges and limitations when the numbers are noisy.
+  comparable measurements, and report ranges and limitations when the numbers are noisy. If the
+  repo has a `verify-<app>` skill, use its feature journeys as the scenario and keep the evidence
+  path. The generator (`create-verification-skill`) is explicit-only, so point at the generator
+  rather than assuming you can invoke it.
 - **Still in design**: walk both designs through the same business scenario step by step — data,
-  state, side effects, failure recovery. Label the result a design walkthrough. Build a minimal
-  prototype only for the key uncertainty that a walkthrough cannot settle, and only within the
-  task's scope.
+  state, side effects, failure recovery. Label the result a design walkthrough. If one state model
+  is the uncertainty a walkthrough cannot settle, build a throwaway prototype: the logic in a pure,
+  liftable module, no persistence, no tests. Once the question is answered, lift the validated
+  module into the real code.
 - **Cannot be verified**: label it unverified, name the missing evidence, and name the smallest
   action that would produce it.
 
@@ -107,6 +120,10 @@ as though it had already passed.
 | Keep | Removing it would violate a specific constraint, and no simpler replacement satisfies it either. Write out the failing scenario or counterexample. |
 | Defer | The mechanism only serves a need that has not happened and has not been committed to, and a simpler design meets today's requirements. State the observable condition that would bring it back. |
 | Unverified | Evidence is not enough to decide. Leave the existing mechanism in place; state the open items for the new design, and treat the unknown as proving neither that it can be removed nor that it is required. |
+
+Spend rigor where the decision is one-way; a two-way door does not need the full comparison. An
+inconclusive comparison is not a passing simplification: leave the mechanism in place and name the
+evidence that would settle it.
 
 For guarantees such as security, correctness, and reliability, verify the mechanism or invariant
 that carries the responsibility. A normal-path run that never triggers a protection only shows
@@ -140,8 +157,23 @@ evidence to recheck the call. A compact table covers several candidates:
 Include the re-verification of the final combination, the assumptions that affect the conclusion
 (in the `[assumption]` shape), and the conditions that would reintroduce a deferred mechanism.
 Link files or verification records when artifacts exist. A single decision fits in a short
-paragraph; fold it into the existing design doc or ADR rather than generating a duplicate report.
-Record deferrals in the team knowledge base with their re-entry trigger, so they can be found later.
+paragraph; fold it into the existing design doc, or an ADR that already covers the area, rather
+than generating a duplicate report. Record deferrals with their re-entry trigger, in the existing
+design doc, ADR, or the reply, so they can be found later.
+
+For each decision, record `Door: one-way / two-way`. A one-way door needs stronger evidence than a
+two-way door.
+
+Write an ADR only when all three conditions hold: the decision is one-way (hard to reverse),
+surprising without context, and the result of a real trade-off. Otherwise fold it into the existing
+design doc or the reply. Skip the ADR when one condition is missing.
+
+## Handoff
+
+- If the question is "is this interface the right shape?" rather than "should this mechanism
+  exist?", use `codebase-design`. This skill decides existence; that skill decides shape.
+- If the decision needs a figure, use `tech-diagrams`; a comparison of three or fewer candidates
+  is usually a table.
 
 ## Example: removing the dedicated cache from an order service
 

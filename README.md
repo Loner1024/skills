@@ -40,11 +40,13 @@ Update later with `npx skills update -g`, and remove with `npx skills remove <sk
 | Skill | What it does | Requirements |
 | --- | --- | --- |
 | [`tech-diagrams`](skills/tech-diagrams) | Draws publication-quality technical figures as hand-authored SVG plus a self-contained HTML preview, and lints them before delivering. 14 figure types, from architecture topology to sequence, state machine, benchmark bars, and terminal window frames. Also decides **when not to draw**. | `python3`, `rsvg-convert`, Chrome/Chromium (for HTML previews) |
+| [`codebase-design`](skills/codebase-design) | Designs and reviews deep modules: exact vocabulary, seam placement, the shape behind the seam, eight design red flags, and a review checklist. | none |
 | [`architecture-ablation`](skills/architecture-ablation) | Tests whether a component, layer, or mechanism earns its place by removing or replacing it and comparing the result against a baseline. Turns "is this abstraction doing anything?" into a decision backed by evidence you can recheck. | none |
 | [`external-agent-handoff`](skills/external-agent-handoff) | Packs a task into a handoff document and a copy-ready prompt for an external agent the user forwards, then checks the returned work against the acceptance criteria. The current agent does not call the external agent. | none |
 | [`web-craft`](skills/web-craft) | One entry point for web interface craft: classifies the job, routes to one of fourteen design-engineering modules carried verbatim (UI polish, motion, review, performance, prototyping, mobile feel), and follows that module's rules unchanged. | none |
 | [`unslop`](skills/unslop) | Removes AI tells from writing: 33 numbered rules in 8 groups, each naming a pattern and its fix, run as scan → rewrite → self-audit. | none |
 | [`deslop`](skills/deslop) | Removes AI-generated code slop from a branch diff: comments that restate the line, defensive checks on trusted paths, `any` casts, deep nesting, and patterns that disagree with the surrounding file. | none |
+| [`create-verification-skill`](skills/create-verification-skill) | Generates a project-local verification skill that drives the real app the way a user does — launch, doctor, drive, evidence, cleanup — seeds a per-feature verification map, and proves the generated skill end to end before handing it over. | none |
 
 ## tech-diagrams
 
@@ -116,6 +118,23 @@ CJK stack is listed explicitly.
 The linter checks what can be checked. Visual taste, line weight, and whether the figure actually
 persuades still need a human eye on the PNG. If the agent cannot view images in a session, it says
 so and hands you the render for the final look.
+
+## codebase-design
+
+A vocabulary and workflow for designing deep modules: a lot of behaviour behind a small interface,
+at a clean seam, testable through that interface. It gives the agent exact terms (module, interface,
+implementation, depth, seam, adapter, leverage, locality) so "component", "service", and "API" stop
+standing in for different things.
+
+The design mode writes the caller's usage first, chooses the data shape behind the seam, classifies
+the dependency to place the seam, explores three alternative interfaces, and screens eight red flags
+that agents reliably introduce: shallow modules, information leakage, temporal decomposition,
+pass-through methods, split ownership, two ways to do one task, importable internals, and hand-synced
+lists.
+
+The review mode applies the deletion test, depth, reader load, boundary placement, and the test
+surface. It reports only findings that would change a decision, with evidence and a fix. It does not
+decide whether a service, cache, or queue should exist; that is `architecture-ablation`.
 
 ## architecture-ablation
 
@@ -229,6 +248,21 @@ return, and patterns that disagree with the surrounding file.
 Its guardrails are the point: behavior stays unchanged unless it is fixing a clear bug, minimal
 edits beat broad rewrites, and the summary is 1-3 sentences.
 
+## create-verification-skill
+
+Generates a project-local verification skill (`<skills>/verify-<app>/`) for the target repo. It
+interviews the codebase first, not the user: what surface a user touches, how the app starts, how an
+agent can drive it, what evidence can be captured, and whether two instances can run side by side.
+The generated `SKILL.md` has six sections, Launch, Doctor, Drive, Evidence, Cleanup, and Helpers,
+each grounded in what the interview found, with no placeholders.
+
+It then seeds a feature map: a `features/README.md` index plus one file per user-facing feature, with
+the four H2s `Sub-features`, `How to get to it (user POV)`, `Driving it with <harness>`, and
+`Gotchas`; the example is in `references/feature-map-example/`. The generated skill must be run end
+to end once (launch, doctor, drive one feature, evidence, cleanup, with the evidence still present
+after cleanup); an unrun generated skill is a draft. As the app changes, the feature map is kept
+honest by updating the files under `features/`.
+
 ## Repository layout
 
 ```
@@ -244,6 +278,10 @@ skills/
     assets/                      tokens.css + dark and light starting templates
     scripts/                     render.sh · self_check.py · lint_docs.py
     examples/                    eight finished figures across the four type families
+  codebase-design/
+    SKILL.md                     entry point: vocabulary, design mode, review mode, handoff
+    references/                  red-flags.md · shape.md
+    agents/openai.yaml           interface metadata: display name, triggers, not-triggers
   architecture-ablation/
     SKILL.md                     entry point: baseline, ablation loop, decision table
     agents/openai.yaml           interface metadata: display name, triggers, not-triggers
@@ -259,6 +297,10 @@ skills/
     agents/openai.yaml           interface metadata: display name, triggers, not-triggers
   deslop/
     SKILL.md                     code: remove AI-generated slop from a branch diff
+    agents/openai.yaml           interface metadata: display name, triggers, not-triggers
+  create-verification-skill/
+    SKILL.md                     entry point: interview, generate, seed map, prove, maintain
+    references/feature-map-example/  README + two feature files
     agents/openai.yaml           interface metadata: display name, triggers, not-triggers
 ```
 
