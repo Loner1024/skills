@@ -1,0 +1,20 @@
+interface:
+  display_name: "Create Verification Skill"
+  short_description: "Generate a project-local verification skill that drives the real app like a user: launch, doctor, drive, evidence, cleanup, plus a seeded feature map, proven end to end before handoff"
+  triggers:
+    - "create-verification-skill"
+    - "create a verification skill"
+    - "make a control skill for this repo"
+    - "no scripted way to prove behavior"
+    - "verify this app like a user"
+    - "创建验证 skill"
+    - "做一个控制 skill"
+    - "没有脚本化的方式验证应用"
+    - "像用户一样验证应用"
+  not_triggers:
+    - "run the existing test suite"
+    - "unit test coverage"
+    - "CI pipeline setup"
+    - "维护已有的验证 skill"
+    - "跑现有测试"
+    - "测试覆盖率"
