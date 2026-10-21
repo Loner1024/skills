@@ -2,7 +2,8 @@
 
 This repository is the public home of the skills (`skills/<name>/`). It is content only: no package
 manager, no build step, no test runner. Verify a figure with
-`python3 skills/tech-diagrams/scripts/self_check.py <source> --png <render>`.
+`python3 skills/tech-diagrams/scripts/self_check.py <source> --png <render>`. When you write or edit
+a `SKILL.md` here, follow `skills/writing-for-agents/SKILL.md`.
 
 ## Publishing a skill change
 

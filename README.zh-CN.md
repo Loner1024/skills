@@ -47,6 +47,7 @@ npx skills use Loner1024/skills@tech-diagrams | claude
 | [`unslop`](skills/unslop) | 去掉写作里的 AI 痕迹：8 组共 33 条编号规则，每条都指出模式和解法，按"扫描 → 改写 → 自查"执行。 | 无 |
 | [`deslop`](skills/deslop) | 去掉分支 diff 里 AI 生成的代码噪音：复述代码行的注释、可信路径上的防御性检查、只为绕过类型的 `any` 断言、深层嵌套、与周边代码不一致的写法。 | 无 |
 | [`create-verification-skill`](skills/create-verification-skill) | 给目标仓库生成项目本地的验证 skill：像用户一样驱动真实应用（启动、体检、驱动、取证、清理），播种按功能拆分的验证地图，交付前端到端实跑一遍证明生成物可用。 | 无 |
+| [`writing-for-agents`](skills/writing-for-agents) | 编写和精简 agent 读的文档：skill、`AGENTS.md` / `CLAUDE.md`，或通过指针抵达的文档。覆盖触发词措辞、信息层级、完成标准、leading words 与剪枝，以及 frontmatter 和 model-invoked / user-invoked 的取舍。 | 无 |
 
 ## tech-diagrams
 
@@ -250,6 +251,10 @@ skills/
   create-verification-skill/
     SKILL.md                     入口：访谈仓库、生成 verify-<app>、播种功能地图、端到端验证
     references/                  功能地图样例 feature-map-example：索引加每个功能一个文件
+    agents/openai.yaml           界面元数据：显示名、触发词、不触发词
+  writing-for-agents/
+    SKILL.md                     入口：指针、信息层级、完成标准、leading words、剪枝
+    references/skill-mechanics.md  frontmatter、调用方式选择、router skill
     agents/openai.yaml           界面元数据：显示名、触发词、不触发词
 ```
 

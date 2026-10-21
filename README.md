@@ -47,6 +47,7 @@ Update later with `npx skills update -g`, and remove with `npx skills remove <sk
 | [`unslop`](skills/unslop) | Removes AI tells from writing: 33 numbered rules in 8 groups, each naming a pattern and its fix, run as scan → rewrite → self-audit. | none |
 | [`deslop`](skills/deslop) | Removes AI-generated code slop from a branch diff: comments that restate the line, defensive checks on trusted paths, `any` casts, deep nesting, and patterns that disagree with the surrounding file. | none |
 | [`create-verification-skill`](skills/create-verification-skill) | Generates a project-local verification skill that drives the real app the way a user does — launch, doctor, drive, evidence, cleanup — seeds a per-feature verification map, and proves the generated skill end to end before handing it over. | none |
+| [`writing-for-agents`](skills/writing-for-agents) | Writes and prunes the documents an agent consumes: a skill, an `AGENTS.md` / `CLAUDE.md`, or a doc reached by pointer. Covers trigger wording, information hierarchy, completion criteria, leading words, and pruning, plus frontmatter and model- vs user-invocation. | none |
 
 ## tech-diagrams
 
@@ -301,6 +302,10 @@ skills/
   create-verification-skill/
     SKILL.md                     entry point: interview, generate, seed map, prove, maintain
     references/feature-map-example/  README + two feature files
+    agents/openai.yaml           interface metadata: display name, triggers, not-triggers
+  writing-for-agents/
+    SKILL.md                     entry point: pointers, hierarchy, completion criteria, leading words, pruning
+    references/skill-mechanics.md  frontmatter, invocation choice, router skills
     agents/openai.yaml           interface metadata: display name, triggers, not-triggers
 ```
 
