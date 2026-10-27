@@ -48,6 +48,7 @@ Update later with `npx skills update -g`, and remove with `npx skills remove <sk
 | [`deslop`](skills/deslop) | Removes AI-generated code slop from a branch diff: comments that restate the line, defensive checks on trusted paths, `any` casts, deep nesting, and patterns that disagree with the surrounding file. | none |
 | [`create-verification-skill`](skills/create-verification-skill) | Generates a project-local verification skill that drives the real app the way a user does — launch, doctor, drive, evidence, cleanup — seeds a per-feature verification map, and proves the generated skill end to end before handing it over. | none |
 | [`writing-for-agents`](skills/writing-for-agents) | Writes and prunes the documents an agent consumes: a skill, an `AGENTS.md` / `CLAUDE.md`, or a doc reached by pointer. Covers trigger wording, information hierarchy, completion criteria, leading words, and pruning, plus frontmatter and model- vs user-invocation. | none |
+| [`retro`](skills/retro) | Runs a retrospective on a coding session with the agent's environment as its subject: seven places to hunt (navigation, checks, reviewer rules, `AGENTS.md` size, tool economy, no-ops, information access), each proposal carrying its session moment, an exact edit, its payoff, and its maintenance cost, ranked by severity. Proposes; the user picks. | none |
 
 ## tech-diagrams
 
@@ -272,6 +273,7 @@ research/                        provenance, not part of any skill
   TAXONOMY.md                    the decision taxonomy and tooling survey behind the rules
 scripts/
   sync-to-amp-skills.sh          copy skills/ into the maintainer's Amp personal skills repository
+  check-skills.py                verify every skill is complete: frontmatter, metadata, README, links
 skills/
   tech-diagrams/
     SKILL.md                     entry point: workflow, routing table, hard rules
@@ -307,6 +309,9 @@ skills/
     SKILL.md                     entry point: pointers, hierarchy, completion criteria, leading words, pruning
     references/skill-mechanics.md  frontmatter, invocation choice, router skills
     agents/openai.yaml           interface metadata: display name, triggers, not-triggers
+  retro/
+    SKILL.md                     entry point: read the session, seven hunting grounds, ranked proposals
+    agents/openai.yaml           interface metadata: display name, triggers, not-triggers
 ```
 
 `skills/<name>/` is the install unit: that is the whole directory `npx skills` copies. Every skill
@@ -323,6 +328,9 @@ written in Chinese; the operational rules are the English files under
 ```
 skills/<skill-name>/SKILL.md     # frontmatter needs name and description; lowercase-hyphenated name
 ```
+
+Run `python3 scripts/check-skills.py` before committing: it fails on a missing `agents/openai.yaml`,
+a `CREDITS.md` without its `LICENSE`, a skill absent from either README, or a broken relative link.
 
 Commit, push, and it becomes installable immediately: `npx skills add Loner1024/skills --list`
 picks up anything under `skills/`. Keep each skill self-contained, put anything it only needs at

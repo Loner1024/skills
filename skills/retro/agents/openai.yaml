@@ -1,0 +1,15 @@
+interface:
+  display_name: "Retro"
+  short_description: "Run a retrospective on a coding session: propose evidence-backed fixes to steering files, checks, reviewer rules, and tooling, ranked by severity"
+  triggers:
+    - "retro"
+    - "run a retro"
+    - "retrospective"
+    - "retro on this session"
+    - "复盘"
+    - "会话复盘"
+  not_triggers:
+    - "review this diff"
+    - "review the code"
+    - "incident postmortem"
+    - "代码评审"

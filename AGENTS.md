@@ -1,7 +1,9 @@
 # Working in this repository
 
 This repository is the public home of the skills (`skills/<name>/`). It is content only: no package
-manager, no build step, no test runner. Verify a figure with
+manager, no build step, no test runner. Verify a skill with `python3 scripts/check-skills.py`, which
+fails on missing frontmatter, interface metadata, README rows, broken relative links, or a
+`CREDITS.md` without its `LICENSE`. Verify a figure with
 `python3 skills/tech-diagrams/scripts/self_check.py <source> --png <render>`. When you write or edit
 a `SKILL.md` here, follow `skills/writing-for-agents/SKILL.md`.
 

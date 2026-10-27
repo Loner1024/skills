@@ -48,6 +48,7 @@ npx skills use Loner1024/skills@tech-diagrams | claude
 | [`deslop`](skills/deslop) | 去掉分支 diff 里 AI 生成的代码噪音：复述代码行的注释、可信路径上的防御性检查、只为绕过类型的 `any` 断言、深层嵌套、与周边代码不一致的写法。 | 无 |
 | [`create-verification-skill`](skills/create-verification-skill) | 给目标仓库生成项目本地的验证 skill：像用户一样驱动真实应用（启动、体检、驱动、取证、清理），播种按功能拆分的验证地图，交付前端到端实跑一遍证明生成物可用。 | 无 |
 | [`writing-for-agents`](skills/writing-for-agents) | 编写和精简 agent 读的文档：skill、`AGENTS.md` / `CLAUDE.md`，或通过指针抵达的文档。覆盖触发词措辞、信息层级、完成标准、leading words 与剪枝，以及 frontmatter 和 model-invoked / user-invoked 的取舍。 | 无 |
+| [`retro`](skills/retro) | 对一次编码会话做复盘，复盘对象是 agent 的工作环境：七个检查点（导航、自动检查、reviewer 规则、`AGENTS.md` 体量、工具开销、空转指令、信息获取），每条提案都带会话中的具体时刻、可直接落地的改动、收益和维护成本，按严重程度排序。只提案，由用户挑选。 | 无 |
 
 ## tech-diagrams
 
@@ -221,6 +222,7 @@ research/                        出处材料，不属于任何 skill
   TAXONOMY.md                    规则背后的决策分类与工具路线调研
 scripts/
   sync-to-amp-skills.sh          把 skills/ 同步到维护者的 Amp 个人 skills 仓库
+  check-skills.py                校验每个 skill 完整：frontmatter、界面元数据、README、相对链接
 skills/
   tech-diagrams/
     SKILL.md                     入口：流程、类型路由表、硬规则
@@ -256,6 +258,9 @@ skills/
     SKILL.md                     入口：指针、信息层级、完成标准、leading words、剪枝
     references/skill-mechanics.md  frontmatter、调用方式选择、router skill
     agents/openai.yaml           界面元数据：显示名、触发词、不触发词
+  retro/
+    SKILL.md                     入口：读会话、七个检查点、按严重程度排序的提案
+    agents/openai.yaml           界面元数据：显示名、触发词、不触发词
 ```
 
 `skills/<name>/` 就是安装单元：`npx skills` 复制的正是这一整个目录。这里的每个 skill 都自洽，不读自己文件夹
@@ -269,6 +274,9 @@ skills/
 ```
 skills/<skill-name>/SKILL.md     # frontmatter 要有 name 和 description；名字用小写连字符
 ```
+
+提交前跑 `python3 scripts/check-skills.py`：缺 `agents/openai.yaml`、只有 `CREDITS.md` 没有 `LICENSE`、
+两个 README 里漏了条目、或相对链接断了，它都会报错。
 
 提交推送后立刻可安装：`npx skills add Loner1024/skills --list` 会自动发现 `skills/` 下的一切。每个 skill
 保持自洽，只有运行时才需要的东西放进它自己的文件夹，能用脚本机械校验的规则就别只写成文字。
