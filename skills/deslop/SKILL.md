@@ -1,14 +1,14 @@
 ---
 name: deslop
 description: |
-  Remove AI-generated code slop from a branch diff. Load it before you commit, open a PR, or report
-  a code change as complete, even when the user does not mention slop or style.
-
-  It reads the diff against main and strips what a model added without being asked: comments that
-  restate the line, defensive checks on trusted paths, `any` casts, deep nesting, and patterns that
-  disagree with the surrounding file. Also use when the user asks to 清理 AI 生成的代码 / 去掉多余注释 /
-  代码去噪 / 简化嵌套 / 清理防御性检查 / 提交前清理, or asks to deslop a branch, review a diff for AI
-  slop, or tidy up before a PR. Not for prose (that is unslop), and not for behavior changes.
+  Load before git commit, git push, opening a PR, or reporting a code change complete. Load it even
+  if you think you know it; the file is the source of truth. Remove AI-generated code slop from the
+  branch diff: comments that restate the line, defensive checks on trusted paths, `any` casts, deep
+  nesting, and patterns that disagree with the surrounding file. Apply it even when the user did
+  not mention slop or style.
+  Also load when the user says 提交 / 推送 / 开 PR / 清理分支 / 清理 AI 生成的代码 / 去掉多余注释 /
+  代码去噪 / 简化嵌套 / 清理防御性检查.
+  Not for prose (use unslop), architecture decisions, or behavior changes.
 ---
 
 # Remove AI code slop

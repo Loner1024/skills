@@ -1,15 +1,13 @@
 ---
 name: unslop
 description: |
-  Cut AI tells from any writing: AI vocabulary, chatbot phrasing, rule-of-three, em dashes,
-  boldface, hedged generalities. Must always apply, so load it before you write or edit prose the
-  user will read, even when they do not ask for a rewrite or mention style: blog posts, docs,
-  READMEs, release notes, changelogs, commit messages, PR descriptions, emails, UI copy, and your
-  own replies. For code cleanup on a branch, use deslop instead.
-
-  Also use when the user asks to 去 AI 味 / 去掉 AI 腔 / 改得像人写的 / 润色文案 / 改写文案 / 校对 /
-  写文档 / 过一遍文风 / make this sound human / review the tone / tighten this up. Not limited to
-  named requests: any writing task is in scope.
+  Load before writing or editing any prose the user will read, including docs, READMEs, release
+  notes, changelogs, commit messages, PR descriptions, emails, UI copy, and your own replies.
+  Load it even if you think you know it; the file is the source of truth. Apply it even when the
+  user did not ask for a rewrite or mention style.
+  Also load when the user says 写文档 / 写 README / 写邮件 / 写一段 / 文案 / 润色 / 改写 / 校对 /
+  去 AI 味 / 改得像人写的 / 太机器味 / 过一遍文风.
+  For code cleanup on a branch, use deslop.
 ---
 
 # Unslop

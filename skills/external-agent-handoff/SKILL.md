@@ -1,6 +1,12 @@
 ---
 name: external-agent-handoff
-description: "Write a handoff document and a copy-ready prompt for an external fast agent that the user forwards, then accept the returned work against the stated criteria. Use when implementation or investigation should go to another agent without this agent calling that agent, when the user asks for a handoff, a prompt to forward, or 外部 agent / 交接 / 转发, and when the user brings that agent's result back for review."
+description: |
+  Load when implementation or investigation should go to another agent the user will run, not to
+  this agent: write the handoff document and a copy-ready prompt, then check the returned work
+  against the acceptance criteria. Load it even if you think you know it; the file is the source of
+  truth.
+  Also load when the user says 交接 / 转发 / 外部 agent / 给另一个 agent 做 / 让别的 agent 跑.
+  Not for calling a subagent or doing the work here.
 ---
 
 # External agent handoff

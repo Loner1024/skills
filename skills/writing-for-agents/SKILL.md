@@ -1,9 +1,13 @@
 ---
 name: writing-for-agents
 description: |
-  Skill authoring and agent-facing docs: make a SKILL.md, an AGENTS.md / CLAUDE.md, or any document an agent reaches by pointer fire reliably and stay short. Use when creating or editing a skill, writing or pruning agent instructions, choosing model- vs user-invocation, splitting a skill that has grown too long, or reviewing an agent-facing doc for no-ops, duplication, and stale rules. Also use when the user asks 写 skill / 改 skill / 精简 skill / 写 SKILL.md / skill 描述怎么写 / 写 AGENTS.md / 给 agent 看的文档.
-
-  For prose a human reads, use unslop. For a code diff, use deslop.
+  Load before creating, editing, reviewing, or deleting any SKILL.md, AGENTS.md, CLAUDE.md, skill
+  description, or agent-facing reference. Load it even if you think you know it; the file is the
+  source of truth. It covers trigger wording, information hierarchy, completion criteria, leading
+  words, pruning, and model- vs user-invocation.
+  Also load when the user says 写 skill / 改 skill / 精简 skill / 写 SKILL.md / skill 描述怎么写 /
+  写 AGENTS.md / 给 agent 看的文档 / 拆 skill.
+  For prose a human reads, use unslop; for a code diff, use deslop.
 ---
 
 Reference for writing any document an agent consumes: a skill, an `AGENTS.md` / `CLAUDE.md`, a doc reached by a pointer. The packaging differs; the writing does not: the same levers make each one predictable, since the agent takes the same _process_ every run rather than producing the same output.

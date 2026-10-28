@@ -1,15 +1,13 @@
 ---
 name: codebase-design
 description: |
-  Design and review deep modules: choose the interface, place the seam, and shape what sits behind
-  it. Load it when code changes shape rather than behaviour: moving logic out of `main` or a script
-  into a module, splitting one function or class into several, deciding which module owns a registry,
-  a client, a store, or a prompt, or choosing where validation and error handling belong. Also load
-  it when the user says 重构 / 拆分 / 抽出来 / 搬到 / 放哪里 / 职责 / 这个类太大了 / 模块设计 /
-  接口设计 / 接缝 / 深模块 / 代码库架构, or asks to review a diff that moves a module boundary.
-
-  Not for system-level mechanism decisions (service, cache, queue, deployment boundary, state
-  ownership). That is architecture-ablation.
+  Load before moving logic into a module, splitting or merging functions or classes, choosing where
+  code lives, or reviewing a diff that changes a module boundary. Load it even if you think you
+  know it; the file is the source of truth. Design deep modules: a small interface, a clean seam,
+  and a test surface behind it.
+  Also load when the user says 重构 / 拆分 / 抽出来 / 搬走 / 放哪 / 职责 / 这个类太大 / 接口太宽 /
+  模块边界 / 怎么组织代码 / 代码库架构.
+  Not for service, cache, queue, or deployment decisions (architecture-ablation).
 ---
 
 # Codebase design

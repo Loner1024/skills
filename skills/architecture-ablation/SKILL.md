@@ -1,6 +1,13 @@
 ---
 name: architecture-ablation
-description: "Test whether each component, layer, or mechanism earns its place by removing or replacing it and comparing the result against a baseline. Use when designing or choosing between system architectures, judging whether an existing system is over-engineered, weighing architecture options against each other, or deciding whether to introduce a new service, cache, queue, or abstraction layer. Changes to deployment boundaries, service communication, state ownership, or consistency coordination trigger it. Local code refactoring, function extraction, and ML model ablation do not. Use when the user asks about 架构设计 / 架构选型 / 系统简化 / 过度设计 / 要不要引入某个服务缓存队列."
+description: |
+  Load before deciding whether a component, service, cache, queue, table, or storage layer should
+  exist; before changing data ownership or a deployment boundary; and before simplifying a system
+  or choosing between architecture options. Load it even if you think you know it; the file is the
+  source of truth. Test each piece by removing or replacing it against a baseline.
+  Also load when the user says 架构 / 选型 / 要不要上 / 该不该拆 / 服务拆分 / 存储选型 /
+  元数据与对象存储 / 数据放哪 / 过度设计 / 简化 / 合并 / 去掉这层.
+  Not for local refactoring, function extraction, or module layout (codebase-design).
 ---
 
 # Architecture ablation

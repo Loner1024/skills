@@ -1,11 +1,15 @@
 ---
 name: web-craft
 description: |
-  Single entry point for designing and building web interfaces at a high craft bar: UI polish and
-  component design, web motion (build, review, audit, find, fix jank), Apple-style fluid gestures,
-  UI library choice, prototyping variants, mobile-native feel, worst-case-data stress tests, and
-  Sonner toasts. Classifies the job, routes to one bundled module under modules/, and follows that
-  module's rules unchanged. Use when the work is about how an interface looks, feels, moves, or responds — 界面打磨 / UI 设计 / 写组件 / 加动效 / 改动画 / 动效评审 / 审计动效 / 查卡顿 / 动效命名 / 选 UI 库 / 做原型对比 / 适配手机端 / 压边界数据 / toast — or when the user asks for a design or motion review. Also covers React Native motion (animate-expo). NOT for general frontend work: routing, data fetching, state management, forms logic, or build tooling.
+  Load before writing or changing any web UI, even a small one: page layout, components, CSS,
+  theme, color, typography, spacing, motion, responsive behavior, or a design review. Load it even
+  if you think you know it; the file is the source of truth. It routes to the module that owns the
+  job (polish, motion, review, performance, mobile).
+  Also load when the user says 重做前端 / 改版 / 界面 / 页面 / 样式 / 主题 / 浅色 / 深色 / 配色 /
+  排版 / 间距 / 太丑 / 太挤 / 看着不对 / 加动效 / 动画 / 交互 / 手机端 / dashboard / 后台 /
+  组件 / 设计评审.
+  Not for backend, API, data-fetching, or state-management work on its own; load it for the UI layer
+  of a full-stack task.
 metadata:
   version: "0.1.0"
 ---

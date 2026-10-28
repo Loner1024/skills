@@ -1,16 +1,13 @@
 ---
 name: tech-diagrams
 description: |
-  Produce publication-quality technical figures: a self-contained HTML preview plus a single-file
-  SVG. Covers architecture topology, data flow, layers/nesting, loop/flywheel, sequence, request
-  lifecycle, state machine, swimlane, benchmark bars, trend/percentile charts, before/after and
-  trade-off figures, timelines, 2x2 quadrants, and terminal/IDE window frames. Also decides when
-  NOT to draw (use a table or prose), picks a style register (technical dark by default), writes
-  caption plus alt text, and verifies the figure programmatically before delivery.
-  Use when the user asks to 画图 / 绘图 / 做图表 / 架构图 / 数据流图 / 流程图 / 时序图 / 状态机图 /
-  对比图 / 基准图 / 终端截图示意, or asks for a diagram, figure, or visual for docs, a README,
-  a blog post, or a deck. NOT for photo or illustration generation (use imagegen), and NOT for
-  full slide decks or documents (use the powerpoint or document skills).
+  Load before drawing, editing, or reviewing any technical figure, including one embedded in HTML,
+  SVG, a doc, or a README: architecture topology, data flow, sequence, state machine, swimlane,
+  benchmark or trend chart, timeline, 2x2. Load it even if you think you know it; the file is the
+  source of truth. It carries the geometry, typography, caption, and verification rules.
+  Also load when the user says 画图 / 画一张 / 补图 / 改图 / 修图 / 图不对 / 箭头 / 图注 / 架构图 /
+  数据流图 / 流程图 / 状态机图 / 时序图 / 对比图 / 图表 / 设计稿.
+  Not for photos, illustrations, slide decks, or document layout.
 metadata:
   version: "0.1.0"
 ---
