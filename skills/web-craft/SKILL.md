@@ -99,17 +99,18 @@ Do not provide any other information until the user asks a question.
 
 One module owns the job; the others inform it. The sequences that come up most:
 
-- **A new page or feature** — `emil-design-eng` for the design decisions, then `animate` for the
-  motion. `pick-ui-library` only when the user asks for a library pick or `animate` hands off to
-  it; `break-ui` as an offer before shipping, not a step; `review-animations` only on request.
+- **A new page or feature** — `emil-design-eng` for the design decisions, then `animate` when the
+  page has a motion moment worth building. `pick-ui-library` only when the user asks for a library
+  pick or `animate` hands off to it; `break-ui` as an offer before shipping, not a step;
+  `review-animations` only on request.
 - **"This animation feels off"** — `animate` by default, because that is a build question;
   `animation-performance` when it drops frames; `review-animations` only when the user asks for a
   critique. Three different questions; do not substitute one for another.
 - **A codebase-wide motion pass** — `improve-animations`; once it has written the plans, use its
   own `execute <plan>` variant, which dispatches the executor and reviews the diff against the
   `review-animations` bar.
-- **A phone pass** — `mobile-native` removes the platform tells, then `animate` handles the motion
-  itself.
+- **A phone pass** — `mobile-native` removes the platform tells, then `animate` handles any motion
+  it has.
 - **An undecided design direction** — `prototype` to diverge, then its own `keep <variant>` to
   promote the winner and delete the harness.
 
@@ -119,8 +120,24 @@ module is loaded only when its turn comes.
 When two modules claim the same job, the specialist wins: `animation-performance` over
 `emil-design-eng` on jank, `review-animations` over `animate` on a critique.
 
+## With design-practice
+
+A build request stays here. Two parts of designing a page are not craft decisions and have a home
+in `design-practice`:
+
+- **The words, before the layout settles.** When the page's copy is not supplied, `ux-copy` writes
+  it. Copy decides how much room a section needs; laying out placeholder text and filling it in
+  later reverses the order.
+- **The review, once the page renders.** Screenshot the built page and run `design-critique` on it:
+  first impression, usability, hierarchy, consistency. It judges the result, not the code; findings
+  that need code come back to `emil-design-eng`.
+
+`design-handoff` applies only when a separate engineer implements the design. A design that cannot
+be rendered yet — a Figma file, a mockup — belongs to `design-practice`, not here.
+
 ## Not this skill
 
+- A Figma file, mockup, copy deck, or research transcript — that is `design-practice`.
 - System or architecture decisions — that is `architecture-ablation`.
 - Technical figures and diagrams — that is `tech-diagrams`.
 - Handing work to an external agent — that is `external-agent-handoff`.

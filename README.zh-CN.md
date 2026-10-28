@@ -49,6 +49,7 @@ npx skills use Loner1024/skills@tech-diagrams | claude
 | [`create-verification-skill`](skills/create-verification-skill) | 给目标仓库生成项目本地的验证 skill：像用户一样驱动真实应用（启动、体检、驱动、取证、清理），播种按功能拆分的验证地图，交付前端到端实跑一遍证明生成物可用。 | 无 |
 | [`writing-for-agents`](skills/writing-for-agents) | 编写和精简 agent 读的文档：skill、`AGENTS.md` / `CLAUDE.md`，或通过指针抵达的文档。覆盖触发词措辞、信息层级、完成标准、leading words 与剪枝，以及 frontmatter 和 model-invoked / user-invoked 的取舍。 | 无 |
 | [`retro`](skills/retro) | 对一次编码会话做复盘，复盘对象是 agent 的工作环境：七个检查点（导航、自动检查、reviewer 规则、`AGENTS.md` 体量、工具开销、空转指令、信息获取），每条提案都带会话中的具体时刻、可直接落地的改动、收益和维护成本，按严重程度排序。只提案，由用户挑选。 | 无 |
+| [`design-practice`](skills/design-practice) | 代码之外的产品设计工作，六条路由：设计评审、设计系统审计与组件文档、开发交接标注、UX 文案、用户研究计划、访谈与可用性记录的综合分析。搬运 Anthropic 的 design plugin 作为模块。 | 无 |
 
 ## tech-diagrams
 
@@ -178,6 +179,7 @@ agent。它先写好方案和检查项，再给出一份文档和一段用户可
 - **组合让位于模块自身。** 模块自己的调用变体与交接（`execute <plan>`、`keep <variant>`）优先于本仓库
   建议的任何顺序；两个模块争同一件事时，更专门的那个赢。
 - **模块不因任务而改。** 如果模块不适合这件事，那是路由错了，不是模块错了。
+- **不属于手艺的设计工作交给隔壁。** 从零搭页面留在这里，但文案要在布局定稿前由 `design-practice` 的 `ux-copy` 写，页面渲染后再回去跑 `design-critique`。Figma 文件或 mockup 不进入这个 skill。
 
 | 任务 | 路由到 |
 | --- | --- |
@@ -192,6 +194,14 @@ agent。它先写好方案和检查项，再给出一份文档和一段用户可
 | 边界数据压测 | `break-ui` |
 | 给动效命名 | `animation-vocabulary` |
 | Sonner toast | `ask-sonner` |
+
+## design-practice
+
+Anthropic 的 design plugin，六个模块加一个路由入口：设计评审、设计系统、开发交接、UX 文案、用户研究、研究综合。模块文字来自插件，删去了其中的无障碍部分；本仓库补的是路由、连接器说明，以及把插件命令变成模块的规则。
+
+与 `web-craft` 的边界看手上是什么：Figma 链接、截图、mockup、标注稿、访谈记录、一行界面文案，走这里；跑着的代码走 `web-craft`。同一个界面，这里判断它能不能用，那里判断它好不好看、顺不顺手。从零搭一个页面时两边会接力：文案在这里写、布局在 `web-craft` 做、渲染出来的页面再回到这里评审。
+
+三处相对上游的改动：模块文件改名 `MODULE.md`，因为 agent 侧发现机制会把任何嵌套的 `SKILL.md` 当成独立 skill；`CONNECTORS.md` 替换了插件自带的那份，让 `~~category` 占位符在安装后的 skill 里仍能解析；无障碍相关内容全部删除，包括 `accessibility-review` 模块、评审框架的第五步，以及交接与组件模板里的无障碍字段。其余部分逐字节一致，Apache-2.0 许可证一并放在 `modules/LICENSE.txt`。
 
 ## unslop
 
@@ -260,6 +270,11 @@ skills/
     agents/openai.yaml           界面元数据：显示名、触发词、不触发词
   retro/
     SKILL.md                     入口：读会话、七个检查点、按严重程度排序的提案
+    agents/openai.yaml           界面元数据：显示名、触发词、不触发词
+  design-practice/
+    SKILL.md                     入口：按手上的产物路由、模块调用规则
+    CONNECTORS.md                `~~category` 占位符，以及每类能拿到什么
+    modules/                     6 个模块，取自 anthropics/knowledge-work-plugins，删去无障碍，附其许可证
     agents/openai.yaml           界面元数据：显示名、触发词、不触发词
 ```
 

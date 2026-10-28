@@ -49,6 +49,7 @@ Update later with `npx skills update -g`, and remove with `npx skills remove <sk
 | [`create-verification-skill`](skills/create-verification-skill) | Generates a project-local verification skill that drives the real app the way a user does — launch, doctor, drive, evidence, cleanup — seeds a per-feature verification map, and proves the generated skill end to end before handing it over. | none |
 | [`writing-for-agents`](skills/writing-for-agents) | Writes and prunes the documents an agent consumes: a skill, an `AGENTS.md` / `CLAUDE.md`, or a doc reached by pointer. Covers trigger wording, information hierarchy, completion criteria, leading words, and pruning, plus frontmatter and model- vs user-invocation. | none |
 | [`retro`](skills/retro) | Runs a retrospective on a coding session with the agent's environment as its subject: seven places to hunt (navigation, checks, reviewer rules, `AGENTS.md` size, tool economy, no-ops, information access), each proposal carrying its session moment, an exact edit, its payoff, and its maintenance cost, ranked by severity. Proposes; the user picks. | none |
+| [`design-practice`](skills/design-practice) | Product design around the code, in six routes: critique a screen, audit or document a design system, spec a developer handoff, write or review UX copy, plan user research, synthesize interviews and usability notes. Carries Anthropic's design plugin as modules. | none |
 
 ## tech-diagrams
 
@@ -214,6 +215,9 @@ otherwise byte-identical. What this repository adds is the router:
   modules claim the same job, the specialist wins.
 - **The modules are never edited to fit a task.** If a module is wrong for the job, the route was
   wrong, not the module.
+- **Design work that is not craft goes next door.** A page built from scratch stays here, but its
+  copy comes from `design-practice`'s `ux-copy` before the layout settles, and the rendered page
+  goes back there for `design-critique`. A Figma file or a mockup never enters this skill.
 
 | Job | Routes to |
 | --- | --- |
@@ -228,6 +232,26 @@ otherwise byte-identical. What this repository adds is the router:
 | Worst-case data | `break-ui` |
 | Name an effect | `animation-vocabulary` |
 | Sonner toasts | `ask-sonner` |
+
+## design-practice
+
+Anthropic's design plugin, carried as six modules behind one router: design critique, design system,
+handoff, UX copy, user research, and research synthesis. The modules are the plugin's text with its
+accessibility sections removed; this repository adds the routing, a connector note, and the rules
+that turn plugin commands into modules.
+
+The seam with `web-craft` is the artifact. A Figma link, screenshot, mockup, spec, transcript, or a
+line of interface copy routes here; running code routes to `web-craft`. A screen is judged here for
+whether it works, and there for whether it feels right. The two meet on a page built from scratch:
+copy is written here before the layout settles, the build happens in `web-craft`, and the rendered
+page comes back here for a critique.
+
+Three changes from upstream: module files are `MODULE.md`, because agent-side discovery treats any
+nested `SKILL.md` as a skill of its own; `CONNECTORS.md` replaces the plugin's connector file so the
+`~~category` placeholders resolve inside the installed skill; and every accessibility section is
+removed — the `accessibility-review` module, the fifth step of the critique framework, and the
+accessibility fields in the handoff and component templates. The rest is byte-identical,
+Apache-2.0 license included under `modules/LICENSE.txt`.
 
 ## unslop
 
@@ -311,6 +335,11 @@ skills/
     agents/openai.yaml           interface metadata: display name, triggers, not-triggers
   retro/
     SKILL.md                     entry point: read the session, seven hunting grounds, ranked proposals
+    agents/openai.yaml           interface metadata: display name, triggers, not-triggers
+  design-practice/
+    SKILL.md                     entry point: route by artifact, module framing rules
+    CONNECTORS.md                `~~category` placeholders, and what each unlocks
+    modules/                     6 modules from anthropics/knowledge-work-plugins, accessibility removed, plus its LICENSE
     agents/openai.yaml           interface metadata: display name, triggers, not-triggers
 ```
 
