@@ -7,6 +7,12 @@ fails on missing frontmatter, interface metadata, README rows, broken relative l
 `python3 skills/tech-diagrams/scripts/self_check.py <source> --png <render>`. When you write or edit
 a `SKILL.md` here, follow `skills/writing-for-agents/SKILL.md`.
 
+Three README landmarks for a new skill: the row at the end of the `## Skills` table (`README.md:51`,
+`README.zh-CN.md:51`), the tree entry at the end of `## Repository layout` (`README.md:268`,
+`README.zh-CN.md:217`), and the procedure in `## Adding a skill` (`README.md:326`,
+`README.zh-CN.md:272`). Re-run `grep -n '^## ' README.md README.zh-CN.md` if the line numbers
+have moved.
+
 ## Publishing a skill change
 
 Amp serves personal skills from its own hosted Git repository, so a change here is not live in Amp
