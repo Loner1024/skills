@@ -96,6 +96,14 @@ Do not provide any other information until the user asks a question.
 | The principles behind fluid, gesture-driven interaction — why a drag, sheet, or spring feels right | [`apple-design`](modules/apple-design/MODULE.md) | Interaction design at the platform level |
 | A name for a motion effect — "what's it called when…" | [`animation-vocabulary`](modules/animation-vocabulary/MODULE.md) | The term, quoted from the glossary |
 
+## Type and scale
+
+The measurable floors — contrast, minimum sizes per surface, touch targets, body measure, and CJK
+typesetting — hold on every route and live in
+[`references/type-and-scale.md`](references/type-and-scale.md). They are ours, not a module: read
+them when the job sets type, color, or a fixed-size surface, and let the module's own rule win
+where the two disagree.
+
 ## Combining modules
 
 One module owns the job; the others inform it. The sequences that come up most:
