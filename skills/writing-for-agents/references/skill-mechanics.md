@@ -21,6 +21,16 @@ The invocation cut of splitting (the sequence cut lives in `SKILL.md`): split of
 
 When user-invoked skills multiply past what you can remember, that piled-up cognitive load is cured by a **router skill**: one user-invoked skill that names the others and when to reach for each, so the human has one skill to remember instead of many. It can only hint, never fire them: user-invoked skills have no description, so nothing but the human can reach them.
 
+## Porting a skill
+
+When the source is someone else's — a published skill, a product prompt, a plugin — the port is a fork with a debt: it drifts. Three records make the drift visible.
+
+- **The revision you took.** The upstream repository and commit, in the skill's own files. Without it, "byte-identical to upstream" is a claim nobody can check, and the next sync cannot tell a deliberate edit from a stale copy.
+- **Every mechanical change.** The renames, the removed sections, the extension added to a licence file. A reader comparing the two needs to know which differences are yours, or they will restore upstream's behaviour by accident.
+- **What no longer fires.** Host-coupled pieces survive a port and silently stop working: a panel that waits for a message the new harness never sends, a tool call with no local equivalent, a link scheme that only exists on the host. Name the dead hook where the reader will meet it, and give the local replacement or say there is none.
+
+The upstream snapshot is the cheapest receipt: keep it beside the adapted file, and the next sync becomes a diff instead of a reread.
+
 ## Testing a description
 
 A description is a classifier over user messages, so test it as one. Build a **menu**: the candidate description beside its neighbours', one user message, and a record of whether the model reached for the skill. The menu is what makes the result mean anything; with one description in context there is nothing to route against. An **activation** is the model calling the skill; a miss is it working the request itself or reaching for a neighbour.
