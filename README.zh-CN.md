@@ -232,7 +232,7 @@ research/                        出处材料，不属于任何 skill
   TAXONOMY.md                    规则背后的决策分类与工具路线调研
 scripts/
   sync-to-amp-skills.sh          把 skills/ 同步到维护者的 Amp 个人 skills 仓库
-  check-skills.py                校验每个 skill 完整：frontmatter、界面元数据、README、相对链接
+  check-skills.py                校验每个 skill 完整：frontmatter、界面元数据、README、相对链接、触发词、检查码
 skills/
   tech-diagrams/
     SKILL.md                     入口：流程、类型路由表、硬规则
@@ -291,7 +291,8 @@ skills/<skill-name>/SKILL.md     # frontmatter 要有 name 和 description；名
 ```
 
 提交前跑 `python3 scripts/check-skills.py`：缺 `agents/openai.yaml`、只有 `CREDITS.md` 没有 `LICENSE`、
-两个 README 里漏了条目、或相对链接断了，它都会报错。
+两个 README 里漏了条目、相对链接断了、描述抢了别的 skill 的触发词却没有互相指名、或
+`<!-- check:... -->` 标签对不上检查器输出的码，它都会报错。
 
 提交推送后立刻可安装：`npx skills add Loner1024/skills --list` 会自动发现 `skills/` 下的一切。每个 skill
 保持自洽，只有运行时才需要的东西放进它自己的文件夹，能用脚本机械校验的规则就别只写成文字。

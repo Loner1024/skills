@@ -5,6 +5,17 @@ A skill is a directory, so a missing companion file is invisible until someone i
 finds the metadata or the attribution gone. This script is the checklist that used to live in
 prose: frontmatter, interface metadata, credits, README presence, and relative links.
 
+Two invariants guard behaviour a link check cannot see:
+
+- **Routing.** A trigger phrase two descriptions both claim sends the same request to two skills.
+  The fix lives in the descriptions: each names the other, so the agent reading them has a
+  tiebreaker. Testing whether a description actually fires needs a model; this catches the half
+  that does not.
+- **Documentation drift.** A `<!-- check:code -->` tag names a finding the skill's checker can
+  emit, so a renamed or deleted check leaves a stale reference instead of a silent one. The
+  reverse holds too: every code the checker emits is named somewhere, so no enforcement is
+  invisible to the agent reading a failure.
+
     python3 scripts/check-skills.py
 
 Stdlib only. Exits 1 and lists every problem it finds.
@@ -14,6 +25,7 @@ from __future__ import annotations
 
 import re
 import sys
+from itertools import combinations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -22,6 +34,9 @@ READMES = ("README.md", "README.zh-CN.md")
 NAME = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 LINK = re.compile(r"\]\(([^)\s]+)\)")
 FENCE = re.compile(r"^\s*(```|~~~)")
+TRIGGER_LIST = re.compile(r"(?:\bsays\b|[：:])\s*(.+?)(?:\.(?=\s[A-Z])|\.$|$)")
+TAG = re.compile(r"<!--\s*check:([a-z0-9,\s-]+?)\s*-->")
+EMIT = re.compile(r'\b(?:err|warn|note)\(\s*"([a-z0-9-]+)"')
 
 
 def frontmatter(text: str) -> list[str] | None:
@@ -92,6 +107,76 @@ def links(text: str) -> list[str]:
     return LINK.findall("\n".join(body))
 
 
+def description_of(path: Path) -> str:
+    skill_md = path / "SKILL.md"
+    if not skill_md.is_file():
+        return ""
+    data = frontmatter(skill_md.read_text(encoding="utf-8")) or []
+    return " ".join(top_level(data).get("description", "").split())
+
+
+def triggers(description: str) -> list[str]:
+    """The slash-separated branches a description lists after 'says' or a colon."""
+    found: list[str] = []
+    for match in TRIGGER_LIST.finditer(description):
+        chunk = match.group(1)
+        if "/" not in chunk:
+            continue
+        for item in chunk.split("/"):
+            item = item.strip(" .,")
+            if 1 < len(item) < 30:
+                found.append(item)
+    return list(dict.fromkeys(found))
+
+
+def mentions(text: str, name: str) -> bool:
+    return re.search(rf"(?<![\w-]){re.escape(name)}(?![\w-])", text) is not None
+
+
+def check_routing(descriptions: dict[str, str]) -> list[str]:
+    claims: dict[str, set[str]] = {}
+    for name, text in descriptions.items():
+        for phrase in triggers(text):
+            claims.setdefault(phrase, set()).add(name)
+
+    problems = []
+    for phrase, names in sorted(claims.items()):
+        for a, b in combinations(sorted(names), 2):
+            if not mentions(descriptions[b], a) or not mentions(descriptions[a], b):
+                problems.append(
+                    f"{a}: trigger {phrase!r} is also claimed by {b}; name each other in the descriptions"
+                )
+    return problems
+
+
+def check_rule_tags(path: Path) -> list[str]:
+    """Every tag names a code the skill's checker emits, and every emitted code is tagged."""
+    tagged: set[str] = set()
+    for md in sorted(path.rglob("*.md")):
+        for group in TAG.findall(md.read_text(encoding="utf-8")):
+            tagged.update(code.strip() for code in group.split(",") if code.strip())
+
+    emitted: set[str] = set()
+    scripts = path / "scripts"
+    if scripts.is_dir():
+        for script in sorted(scripts.glob("*.py")):
+            emitted.update(EMIT.findall(script.read_text(encoding="utf-8")))
+    if not tagged and not emitted:
+        return []
+    if tagged and not emitted:
+        return [f"{path.name}: {len(tagged)} check tag(s) but no codes in scripts/*.py"]
+
+    problems = [
+        f"checker emits {code!r}; add <!-- check:{code} --> where it is documented"
+        for code in sorted(emitted - tagged)
+    ]
+    problems += [
+        f"<!-- check:{code} --> names no code the checker emits"
+        for code in sorted(tagged - emitted)
+    ]
+    return [f"{path.name}: {problem}" for problem in problems]
+
+
 def check_skill(path: Path) -> list[str]:
     problems = []
     skill_md = path / "SKILL.md"
@@ -159,6 +244,8 @@ def main() -> int:
 
     dirs = sorted(p for p in SKILLS.iterdir() if p.is_dir())
     problems = [p for path in dirs for p in check_skill(path)]
+    problems += check_routing({path.name: description_of(path) for path in dirs})
+    problems += [p for path in dirs for p in check_rule_tags(path)]
     names = [path.name for path in dirs]
     problems += check_readmes(names)
 

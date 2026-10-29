@@ -9,7 +9,8 @@ description: |
   排版 / 间距 / 太丑 / 太挤 / 看着不对 / 加动效 / 动画 / 交互 / 手机端 / dashboard / 后台 /
   组件 / 设计评审.
   Not for backend, API, data-fetching, or state-management work on its own; load it for the UI layer
-  of a full-stack task.
+  of a full-stack task. Not for critiquing a screenshot, mockup, or design system that has no code
+  behind it (design-practice).
 metadata:
   version: "0.1.0"
 ---

@@ -297,7 +297,7 @@ research/                        provenance, not part of any skill
   TAXONOMY.md                    the decision taxonomy and tooling survey behind the rules
 scripts/
   sync-to-amp-skills.sh          copy skills/ into the maintainer's Amp personal skills repository
-  check-skills.py                verify every skill is complete: frontmatter, metadata, README, links
+  check-skills.py                verify skills: frontmatter, metadata, README, links, triggers, check tags
 skills/
   tech-diagrams/
     SKILL.md                     entry point: workflow, routing table, hard rules
@@ -359,7 +359,9 @@ skills/<skill-name>/SKILL.md     # frontmatter needs name and description; lower
 ```
 
 Run `python3 scripts/check-skills.py` before committing: it fails on a missing `agents/openai.yaml`,
-a `CREDITS.md` without its `LICENSE`, a skill absent from either README, or a broken relative link.
+a `CREDITS.md` without its `LICENSE`, a skill absent from either README, a broken relative link, a
+description that claims another skill's trigger without naming it, or a `<!-- check:... -->` tag
+that names no code its checker emits.
 
 Commit, push, and it becomes installable immediately: `npx skills add Loner1024/skills --list`
 picks up anything under `skills/`. Keep each skill self-contained, put anything it only needs at

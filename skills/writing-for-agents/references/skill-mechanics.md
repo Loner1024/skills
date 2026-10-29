@@ -20,3 +20,13 @@ The invocation cut of splitting (the sequence cut lives in `SKILL.md`): split of
 ## Router skills
 
 When user-invoked skills multiply past what you can remember, that piled-up cognitive load is cured by a **router skill**: one user-invoked skill that names the others and when to reach for each, so the human has one skill to remember instead of many. It can only hint, never fire them: user-invoked skills have no description, so nothing but the human can reach them.
+
+## Testing a description
+
+A description is a classifier over user messages, so test it as one. Build a **menu**: the candidate description beside its neighbours', one user message, and a record of whether the model reached for the skill. The menu is what makes the result mean anything; with one description in context there is nothing to route against. An **activation** is the model calling the skill; a miss is it working the request itself or reaching for a neighbour.
+
+Cases come from branches, not synonyms. Positives cover every command family and artifact shape the description claims; negatives cover work outside the domain and the sibling whose territory is one word away. A false activation on a sibling's request is what the test exists to find, so gate it at zero. Recall is noisier: gate it per model and read category totals rather than cells, because one case swings between 0/3 and 3/3 across runs while a category that moves 30 points is telling you about the edit.
+
+Length is the lever you will pull. Every clause is another branch competing for the selection, so the shorter description is often the higher-recall one: a rewrite from 118 to 81 words moved one model from 35% to 55% recall with false activations unchanged. Cut identity the body already carries, and synonyms that rename one branch, before adding triggers.
+
+Run it when the description changes. It costs model calls, so it stays out of the deterministic check; the deterministic half belongs in whatever checker the skills repo runs: two skills listing the same trigger phrase must name each other in their descriptions (this repo's `scripts/check-skills.py` enforces it).

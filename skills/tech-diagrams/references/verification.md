@@ -79,37 +79,60 @@ Run it in this order and fix the first failure before moving on.
 
 ## Reading a failed check
 
+The list is complete: every code the script can emit has an entry here.
+
+- `xml: not well-formed XML` - the source failed to parse; the message carries the line and column.
+  Close the tag or escape the `&`. <!-- check:xml -->
+- `root: root element is <x>, expected <svg>` - the file parses but is not an SVG. Pass the `.svg`,
+  or the `.html` whose inline `<svg>` you meant. <!-- check:root -->
+- `canvas: viewBox must have four numbers` - add `viewBox="0 0 W H"`; a standalone file also needs
+  explicit `width`/`height`, and the warning says so when they are missing. <!-- check:canvas -->
 - `overflow: <id>` - a label is wider/taller than its node. Shorten the label, widen the node on
-  the grid, or move the detail into the caption.
+  the grid, or move the detail into the caption. <!-- check:overflow -->
 - `diagonal: <id>` - a connector with both dx and dy. Re-route as two axis-aligned segments with
-  an 8px fillet.
-- `grid: <id> <attr>` - an attribute not divisible by 4. Snap it.
+  an 8px fillet. <!-- check:diagonal -->
+- `grid: <id> <attr>` - an attribute not divisible by 4. Snap it. <!-- check:grid -->
+- `radius: <id> rx=N exceeds 8px` - snap the corner to 8 or less. <!-- check:radius -->
+- `stroke: <id> stroke-width=N exceeds 1.5` - heavy strokes read as UI chrome, not diagram ink;
+  use 1px. <!-- check:stroke -->
 - `contrast: <id>` - text on a fill below the threshold. Use `text`/`text-2` instead of `text-3`,
-  or lift the fill.
-- `budget: nodes` - split the figure (overview + detail) rather than shrinking type.
-- `a11y: title-order` - `<title>` must be the first child of `<svg>`.
-- `fonts: cjk` - the file contains CJK but the root stack has no CJK family.
+  or lift the fill. <!-- check:contrast -->
+- `accent: N focal nodes; at most 2 are allowed` - more than two elements carry the accent. Pick
+  the one focal element and its path; demote the rest to neutral or to an identity tint. <!-- check:accent -->
+- `decor: <tag> is banned (...)` - a gradient, filter, or shadow slipped in. Replace it with a flat
+  fill and a stroke; emphasis comes from colour and weight. <!-- check:decor -->
+- `budget: nodes` - split the figure (overview + detail) rather than shrinking type. <!-- check:budget -->
+- `a11y: title-order` - `<title>` must be the first child of `<svg>`. <!-- check:a11y -->
+- `fonts: cjk` - the file contains CJK but the root stack has no CJK family. <!-- check:fonts -->
+- `type: <text> is Npx; minimum is 11px` - raise the size and restructure the box; never shrink
+  type to make a label fit. <!-- check:type -->
 - `center: <label>` - the text sits more than ~2px off the middle of its box. Move the baselines
-  up/down together (a 13px name plus an 11px sublabel in a 64px box centres on `y+26`/`y+46`).
+  up/down together (a 13px name plus an 11px sublabel in a 64px box centres on `y+26`/`y+46`). <!-- check:center -->
+- `render: ...` - the PNG is blank, far too dense, or could not be measured. `ImageMagick not found`
+  means the check was skipped, not passed. <!-- check:render -->
 - `edge: content touches the canvas edge on the right and sits inside the 16px canvas padding (...)`
   - ink has reached (or passed) a canvas boundary, or stops within 16px of one. A node border on
   the boundary loses half its stroke, so widen the canvas, move the tick labels inward, or lift the
-  footnote.
+  footnote. <!-- check:edge -->
+- `clip: text '<text>' is outside the canvas` - a label fell outside the viewBox. Move it inside
+  the padding, or widen the canvas; clipping is invisible in the source and shows up in the render. <!-- check:clip -->
 - `port: <connector> start|arrowhead (x,y) attaches to nothing: the nearest node <id> is Npx away` -
   the end floats. Snap it onto that node's border, or onto the stroke it was meant to branch from.
   An 8px offset is the usual cause, and it is the single most common way an architecture figure
-  becomes ambiguous about who feeds whom.
+  becomes ambiguous about who feeds whom. <!-- check:port -->
 - `port: ... lands inside node <id>` - the arrowhead overshoots the boundary. Pull it back to the
   edge; a head inside a box points at nothing.
 - `port: ... lands on a corner of node <id>` (warning) - slide the tip onto the middle of one edge.
 - `hidden: <connector> passes behind node <id> (Npx inside the box)` - the box paints over the line.
   Route around the box, or make it an endpoint of that connector. If the connector is drawn *after*
-  the box the message reads `runs through`.
+  the box the message reads `runs through`. <!-- check:hidden -->
 - `hidden: edge label '<text>' sits inside node <id>` - the label disappears under the box (or
   collides with the box's own text). Move it into the gap between the boxes.
+- `edge-label: <id> has no mask rect; the stroke will bleed through the text` - give the label an
+  opaque mask sized to its text (see [`primitives.md`](primitives.md)). <!-- check:edge-label -->
 - `label-cut: the mask of edge label '<text>' has an edge inside the Npx stroke of <connector>, so
   the line paints half-thick under the glyphs` - the mask's edge landed on the wire. Lift it 1px
-  clear of the stroke's ink, or extend it to swallow the stroke whole.
+  clear of the stroke's ink, or extend it to swallow the stroke whole. <!-- check:label-cut -->
 - `label-cut: ... cuts <connector> Npx off the line's axis` - the label is cutting a stroke it is
   not centred on; the wire reads as broken and the text as detached. Centre the mask on the line
   (within 2px) or move the label beside it.
@@ -120,11 +143,11 @@ Run it in this order and fix the first failure before moving on.
   patch over the band` - the mask is opaque, so its colour is the colour of the rectangle the
   reader sees. Give it the tone of what is behind it: the canvas, or a zone band / node fill
   composited over the canvas (measure the render; do not trust the band's own fill value, its
-  `opacity` still has to be applied). Light figures show this first.
+  `opacity` still has to be applied). Light figures show this first. <!-- check:mask-tone -->
 - `mask: the mask of edge label '<text>' overlaps node <id> ...` - a mask drawn after a box erases
-  part of that box's border. Offset the mask.
+  part of that box's border. Offset the mask. <!-- check:mask -->
 - `label: <connector> is a Npx connector with no label` - a short arrow with no label is ambiguous.
-  Label it, or delete it if the reader can infer it from the boxes alone.
+  Label it, or delete it if the reader can infer it from the boxes alone. <!-- check:label -->
 
 ## What still needs eyes
 
