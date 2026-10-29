@@ -27,7 +27,7 @@ Rule numbers are stable ids that other skills cite. A removed rule leaves a gap.
 ### Content
 
 3. **Superficial -ing phrases.** "highlighting...", "ensuring...", "reflecting...", "showcasing...", "fostering...". Delete or expand with real sources.
-5. **Vague attributions.** "Experts believe", "Industry reports suggest", "Some critics argue". Name the source or delete.
+5. **Vague attributions.** "Experts believe", "Industry reports suggest", "Some critics argue". Name the source or delete. The same test catches invented precision — a percentage nobody measured, a benchmark nobody ran, a quote nobody said. A specific number is not evidence; it only moves the claim further from anything checkable.
 
 ### Language
 
