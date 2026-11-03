@@ -50,6 +50,7 @@ Update later with `npx skills update -g`, and remove with `npx skills remove <sk
 | [`writing-for-agents`](skills/writing-for-agents) | Writes and prunes the documents an agent consumes: a skill, an `AGENTS.md` / `CLAUDE.md`, or a doc reached by pointer. Covers trigger wording, information hierarchy, completion criteria, leading words, and pruning, plus frontmatter and model- vs user-invocation. | none |
 | [`retro`](skills/retro) | Runs a retrospective on a coding session with the agent's environment as its subject: seven places to hunt (navigation, checks, reviewer rules, `AGENTS.md` size, tool economy, no-ops, information access), each proposal carrying its session moment, an exact edit, its payoff, and its maintenance cost, ranked by severity. Proposes; the user picks. | none |
 | [`design-practice`](skills/design-practice) | Product design around the code, in six routes: critique a screen, audit or document a design system, spec a developer handoff, write or review UX copy, plan user research, synthesize interviews and usability notes. Carries Anthropic's design plugin as modules. | none |
+| [`nuclear-review`](skills/nuclear-review) | Reviews a diff at the harshest maintainability bar: hunts the code-judo restructuring that deletes branches, helpers, and layers; blocks unjustified 1k-line growth and special-case spaghetti; the bar for approval sits above "tests pass". Carried from Cursor's `thermo-nuclear-code-quality-review`. | none |
 
 ## tech-diagrams
 
@@ -274,6 +275,26 @@ return, and patterns that disagree with the surrounding file.
 Its guardrails are the point: behavior stays unchanged unless it is fixing a clear bug, minimal
 edits beat broad rewrites, and the summary is 1-3 sentences.
 
+## nuclear-review
+
+The opposite question from `deslop`: not "what did the model add that nobody asked for", but "is
+this how we would have built it if the requirement had been there from the start". It runs an
+unusually strict review of a branch's changes against implementation quality: abstraction quality,
+spaghetti growth, file size, boundary cleanliness, and where the logic lives.
+
+Its central move is **code judo**: a restructuring that keeps behavior while deleting whole branches,
+helpers, modes, or layers. Stopping at "this could be a bit cleaner" is treated as not having
+reviewed. On top of that it enforces a few hard lines — a diff that pushes a file past 1000 lines
+needs a reason, new special-case branches in an existing flow are a design problem rather than a
+style nit, and a feature check scattered across shared code gets pushed back to its owner.
+
+Approval sits above "tests pass". Incidental complexity left standing next to a plausible
+simplification is a blocker, not a suggestion, and findings are ranked so a review carries a few
+high-conviction comments instead of a long list of nits. The body is Cursor's `thermo-nuclear` skill
+verbatim; only the name and the description are this repository's. Diff hygiene stays in `deslop`;
+seam placement stays in `codebase-design`; whether a component should exist stays in
+`architecture-ablation`.
+
 ## create-verification-skill
 
 Generates a project-local verification skill (`<skills>/verify-<app>/`) for the target repo. It
@@ -340,6 +361,10 @@ skills/
     SKILL.md                     entry point: route by artifact, module framing rules
     CONNECTORS.md                `~~category` placeholders, and what each unlocks
     modules/                     6 modules from anthropics/knowledge-work-plugins, accessibility removed, plus its LICENSE
+    agents/openai.yaml           interface metadata: display name, triggers, not-triggers
+  nuclear-review/
+    SKILL.md                     entry point: standards, per-change questions, remedies, approval bar
+    CREDITS.md · LICENSE         adapted from Cursor's thermo-nuclear-code-quality-review, MIT
     agents/openai.yaml           interface metadata: display name, triggers, not-triggers
 ```
 

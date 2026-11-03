@@ -50,6 +50,7 @@ npx skills use Loner1024/skills@tech-diagrams | claude
 | [`writing-for-agents`](skills/writing-for-agents) | 编写和精简 agent 读的文档：skill、`AGENTS.md` / `CLAUDE.md`，或通过指针抵达的文档。覆盖触发词措辞、信息层级、完成标准、leading words 与剪枝，以及 frontmatter 和 model-invoked / user-invoked 的取舍。 | 无 |
 | [`retro`](skills/retro) | 对一次编码会话做复盘，复盘对象是 agent 的工作环境：七个检查点（导航、自动检查、reviewer 规则、`AGENTS.md` 体量、工具开销、空转指令、信息获取），每条提案都带会话中的具体时刻、可直接落地的改动、收益和维护成本，按严重程度排序。只提案，由用户挑选。 | 无 |
 | [`design-practice`](skills/design-practice) | 代码之外的产品设计工作，六条路由：设计评审、设计系统审计与组件文档、开发交接标注、UX 文案、用户研究计划、访谈与可用性记录的综合分析。搬运 Anthropic 的 design plugin 作为模块。 | 无 |
+| [`nuclear-review`](skills/nuclear-review) | 用最狠的可维护性标准评审 diff：找那步能删掉整层分支、辅助函数和抽象的重构；卡住没有理由的千行文件和到处打补丁的 spaghetti；"测试过了"不构成通过。改自 Cursor 的 `thermo-nuclear-code-quality-review`。 | 无 |
 
 ## tech-diagrams
 
@@ -218,6 +219,14 @@ Anthropic 的 design plugin，六个模块加一个路由入口：设计评审�
 
 它的护栏才是重点：除非在修明确的 bug，否则行为不变；小改优先于大重写；总结压到 1-3 句。
 
+## nuclear-review
+
+问的是和 `deslop` 相反的问题：不是"模型多加了什么没人要的东西"，而是"如果这个需求一开始就在，我们会搭成现在这样吗"。它对分支改动作一次异常严格的评审，看抽象质量、spaghetti 增长、文件体量、边界干净程度，以及逻辑落在哪一层。
+
+它的核心动作叫 **code judo**：保住行为，删掉整层分支、辅助函数、模式或抽象的那种重构。停在"这里还能再干净点"等于没评审。除此之外有几条硬线：diff 把文件推过 1000 行要有理由；往现有流程里塞特例分支算设计问题，不算风格问题；feature 判断散进公共代码的，退回给它的所有者。
+
+通过门槛在"测试过了"之上。旁边明明有一条可行的简化、却把附带复杂度留着，这是阻塞项而不是建议；结论按优先级排，宁可给几条有把握的重话，也不列一长串鸡毛。正文是 Cursor 那个 thermo-nuclear skill 的原文，只有名字和描述是这里改的。diff 卫生归 `deslop`，接缝位置归 `codebase-design`，某个组件该不该存在归 `architecture-ablation`。
+
 ## create-verification-skill
 
 给目标仓库生成它自己的验证 skill（`<skills>/verify-<app>/`）。先只访谈代码库、不问用户：用户实际碰到什么界面、应用怎么启动、怎么程序化驱动、能取什么证据、能不能并行跑两个实例。再写出带 Launch、Doctor、Drive、Evidence、Cleanup、Helpers 六段的 SKILL.md，每一段都以访谈发现为准、不留占位符。
@@ -275,6 +284,10 @@ skills/
     SKILL.md                     入口：按手上的产物路由、模块调用规则
     CONNECTORS.md                `~~category` 占位符，以及每类能拿到什么
     modules/                     6 个模块，取自 anthropics/knowledge-work-plugins，删去无障碍，附其许可证
+    agents/openai.yaml           界面元数据：显示名、触发词、不触发词
+  nuclear-review/
+    SKILL.md                     入口：标准、逐项追问、修法、通过门槛
+    CREDITS.md · LICENSE         改自 Cursor 的 thermo-nuclear-code-quality-review，MIT
     agents/openai.yaml           界面元数据：显示名、触发词、不触发词
 ```
 
