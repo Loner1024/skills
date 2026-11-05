@@ -1,0 +1,22 @@
+interface:
+  display_name: "Blast Radius"
+  short_description: "Find what a change breaks outside the diff, then prove the one safety fact by running code"
+  triggers:
+    - "blast radius"
+    - "what could this break"
+    - "what does this change affect"
+    - "impact analysis"
+    - "is this safe to merge"
+    - "wide refactor"
+    - "library upgrade risk"
+    - "影响范围"
+    - "爆炸半径"
+    - "这个改动会坏什么"
+    - "会不会影响别处"
+    - "上线前查一遍"
+  not_triggers:
+    - "code quality review"
+    - "module design"
+    - "should this abstraction exist"
+    - "review this diff"
+    - "核弹级评审"

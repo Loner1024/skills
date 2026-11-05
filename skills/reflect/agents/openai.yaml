@@ -1,0 +1,16 @@
+interface:
+  display_name: "Reflect"
+  short_description: "Session retrospective: three lenses, severity-ranked edits, checks before prose"
+  triggers:
+    - "reflect"
+    - "session retrospective"
+    - "what did this session teach"
+    - "improve the skill library"
+    - "复盘"
+    - "回顾这次会话"
+    - "这次学到什么"
+  not_triggers:
+    - "review this diff"
+    - "fix this bug"
+    - "write a skill"
+    - "代码评审"

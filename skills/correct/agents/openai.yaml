@@ -1,0 +1,20 @@
+interface:
+  display_name: "Correct"
+  short_description: "Turn a repeated agent mistake into architecture, types, a lint, a test, or a rule, in that order"
+  triggers:
+    - "correct"
+    - "same mistake again"
+    - "repeated agent mistake"
+    - "make this mistake impossible"
+    - "add a lint for this"
+    - "encode this rule"
+    - "重复犯错"
+    - "同一个错又犯了"
+    - "让 agent 别再犯"
+    - "加个检查防住"
+    - "把这条规则写进仓库"
+  not_triggers:
+    - "session retrospective"
+    - "write AGENTS.md"
+    - "skill description"
+    - "复盘"

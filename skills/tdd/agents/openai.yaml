@@ -1,0 +1,19 @@
+interface:
+  display_name: "TDD"
+  short_description: "Regression test first: fail before the fix, pass after, or skip the test when the path is expensive"
+  triggers:
+    - "TDD"
+    - "test first"
+    - "write a failing test"
+    - "regression test"
+    - "test this bug"
+    - "prove the fix with a test"
+    - "测试先行"
+    - "先写测试"
+    - "回归测试"
+    - "复现这个 bug 的测试"
+    - "写个测试证明修好了"
+  not_triggers:
+    - "end-to-end verification skill"
+    - "performance benchmark"
+    - "benchmark"

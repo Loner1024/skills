@@ -48,9 +48,15 @@ Update later with `npx skills update -g`, and remove with `npx skills remove <sk
 | [`deslop`](skills/deslop) | Removes AI-generated code slop from a branch diff: comments that restate the line, defensive checks on trusted paths, `any` casts, deep nesting, and patterns that disagree with the surrounding file. | none |
 | [`create-verification-skill`](skills/create-verification-skill) | Generates a project-local verification skill that drives the real app the way a user does — launch, doctor, drive, evidence, cleanup — seeds a per-feature verification map, and proves the generated skill end to end before handing it over. | none |
 | [`writing-for-agents`](skills/writing-for-agents) | Writes and prunes the documents an agent consumes: a skill, an `AGENTS.md` / `CLAUDE.md`, or a doc reached by pointer. Covers trigger wording, information hierarchy, completion criteria, leading words, and pruning, plus frontmatter and model- vs user-invocation. | none |
-| [`retro`](skills/retro) | Runs a retrospective on a coding session with the agent's environment as its subject: seven places to hunt (navigation, checks, reviewer rules, `AGENTS.md` size, tool economy, no-ops, information access), each proposal carrying its session moment, an exact edit, its payoff, and its maintenance cost, ranked by severity. Proposes; the user picks. | none |
+| [`reflect`](skills/reflect) | Runs a retrospective on a coding session with the agent's environment as its subject: three independent lenses (judgment, tooling, divergent) find durable findings, a synthesizer keeps only what a future agent would act on, and each accepted row is ranked by frequency times cost and routed to a check, a skill, a steering file, or a doc. Proposes; the user approves rows before any edit lands. | none |
 | [`design-practice`](skills/design-practice) | Product design around the code, in six routes: critique a screen, audit or document a design system, spec a developer handoff, write or review UX copy, plan user research, synthesize interviews and usability notes. Carries Anthropic's design plugin as modules. | none |
 | [`nuclear-review`](skills/nuclear-review) | Reviews a diff at the harshest maintainability bar: hunts the code-judo restructuring that deletes branches, helpers, and layers; blocks unjustified 1k-line growth and special-case spaghetti; the bar for approval sits above "tests pass". Carried from Cursor's `thermo-nuclear-code-quality-review`. | none |
+| [`technical-writing`](skills/technical-writing) | Writes documentation a tired engineer understands on the first read: picks one Diátaxis mode, then applies Google developer style, STE instruction rules, and Global English. Covers READMEs, RFCs, design docs, PR descriptions, and commit messages. | none |
+| [`blast-radius`](skills/blast-radius) | Finds what a change breaks outside the diff before it ships, and proves the one fact the safety argument rests on by running real code. Ranks each risk by likelihood and cost, and separates what it cleared from what it could not. | none |
+| [`benchmark-checklist`](skills/benchmark-checklist) | Vets a performance number before anyone reports or acts on it: names the limiter, checks both sides were tuned, does the arithmetic against physical limits, counts errors, and runs alternating repeats so noise cannot pass as a win. | none |
+| [`tdd`](skills/tdd) | Fixes a bug through a regression test that fails before the change and passes after it, and says when no cheap test path exists instead of building an expensive harness. | none |
+| [`correct`](skills/correct) | Turns a repeated agent mistake into something the repo enforces: architecture first, then types, then a lint whose error names the fix, then a test, and docs last. Proves each new check fails on a real past mistake. | none |
+| [`sharpen`](skills/sharpen) | Rewrites a shallow request into a deeper one without adding scope: four questions about what a top professional would do differently, what raw material they would start from, which methods and tools they would use, and what outside the agent would prove the result right. User-invoked with `/sharpen`. | none |
 
 ## tech-diagrams
 
@@ -310,6 +316,48 @@ to end once (launch, doctor, drive one feature, evidence, cleanup, with the evid
 after cleanup); an unrun generated skill is a draft. As the app changes, the feature map is kept
 honest by updating the files under `features/`.
 
+## technical-writing
+
+Diátaxis picks the shape of a document; three sentence standards pick the words. One mode per document — tutorial, how-to, reference, or explanation — because a reference table inside a tutorial teaches nothing and a tutorial inside reference slows a lookup. Above the layers sit three rules: cut every word that does no work, use the short everyday word, and when a rule makes a sentence worse, leave the sentence alone.
+
+The sentence layers are Google developer style (second person, present tense, condition before instruction, headings that carry the point), STE (one instruction per sentence, warnings before the step they guard, direct commands), and Global English (keep "only" next to what it modifies, repeat the noun instead of a vague "this", no slashes or semicolons). A worked example turns three sentences of passive configuration prose into two.
+
+It owns structure and sentence clarity for documents a human reads. `unslop` owns the AI tells in the prose. `writing-for-agents` owns `SKILL.md` and `AGENTS.md`, where the reader is a model.
+
+## blast-radius
+
+Listing the callers is not the job; an agent can grep those in a second. The job is the breakage grep will not show you: a wire format another language reads, a feature flag, code three hops downstream, a teardown order.
+
+The method is one safety fact. Most changes that look risky are safe because of a single fact, so find it and spend the time there. Then say how far the proof got: you said so, you pointed at the line, you showed the bad case cannot happen, you ran a script against the real code, or you reproduced it in the running app. Step 4 is usually one small script that imports the same library the app ships. A written argument is not proof, because it reads as convincing whether or not it is true.
+
+It reports what changed, the one fact with its proof or the word "unproven", confirmed risks ranked by likelihood and cost, what was checked and cleared, and the cheapest repro before merge. Code quality belongs to `nuclear-review`; the safety of a shape belongs to `codebase-design`.
+
+## benchmark-checklist
+
+A performance number is a claim, and this is the checklist that decides whether it survives. Name the limiter before claiming a win: profile in a run you do not report, watch CPU, I/O wait, syscalls, and the load generator, and find out why the number is not twice as good. Check that both sides ran the way production runs them; comparing a tuned side against defaults compares configurations, not implementations. Do the arithmetic against bandwidth and core counts, because a result past a physical limit measured a cache, a no-op, or a bug.
+
+Then count errors and prove outputs are correct, run each side at least five times alternating, report the median and range, and measure the end-to-end path next to any micro result. Question 7 catches silent no-ops: confirm the timed region actually did the work. The verdict is faster, slower, no measurable difference, or inconclusive, and "inconclusive" is the answer when the limiter is unnamed or a side ran untuned.
+
+## tdd
+
+One rule: the broken behavior becomes executable before production code changes. The test fails for the intended reason, then the smallest fix makes it pass. The test encodes intended behavior, not the current implementation, so it keeps working through a refactor.
+
+It also spends time on when not to: broad harness setup, brittle mocks, slow end-to-end infrastructure, production-only state, or fixture churn all mean a regression check is not worth building. Prefer no new test over a bad one, and use the closest executable check instead. Guardrails: do not rewrite tests to match a wrong implementation, do not weaken assertions without a changed requirement, and keep the test focused on the bug. Verifying a whole app is `create-verification-skill`; a perf number is `benchmark-checklist`.
+
+## correct
+
+A mistake class counts once it has happened twice. This skill reads recent commits, reverts, review comments, and workaround comments to find the classes, then fixes each at the highest level that works: architecture that gives state one owner or deletes the old way, types that make the bad state unwritable, a lint or CI check whose error names the replacement, a test that fails when the behavior breaks, and docs last because nothing fails when an agent skips them.
+
+Two details make it more than advice. Every new check must fail on a real past mistake, run by the same command locally and in CI; and each rule in the agent instruction file is paired with what enforces it, so a rule with no enforcement is a repeat and gets fixed in the same change. A rule is dropped once its mistake cannot happen. `reflect` runs a session retrospective and proposes environment edits; this one hardens the repository after the correction has already repeated.
+
+## sharpen
+
+Most prompt rewrites add scope: more requirements, more edge cases, more output. This one goes the other way. Before touching the prompt it answers four questions: what a top professional in the field would do that the request does not ask for, what raw material they would start from instead of the already-digested version, which specific methods and tools they would use, and what outside the agent and the user would show the result is right.
+
+The fourth question changes the work: it names a check that does not depend on the agent's confidence. The rewrite then asks for exactly that, and leaves choices that belong to the user open instead of deciding them.
+
+It returns a rewritten prompt, not the task. It is typed (`/sharpen`), not model-invoked, so it runs when the user decides a request needs more depth.
+
 ## Repository layout
 
 ```
@@ -354,8 +402,9 @@ skills/
     SKILL.md                     entry point: pointers, hierarchy, completion criteria, leading words, pruning
     references/skill-mechanics.md  frontmatter, invocation choice, router skills
     agents/openai.yaml           interface metadata: display name, triggers, not-triggers
-  retro/
-    SKILL.md                     entry point: read the session, seven hunting grounds, ranked proposals
+  reflect/
+    SKILL.md                     entry point: seven hunting grounds, three lenses, admission rules, ranked table
+    CREDITS.md · LICENSE         rewrote pstack's reflect, absorbed the retired retro skill, MIT
     agents/openai.yaml           interface metadata: display name, triggers, not-triggers
   design-practice/
     SKILL.md                     entry point: route by artifact, module framing rules
@@ -365,6 +414,30 @@ skills/
   nuclear-review/
     SKILL.md                     entry point: standards, per-change questions, remedies, approval bar
     CREDITS.md · LICENSE         adapted from Cursor's thermo-nuclear-code-quality-review, MIT
+    agents/openai.yaml           interface metadata: display name, triggers, not-triggers
+  technical-writing/
+    SKILL.md                     entry point: Diátaxis mode, Google style, STE, Global English
+    CREDITS.md · LICENSE         carried from pstack's technical-writing, MIT
+    agents/openai.yaml           interface metadata: display name, triggers, not-triggers
+  blast-radius/
+    SKILL.md                     entry point: evidence ladder, one safety fact, risks vs cleared
+    CREDITS.md · LICENSE         carried from pstack's blast-radius, MIT
+    agents/openai.yaml           interface metadata: display name, triggers, not-triggers
+  benchmark-checklist/
+    SKILL.md                     entry point: seven questions, verdict contract
+    CREDITS.md · LICENSE         carried from pstack's benchmark-checklist, MIT
+    agents/openai.yaml           interface metadata: display name, triggers, not-triggers
+  tdd/
+    SKILL.md                     entry point: failing test first, when to skip, guardrails
+    CREDITS.md · LICENSE         carried from pstack's tdd, MIT
+    agents/openai.yaml           interface metadata: display name, triggers, not-triggers
+  correct/
+    SKILL.md                     entry point: mistake classes, enforcement ladder, rule table
+    CREDITS.md · LICENSE         carried from pstack's correct, MIT
+    agents/openai.yaml           interface metadata: display name, triggers, not-triggers
+  sharpen/
+    SKILL.md                     entry point: the four questions, then the rewritten prompt
+    CREDITS.md · LICENSE         carried from pstack's sharpen, MIT
     agents/openai.yaml           interface metadata: display name, triggers, not-triggers
 ```
 

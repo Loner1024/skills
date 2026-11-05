@@ -1,0 +1,22 @@
+interface:
+  display_name: "Benchmark Checklist"
+  short_description: "Vet a perf number before reporting it: limiter, tuning, limits, errors, repeatability, relevance"
+  triggers:
+    - "benchmark"
+    - "benchmark checklist"
+    - "performance measurement"
+    - "speedup"
+    - "regression"
+    - "p50 latency"
+    - "was it tuned"
+    - "性能测试"
+    - "基准测试"
+    - "快了多少"
+    - "慢了多少"
+    - "性能回归"
+    - "这个数字可信吗"
+  not_triggers:
+    - "blast radius"
+    - "code review"
+    - "draw a benchmark chart"
+    - "影响范围"

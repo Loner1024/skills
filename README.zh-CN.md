@@ -48,9 +48,15 @@ npx skills use Loner1024/skills@tech-diagrams | claude
 | [`deslop`](skills/deslop) | 去掉分支 diff 里 AI 生成的代码噪音：复述代码行的注释、可信路径上的防御性检查、只为绕过类型的 `any` 断言、深层嵌套、与周边代码不一致的写法。 | 无 |
 | [`create-verification-skill`](skills/create-verification-skill) | 给目标仓库生成项目本地的验证 skill：像用户一样驱动真实应用（启动、体检、驱动、取证、清理），播种按功能拆分的验证地图，交付前端到端实跑一遍证明生成物可用。 | 无 |
 | [`writing-for-agents`](skills/writing-for-agents) | 编写和精简 agent 读的文档：skill、`AGENTS.md` / `CLAUDE.md`，或通过指针抵达的文档。覆盖触发词措辞、信息层级、完成标准、leading words 与剪枝，以及 frontmatter 和 model-invoked / user-invoked 的取舍。 | 无 |
-| [`retro`](skills/retro) | 对一次编码会话做复盘，复盘对象是 agent 的工作环境：七个检查点（导航、自动检查、reviewer 规则、`AGENTS.md` 体量、工具开销、空转指令、信息获取），每条提案都带会话中的具体时刻、可直接落地的改动、收益和维护成本，按严重程度排序。只提案，由用户挑选。 | 无 |
+| [`reflect`](skills/reflect) | 对一次编码会话做复盘，复盘对象是 agent 的工作环境：三个独立视角（判断、工具、反向）找持久结论，再由 synthesizer 只留下未来 agent 真会照做的东西，每条按频次 × 代价排序，路由到检查、skill、steering 文件或文档。提案后由用户逐行批准，再落地。 | 无 |
 | [`design-practice`](skills/design-practice) | 代码之外的产品设计工作，六条路由：设计评审、设计系统审计与组件文档、开发交接标注、UX 文案、用户研究计划、访谈与可用性记录的综合分析。搬运 Anthropic 的 design plugin 作为模块。 | 无 |
 | [`nuclear-review`](skills/nuclear-review) | 用最狠的可维护性标准评审 diff：找那步能删掉整层分支、辅助函数和抽象的重构；卡住没有理由的千行文件和到处打补丁的 spaghetti；"测试过了"不构成通过。改自 Cursor 的 `thermo-nuclear-code-quality-review`。 | 无 |
+| [`technical-writing`](skills/technical-writing) | 写出疲惫的工程师一遍就能读懂的文档：先选一种 Diátaxis 文档模式，再落到 Google 开发者文风、STE 指令规则和 Global English。覆盖 README、RFC、设计文档、PR 描述和 commit message。 | 无 |
+| [`blast-radius`](skills/blast-radius) | 上线前找出 diff 之外的破坏面，并用真实代码跑通整个安全论证所依赖的那一个事实。每个风险按发生概率和代价排序，把已排除的和没能证明的分开写。 | 无 |
+| [`benchmark-checklist`](skills/benchmark-checklist) | 在汇报或依据一个性能数字行动之前先审它：找出瓶颈，确认两边都按生产配置调过，对着物理上限做算术，统计错误数，交替重复多轮，避免把噪声当成提升。 | 无 |
+| [`tdd`](skills/tdd) | 用一个回归测试修 bug：改之前失败，改之后通过。没有便宜的测试路径时直说，而不是硬搭一套昂贵设施。 | 无 |
+| [`correct`](skills/correct) | 把 agent 反复犯的错变成仓库强制的东西：先改架构，再改类型，再加一条错误信息直接说怎么修的 lint，然后补测试，最后才写文档。每条新检查都要在一个真实的历史错误上证明会失败。 | 无 |
+| [`sharpen`](skills/sharpen) | 把一个浅的请求改写成更深的请求，而不是更大的：先回答四个问题——这行的顶级从业者会做什么你没要求的事、他们会从什么原始材料开始、用什么方法和工具、除了你和 agent 之外什么能证明结果对。用 `/sharpen` 手动调用。 | 无 |
 
 ## tech-diagrams
 
@@ -233,6 +239,48 @@ Anthropic 的 design plugin，六个模块加一个路由入口：设计评审�
 
 然后播种功能地图：`features/README.md` 索引加每个用户可见功能一个文件，固定四个 H2（Sub-features、How to get to it (user POV)、Driving it with <harness>、Gotchas），样例在 `references/feature-map-example/`。最后必须按生成的 skill 端到端实跑一遍（launch → doctor → 驱动一个功能 → 取证 → 清理，清理后证据必须还在），没跑过的生成物只是草稿。应用变化后，功能地图靠手动更新 `features/` 下的文件来保持诚实。
 
+## technical-writing
+
+Diátaxis 决定文档形状，三层句子标准决定用词。一篇文档只用一种模式——教程、操作指南、参考、解释——因为在教程里塞参考表学不到东西，在参考里塞教程会拖慢查阅。三层之上还有三条：一个词不做事的就删；能用短词就用短词；规则把句子改坏了，就换个写法或者别改。
+
+句子三层是 Google 开发者文风（第二人称、现在时、条件在前、标题说结论）、STE（一句话一条指令、警告放在步骤前、用命令句）、Global English（only 挨着它修饰的词、this 指代不清就重复名词、不用斜杠和分号）。文末有一个改写示例：三句被动的配置说明压成两句。
+
+它管的是给人读的文档的结构和句子。`unslop` 管文字里的 AI 痕迹，`writing-for-agents` 管读者是模型的 `SKILL.md` 和 `AGENTS.md`。
+
+## blast-radius
+
+列出调用方不是正事，agent 一秒就能 grep 完。正事是 grep 看不见的破坏：另一种语言在读的 wire format、feature flag、三跳之后的下游代码、卸载顺序。
+
+方法是找出那一个安全事实。看上去危险的改动，多数只靠一个事实撑着，把时间花在它上面。然后说清楚证明到哪一步：只是你说过、指到了具体行、走完了坏情况进不来、写了脚本跑真实代码，还是在跑着的应用里复现了。第 4 步通常就是一个小脚本，import 应用同一个库，调用你担心的那个函数。一份读起来很顺的论证不算证明，因为它无论真假都读着说服人。
+
+交付分五块：改了什么；那一个安全事实，附证明或直接写 unproven；确认的风险，按概率和代价排序；查过并排除的；合并前最便宜的复现。代码质量归 `nuclear-review`，形状本身的安全归 `codebase-design`。
+
+## benchmark-checklist
+
+性能数字是一个主张，这份清单决定它站不站得住。先找瓶颈再宣布提升：在不上报的那次运行里做 profile，看 CPU、I/O 等待、syscall 和压测端，弄清为什么没有快一倍。确认两边都按生产的方式跑；拿调过的一边比默认配置的一边，比的是配置不是实现。对着带宽和核数做算术，越过物理上限的结果量到的是缓存、空操作或者 bug。
+
+然后统计错误并确认输出正确；每边至少跑 5 次、交替跑，报中位数和区间；任何微基准旁边都要量端到端路径。第 7 问检查的是定时区间里活到底干没干，专抓静默空操作。结论只有四种：更快、更慢、没有可测量的差别、无法判断。说不出瓶颈，或者有一边没调优，"无法判断"就是答案。
+
+## tdd
+
+只有一条规则：改生产代码之前，先让坏行为变成可执行的。测试按预期的原因失败，再用最小的改动让它通过。测试写的是预期行为，不是当前实现，这样重构之后它还成立。
+
+什么时候不写同样重要：要搭一大套 harness、mock 很脆、端到端太慢、只有生产环境才有的状态、fixture 大改，都说明这个回归检查不值得建。宁可不加测试，也不要加一个坏测试，改用最近的可执行检查。护栏：不要为了迁就错误实现去改测试，需求没变就不要削弱断言，测试只盯这个 bug。整应用验证走 `create-verification-skill`，性能数字走 `benchmark-checklist`。
+
+## correct
+
+同一类错误出现两次才算一类。它读最近的提交、回滚、review 评论和解释 workaround 的注释，归出错误类别，然后在能起作用的最高层修掉：改架构，让状态只有一个所有者或者删掉旧路；改类型，让坏状态写不出来；加一条 lint 或 CI 检查，错误信息直接说要换成什么；补一个行为坏了就会失败的测试；文档放最后，因为 agent 跳过文档不会有任何东西失败。
+
+两个细节让它不止是建议。每条新检查都要在一个真实的历史错误上失败，本地和 CI 跑同一条命令；agent 指令文件里的每条规则都要配一个执行者，没有执行者的规则算复发，当次一起修。错误已经不可能发生，规则就删掉。`reflect` 复盘一次会话、给出环境改动建议；这个 skill 是在同一个纠正重复出现之后，把仓库本身改硬。
+
+## sharpen
+
+多数 prompt 改写是在加范围：更多要求、更多边界、更多产出。这个反过来。动 prompt 之前先答四个问题：这行的顶级从业者会做什么你没要求的事；他们会从什么原始材料开始，而不是别人嚼过的版本；他们会用哪些具体方法和工具；除了 agent 和你自己，什么能证明结果是对的。
+
+第四个问题改变的是活本身：它逼出一个不依赖 agent 自信程度的检查。改写后的 prompt 要的正是这个，同时把属于你的选择留空，不替你定。
+
+它交回的是改写后的 prompt，不是任务本身。手动输入 `/sharpen` 调用，不靠模型自己判断。
+
 ## 仓库结构
 
 ```
@@ -277,8 +325,9 @@ skills/
     SKILL.md                     入口：指针、信息层级、完成标准、leading words、剪枝
     references/skill-mechanics.md  frontmatter、调用方式选择、router skill
     agents/openai.yaml           界面元数据：显示名、触发词、不触发词
-  retro/
-    SKILL.md                     入口：读会话、七个检查点、按严重程度排序的提案
+  reflect/
+    SKILL.md                     入口：七处检查点、三个视角、准入标准、排序后的提案表
+    CREDITS.md · LICENSE         改写 pstack 的 reflect，并入原 retro，MIT
     agents/openai.yaml           界面元数据：显示名、触发词、不触发词
   design-practice/
     SKILL.md                     入口：按手上的产物路由、模块调用规则
@@ -288,6 +337,30 @@ skills/
   nuclear-review/
     SKILL.md                     入口：标准、逐项追问、修法、通过门槛
     CREDITS.md · LICENSE         改自 Cursor 的 thermo-nuclear-code-quality-review，MIT
+    agents/openai.yaml           界面元数据：显示名、触发词、不触发词
+  technical-writing/
+    SKILL.md                     入口：Diátaxis 模式、Google 文风、STE、Global English
+    CREDITS.md · LICENSE         取自 pstack 的 technical-writing，MIT
+    agents/openai.yaml           界面元数据：显示名、触发词、不触发词
+  blast-radius/
+    SKILL.md                     入口：证据阶梯、那一个安全事实、风险与已排除
+    CREDITS.md · LICENSE         取自 pstack 的 blast-radius，MIT
+    agents/openai.yaml           界面元数据：显示名、触发词、不触发词
+  benchmark-checklist/
+    SKILL.md                     入口：七个问题、结论契约
+    CREDITS.md · LICENSE         取自 pstack 的 benchmark-checklist，MIT
+    agents/openai.yaml           界面元数据：显示名、触发词、不触发词
+  tdd/
+    SKILL.md                     入口：先写失败测试、何时跳过、护栏
+    CREDITS.md · LICENSE         取自 pstack 的 tdd，MIT
+    agents/openai.yaml           界面元数据：显示名、触发词、不触发词
+  correct/
+    SKILL.md                     入口：错误类别、强制层级、规则表
+    CREDITS.md · LICENSE         取自 pstack 的 correct，MIT
+    agents/openai.yaml           界面元数据：显示名、触发词、不触发词
+  sharpen/
+    SKILL.md                     入口：四个问题，然后交回改写后的 prompt
+    CREDITS.md · LICENSE         取自 pstack 的 sharpen，MIT
     agents/openai.yaml           界面元数据：显示名、触发词、不触发词
 ```
 
