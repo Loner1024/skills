@@ -57,6 +57,8 @@ npx skills use Loner1024/skills@tech-diagrams | claude
 | [`tdd`](skills/tdd) | 用一个回归测试修 bug：改之前失败，改之后通过。没有便宜的测试路径时直说，而不是硬搭一套昂贵设施。 | 无 |
 | [`correct`](skills/correct) | 把 agent 反复犯的错变成仓库强制的东西：先改架构，再改类型，再加一条错误信息直接说怎么修的 lint，然后补测试，最后才写文档。每条新检查都要在一个真实的历史错误上证明会失败。 | 无 |
 | [`sharpen`](skills/sharpen) | 把一个浅的请求改写成更深的请求，而不是更大的：先回答四个问题——这行的顶级从业者会做什么你没要求的事、他们会从什么原始材料开始、用什么方法和工具、除了你和 agent 之外什么能证明结果对。用 `/sharpen` 手动调用。 | 无 |
+| [`how`](skills/how) | 讲清一个子系统怎么工作：复杂系统拆成 2-4 个探索角度，再合成一份新人可用的说明，含组件、执行流、文件地图和坑。 | 无 |
+| [`why`](skills/why) | 追一段代码为什么长成这样：先钉代码锚点，再查所有可用证据源（git 与 PR、工单、文档、聊天、监控、错误追踪、分析仓库），按五级置信度给出带引用、矛盾和缺口说明的结论。 | 非 git 证据源需要相应 MCP（可选；git 和 `gh` 始终可用） |
 
 ## tech-diagrams
 
@@ -281,6 +283,18 @@ Diátaxis 决定文档形状，三层句子标准决定用词。一篇文档只�
 
 它交回的是改写后的 prompt，不是任务本身。手动输入 `/sharpen` 调用，不靠模型自己判断。
 
+## how
+
+`how` 管理解，不管设计。先判断问题大小：单个模块、窄问题，让一个 explainer 边探索边写；跨文件、跨服务的子系统，拆成 2 到 4 个角度，每个 explorer 返回组件、执行流、读过的文件、边界、反直觉的地方和没追下去的问题，再由一个 explainer 合成、回代码核对矛盾。
+
+输出固定五段：Overview、Key Concepts、How It Works、Where Things Live、Gotchas。它要具体的类型和调用，不要"服务委托给客户端"这种抽象说法；图只在流程需要时画。形状对不对归 `codebase-design`，为什么长成这样归 `why`。
+
+## why
+
+`why` 把代码当成行为的证据，不当成意图的证据。先钉锚点——文件与行号、关键符号、最近提交、PR 号、关联工单——再把可用的证据源映射到七类，每类派一个 investigator：源码历史、工单、长文档、团队聊天、基础设施监控、错误追踪、产品分析仓库。源码历史每次都查；其余六类只在接了对应 MCP 时查，跳过的源要写明原因。
+
+synthesizer 按五级置信度写：Direct（有人明确写过）、Supported（多条间接证据收敛）、Inferred（你对上下文的解读）、Speculative（薄证据上的猜测）、Unknown（查过但没找到）。每条 Direct 或 Supported 都带引用；来源矛盾就都摆出来，不强行统一；用户问题里带的猜测要被检验，而不是被确认。`epistemics.md` 即使不跑这个 skill 也值得读。
+
 ## 仓库结构
 
 ```
@@ -361,6 +375,16 @@ skills/
   sharpen/
     SKILL.md                     入口：四个问题，然后交回改写后的 prompt
     CREDITS.md · LICENSE         取自 pstack 的 sharpen，MIT
+    agents/openai.yaml           界面元数据：显示名、触发词、不触发词
+  how/
+    SKILL.md                     入口：判断问题大小、按角度探索、合成解释
+    references/                  explorer-prompt.md · explainer-prompt.md
+    CREDITS.md · LICENSE         取自 pstack 的 how，MIT
+    agents/openai.yaml           界面元数据：显示名、触发词、不触发词
+  why/
+    SKILL.md                     入口：代码锚点、七类证据源、synthesizer
+    references/                  epistemics · investigator 与 synthesizer prompt · 八份取数手册
+    CREDITS.md · LICENSE         取自 pstack 的 why，MIT
     agents/openai.yaml           界面元数据：显示名、触发词、不触发词
 ```
 

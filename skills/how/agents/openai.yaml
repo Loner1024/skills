@@ -1,0 +1,22 @@
+interface:
+  display_name: "How"
+  short_description: "Explain how a subsystem works: explorers by angle, one synthesized onboarding model"
+  triggers:
+    - "how does this work"
+    - "how does X work"
+    - "code walkthrough"
+    - "explain this subsystem"
+    - "where does this live"
+    - "which package owns this"
+    - "这块代码怎么跑"
+    - "这个子系统怎么工作"
+    - "先讲讲这段代码"
+    - "代码走读"
+    - "这个逻辑放哪"
+    - "归属哪一层"
+  not_triggers:
+    - "why was this built"
+    - "module design"
+    - "should this abstraction exist"
+    - "what does this break"
+    - "设计动因"

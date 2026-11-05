@@ -1,0 +1,21 @@
+interface:
+  display_name: "Why"
+  short_description: "Trace why code is shaped this way across git, PRs, tickets, docs, chat, and telemetry"
+  triggers:
+    - "why does this work this way"
+    - "why did we choose"
+    - "design rationale"
+    - "code archaeology"
+    - "why is this here"
+    - "where did this threshold come from"
+    - "为什么这么写"
+    - "这段代码的来历"
+    - "为什么选这个方案"
+    - "设计动因"
+    - "历史原因"
+    - "这个阈值怎么来的"
+  not_triggers:
+    - "how does it work"
+    - "what does this break"
+    - "code review"
+    - "code walkthrough"

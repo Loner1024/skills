@@ -57,6 +57,8 @@ Update later with `npx skills update -g`, and remove with `npx skills remove <sk
 | [`tdd`](skills/tdd) | Fixes a bug through a regression test that fails before the change and passes after it, and says when no cheap test path exists instead of building an expensive harness. | none |
 | [`correct`](skills/correct) | Turns a repeated agent mistake into something the repo enforces: architecture first, then types, then a lint whose error names the fix, then a test, and docs last. Proves each new check fails on a real past mistake. | none |
 | [`sharpen`](skills/sharpen) | Rewrites a shallow request into a deeper one without adding scope: four questions about what a top professional would do differently, what raw material they would start from, which methods and tools they would use, and what outside the agent would prove the result right. User-invoked with `/sharpen`. | none |
+| [`how`](skills/how) | Explains how a subsystem works: splits a large system into 2-4 exploration angles, then synthesizes one onboarding-grade account with components, runtime flow, a file map, and gotchas. | none |
+| [`why`](skills/why) | Traces why code is shaped the way it is: anchors the code, searches every available evidence source (git and PRs, tickets, docs, chat, observability, errors, analytics), and reports with five confidence tiers, citations, contradictions, and named gaps. | MCP servers for the non-git sources (optional; git and `gh` always work) |
 
 ## tech-diagrams
 
@@ -358,6 +360,18 @@ The fourth question changes the work: it names a check that does not depend on t
 
 It returns a rewritten prompt, not the task. It is typed (`/sharpen`), not model-invoked, so it runs when the user decides a request needs more depth.
 
+## how
+
+`how` answers comprehension, not design. It sizes the question first: a single module gets one explainer that explores and writes in one pass; a subsystem spanning files or services gets two to four explorers, each tracing a different angle and returning components, flow, files read, boundaries, surprises, and open questions. One explainer then reconciles the slices, checks contradictions against the code, and writes the account.
+
+The output is fixed: Overview, Key Concepts, How It Works, Where Things Live, Gotchas. It asks for concrete names and calls rather than abstractions, and for a diagram only when the flow needs one. Whether the shape is right is `codebase-design`; why it got that shape is `why`.
+
+## why
+
+`why` treats code as evidence of behavior, never of intent. It builds an anchor first — files and line ranges, symbols, recent commits, PR numbers, linked tickets — then maps every available evidence source to one of seven categories and sends one investigator per category: source control, ticket tracker, long-form docs, team chat, infrastructure observability, error tracking, and product analytics. Source control always runs; the other six run when an MCP is connected, and a skipped source is named with its reason.
+
+The synthesizer writes in five confidence tiers: Direct (someone wrote it), Supported (several indirect items converge), Inferred (your reading of the context), Speculative (a guess on thin evidence), and Unknown (you looked and could not find out). Every Direct or Supported claim carries a citation; contradictions are shown, not resolved; a hypothesis in the user's question is tested, not confirmed. The epistemics file is worth reading even if you never run the skill.
+
 ## Repository layout
 
 ```
@@ -438,6 +452,16 @@ skills/
   sharpen/
     SKILL.md                     entry point: the four questions, then the rewritten prompt
     CREDITS.md · LICENSE         carried from pstack's sharpen, MIT
+    agents/openai.yaml           interface metadata: display name, triggers, not-triggers
+  how/
+    SKILL.md                     entry point: size the question, explorers by angle, explainer
+    references/                  explorer-prompt.md · explainer-prompt.md
+    CREDITS.md · LICENSE         carried from pstack's how, MIT
+    agents/openai.yaml           interface metadata: display name, triggers, not-triggers
+  why/
+    SKILL.md                     entry point: code anchor, seven source categories, synthesizer
+    references/                  epistemics · investigator and synthesizer prompts · eight source playbooks
+    CREDITS.md · LICENSE         carried from pstack's why, MIT
     agents/openai.yaml           interface metadata: display name, triggers, not-triggers
 ```
 
