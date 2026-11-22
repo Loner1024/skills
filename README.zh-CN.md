@@ -43,7 +43,7 @@ npx skills use Loner1024/skills@tech-diagrams | claude
 | [`codebase-design`](skills/codebase-design) | 设计和评审深模块：精确词汇、接缝位置、接缝后面的数据形状、八条设计红牌、一张评审清单。 | 无 |
 | [`architecture-ablation`](skills/architecture-ablation) | 通过移除或替换某个组件、层次或机制，并和基线对照，检验它到底贡献了什么。把"这层抽象是不是多余的"变成一个可以复核的证据结论。 | 无 |
 | [`external-agent-handoff`](skills/external-agent-handoff) | 把任务收成交接文档和一份可直接转发的 prompt，交给外部 agent 执行；用户带回结果后，再按验收标准逐项检查。当前 agent 不调用外部 agent。 | 无 |
-| [`web-craft`](skills/web-craft) | 网页界面打磨的单一入口：先判断任务属于哪一类，再路由到十四个原样搬运的设计工程模块之一（UI 打磨、动效、评审、性能、原型、手机端手感），并原样执行该模块的规则。 | 无 |
+| [`web-craft`](skills/web-craft) | 网页界面打磨的单一入口：先判断任务属于哪一类，再路由到十七个原样搬运的设计工程模块之一（UI 打磨、动效、手势、评审、性能、原型、手机端手感），并原样执行该模块的规则。 | 无 |
 | [`unslop`](skills/unslop) | 去掉写作里的 AI 痕迹：8 组共 33 条编号规则，每条都指出模式和解法，按"扫描 → 改写 → 自查"执行。 | 无 |
 | [`deslop`](skills/deslop) | 去掉分支 diff 里 AI 生成的代码噪音：复述代码行的注释、可信路径上的防御性检查、只为绕过类型的 `any` 断言、深层嵌套、与周边代码不一致的写法。 | 无 |
 | [`create-verification-skill`](skills/create-verification-skill) | 给目标仓库生成项目本地的验证 skill：像用户一样驱动真实应用（启动、体检、驱动、取证、清理），播种按功能拆分的验证地图，交付前端到端实跑一遍证明生成物可用。 | 无 |
@@ -170,14 +170,14 @@ agent。它先写好方案和检查项，再给出一份文档和一段用户可
 
 ## web-craft
 
-一个入口，替代十四个 skill 争抢 agent 的注意力。agent 只看到一个 skill；这个 skill 判断任务属于哪一类，
+一个入口，替代十七个 skill 争抢 agent 的注意力。agent 只看到一个 skill；这个 skill 判断任务属于哪一类，
 路由到唯一拥有它的模块，然后原样执行模块的规则，不打折。动效评审不会变成设计重写，「这个不该做动效」就是
 最终答案。
 
-十四个模块是 [Emil Kowalski](https://github.com/emilkowalski/skills) 的设计工程 skill 集，原样放在
+十七个模块是 [Emil Kowalski](https://github.com/emilkowalski/skills) 的设计工程 skill 集，原样放在
 [`modules/`](skills/web-craft/modules) 下，MIT 许可证一并保留。四处机械改动让单一入口成立、并保证托管侧
 能加载：模块文件名为 `MODULE.md` 而不是 `SKILL.md`（agent 侧的 skill 发现会把任何嵌套的 `SKILL.md`
-当成独立 skill，一个入口会变成十五个）；模块内两处引用该文件名的文字已同步；许可证加上 `.txt` 扩展名；
+当成独立 skill，一个入口会变成十八个）；模块内引用该文件名的文字已同步；许可证加上 `.txt` 扩展名；
 `break-ui` 里两个字面 U+FFFD 字符改写为转义 `\uFFFD`——托管侧遇到含该字符的文件会整个 skill 不加载。
 除此之外与上游逐字节一致。本仓库新增的只有路由层：
 
@@ -324,7 +324,7 @@ skills/
   web-craft/
     SKILL.md                     唯一入口：分发规则、路由表、模块组合
     agents/openai.yaml           界面元数据：显示名、触发词、不触发词
-    modules/                     14 个模块，原样来自 emilkowalski/skills，附其 MIT LICENSE
+    modules/                     17 个模块，原样来自 emilkowalski/skills，附其 MIT LICENSE
   unslop/
     SKILL.md                     写作：33 条编号规则，去掉 AI 痕迹
     agents/openai.yaml           界面元数据：显示名、触发词、不触发词

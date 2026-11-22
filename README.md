@@ -43,7 +43,7 @@ Update later with `npx skills update -g`, and remove with `npx skills remove <sk
 | [`codebase-design`](skills/codebase-design) | Designs and reviews deep modules: exact vocabulary, seam placement, the shape behind the seam, eight design red flags, and a review checklist. | none |
 | [`architecture-ablation`](skills/architecture-ablation) | Tests whether a component, layer, or mechanism earns its place by removing or replacing it and comparing the result against a baseline. Turns "is this abstraction doing anything?" into a decision backed by evidence you can recheck. | none |
 | [`external-agent-handoff`](skills/external-agent-handoff) | Packs a task into a handoff document and a copy-ready prompt for an external agent the user forwards, then checks the returned work against the acceptance criteria. The current agent does not call the external agent. | none |
-| [`web-craft`](skills/web-craft) | One entry point for web interface craft: classifies the job, routes to one of fourteen design-engineering modules carried verbatim (UI polish, motion, review, performance, prototyping, mobile feel), and follows that module's rules unchanged. | none |
+| [`web-craft`](skills/web-craft) | One entry point for web interface craft: classifies the job, routes to one of seventeen design-engineering modules carried verbatim (UI polish, motion, gesture, review, performance, prototyping, mobile feel), and follows that module's rules unchanged. | none |
 | [`unslop`](skills/unslop) | Removes AI tells from writing: 33 numbered rules in 8 groups, each naming a pattern and its fix, run as scan → rewrite → self-audit. | none |
 | [`deslop`](skills/deslop) | Removes AI-generated code slop from a branch diff: comments that restate the line, defensive checks on trusted paths, `any` casts, deep nesting, and patterns that disagree with the surrounding file. | none |
 | [`create-verification-skill`](skills/create-verification-skill) | Generates a project-local verification skill that drives the real app the way a user does — launch, doctor, drive, evidence, cleanup — seeds a per-feature verification map, and proves the generated skill end to end before handing it over. | none |
@@ -199,17 +199,17 @@ It forces a few things that a loose "here, send this" usually skips:
 
 ## web-craft
 
-One entry point instead of fourteen skills competing for the agent's attention. The agent sees a
+One entry point instead of seventeen skills competing for the agent's attention. The agent sees a
 single skill; that skill reads the job, routes to the module that owns it, and follows the module's
 rules without softening them. A motion review does not turn into a design rewrite, and "don't
 animate this" stays the answer.
 
-The fourteen modules are [Emil Kowalski](https://github.com/emilkowalski/skills)'s
+The seventeen modules are [Emil Kowalski](https://github.com/emilkowalski/skills)'s
 design-engineering skill set, carried verbatim under
 [`modules/`](skills/web-craft/modules) with his MIT license kept alongside. Four mechanical changes
 make the single entry point hold and keep the skill loadable where Amp serves it: module files are
 `MODULE.md` rather than `SKILL.md` (agent-side discovery treats any nested `SKILL.md` as a skill of
-its own), the two module-internal references to that filename were updated, the bundled license
+its own), the module-internal references to that filename were updated, the bundled license
 carries a `.txt` extension, and the two literal U+FFFD characters in `break-ui` are written as the
 escape `\uFFFD` — a hosted skill whose files contain one is not served at all. The text is
 otherwise byte-identical. What this repository adds is the router:
@@ -401,7 +401,7 @@ skills/
   web-craft/
     SKILL.md                     the single entry point: dispatch rules, routing table, combinations
     agents/openai.yaml           interface metadata: display name, triggers, not-triggers
-    modules/                     14 modules, verbatim from emilkowalski/skills, plus its MIT LICENSE
+    modules/                     17 modules, verbatim from emilkowalski/skills, plus its MIT LICENSE
   unslop/
     SKILL.md                     writing: 33 numbered rules that remove AI tells
     agents/openai.yaml           interface metadata: display name, triggers, not-triggers

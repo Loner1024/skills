@@ -2,22 +2,23 @@
 name: web-craft
 description: |
   Load before writing or changing any web UI, even a small one: page layout, components, CSS,
-  theme, color, typography, spacing, motion, responsive behavior, or a design review. Load it even
+  theme, color, typography, spacing, motion, responsive behavior, cutting motion that no longer
+  earns its place, or a design review. Load it even
   if you think you know it; the file is the source of truth. It routes to the module that owns the
-  job (polish, motion, review, performance, mobile).
+  job (polish, motion, gesture, review, performance, mobile).
   Also load when the user says 重做前端 / 改版 / 界面 / 页面 / 样式 / 主题 / 浅色 / 深色 / 配色 /
-  排版 / 间距 / 太丑 / 太挤 / 看着不对 / 加动效 / 动画 / 交互 / 手机端 / dashboard / 后台 /
+  排版 / 间距 / 太丑 / 太挤 / 看着不对 / 加动效 / 动画 / 动效太多 / 动画太多 / 交互 / 手机端 / dashboard / 后台 /
   组件 / 设计评审.
   Not for backend, API, data-fetching, or state-management work on its own; load it for the UI layer
   of a full-stack task. Not for critiquing a screenshot, mockup, or design system that has no code
   behind it (design-practice).
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # Web design engineering
 
-One entry point, fourteen modules. This file does one thing: classify the job and route to the
+One entry point, seventeen modules. This file does one thing: classify the job and route to the
 module that owns it. The modules carry the standards, and they are
 [Emil Kowalski's design-engineering skill set](https://github.com/emilkowalski/skills), carried
 verbatim under `modules/` — the entry point adds routing and overrides nothing.
@@ -66,6 +67,8 @@ Do not provide any other information until the user asks a question.
 | --- | --- | --- |
 | Build or change a piece of UI — a page, a component, a polish pass | [`emil-design-eng`](modules/emil-design-eng/MODULE.md) | Design decisions plus implementation at the house bar |
 | Add or change motion on a named component — animate it, build a transition | [`animate`](modules/animate/MODULE.md) | Implementation: tool, properties, curve, duration, reduced motion |
+| Several elements move together — a staggered list, a hero entrance, a view swap | [`choreograph`](modules/choreograph/MODULE.md) | What moves, in what order, how much overlap, what stays still |
+| Drag, swipe, or sheet interactions that follow the finger | [`gestures`](modules/gestures/MODULE.md) | Track and release phases, interruptibility, the gesture implementation |
 | The same, in a React Native or Expo app | [`animate-expo`](modules/animate-expo/MODULE.md) | Reanimated and Gesture Handler implementation |
 | Several genuinely different versions to flip through and pick one | [`prototype`](modules/prototype/MODULE.md) *(explicit only)* | Variants behind a visual picker |
 | Pick a UI library — "which one should I use", "should I install X" | [`pick-ui-library`](modules/pick-ui-library/MODULE.md) *(explicit only)* | One curated pick, or a clear "not covered" |
@@ -79,6 +82,7 @@ Do not provide any other information until the user asks a question.
 | A motion review of a diff or a file, against a strict craft bar | [`review-animations`](modules/review-animations/MODULE.md) *(explicit only)* | Tiered findings against ten standards |
 | Audit all motion in a codebase and plan the fixes | [`improve-animations`](modules/improve-animations/MODULE.md) | Prioritized audit plus self-contained plans any agent can execute |
 | Sweep a page or a codebase for what should animate — and what should not | [`find-animation-opportunities`](modules/find-animation-opportunities/MODULE.md) | A short, high-conviction list with exact recipes, read-only |
+| Too much motion — find the animations that earn nothing and remove them | [`remove-animations`](modules/remove-animations/MODULE.md) | What to delete or reduce, with removal hazards checked |
 | Stress-test a component with worst-case data | [`break-ui`](modules/break-ui/MODULE.md) | What broke, behind a demo/worst-case toggle, with fixes |
 
 ### Diagnose
@@ -109,15 +113,18 @@ where the two disagree.
 One module owns the job; the others inform it. The sequences that come up most:
 
 - **A new page or feature** — `emil-design-eng` for the design decisions, then `animate` when the
-  page has a motion moment worth building. `pick-ui-library` only when the user asks for a library
-  pick or `animate` hands off to it; `break-ui` as an offer before shipping, not a step;
+  page has a motion moment worth building, `choreograph` once several elements move together, and
+  `gestures` when the feature has a drag or a sheet. `pick-ui-library` only when the user asks for a
+  library pick or `animate` hands off to it; `break-ui` as an offer before shipping, not a step;
   `review-animations` only on request.
 - **"This animation feels off"** — `animate` by default, because that is a build question;
+  `choreograph` when several elements move together, `gestures` when the finger is involved,
   `animation-performance` when it drops frames; `review-animations` only when the user asks for a
-  critique. Three different questions; do not substitute one for another.
-- **A codebase-wide motion pass** — `improve-animations`; once it has written the plans, use its
-  own `execute <plan>` variant, which dispatches the executor and reviews the diff against the
-  `review-animations` bar.
+  critique. Different questions; do not substitute one for another.
+- **A codebase-wide motion pass** — `improve-animations` when motion should stay and needs fixing,
+  `remove-animations` when the diagnosis is too much motion. Once `improve-animations` has written
+  the plans, use its own `execute <plan>` variant, which dispatches the executor and reviews the
+  diff against the `review-animations` bar.
 - **A phone pass** — `mobile-native` removes the platform tells, then `animate` handles any motion
   it has.
 - **An undecided design direction** — `prototype` to diverge, then its own `keep <variant>` to
@@ -127,7 +134,9 @@ These are defaults, not a pipeline: a module's own invocation variants and hando
 module is loaded only when its turn comes.
 
 When two modules claim the same job, the specialist wins: `animation-performance` over
-`emil-design-eng` on jank, `review-animations` over `animate` on a critique.
+`emil-design-eng` on jank, `review-animations` over `animate` on a critique, `choreograph` over
+`animate` when several elements share an event, `gestures` over `animate` when a finger drives it,
+and `remove-animations` over `improve-animations` when the fix is subtraction.
 
 ## With design-practice
 
@@ -162,8 +171,8 @@ Four mechanical changes keep the single entry point single and the skill loadabl
 it:
 
 - each module's `SKILL.md` is renamed `MODULE.md` — agents discover any file named `SKILL.md` as a
-  skill of its own, which would turn one entry point into fifteen;
-- the two module-internal references to that filename were updated to match;
+  skill of its own, which would turn one entry point into eighteen;
+- the module-internal references to that filename were updated to match;
 - the upstream `LICENSE` gains a `.txt` extension, so every file in the skill has one;
 - the two literal U+FFFD characters in `break-ui` are written as the escape `\uFFFD`. Upstream uses
   the replacement character to illustrate a broken surrogate pair, and hosted serving refuses a
